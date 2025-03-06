@@ -1,0 +1,58 @@
+# Arquivos Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Arquivos de ambiente virtual
+venv/
+ENV/
+env/
+
+# Arquivos de IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de log
+*.log
+
+# Arquivos de banco de dados SQLite
+*.sqlite3
+*.db
+
+# Arquivos de upload e propostas geradas
+uploads/*
+!uploads/.gitkeep
+propostas_geradas/*
+!propostas_geradas/.gitkeep
+
+# Arquivos de configuração local
+instance/
+.env
+.flaskenv
+
+# Arquivos temporários
+temp/
+tmp/ 

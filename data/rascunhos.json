@@ -1,0 +1,50 @@
+{
+    "8c8c2ea9-8acd-4c2b-9cba-ea0bca7273d4": {
+        "nome_cliente": "UNIMED",
+        "logo_cliente": "static\\uploads\\UNIMED_1698078a-22d6-42c2-8046-ee23b0ff4d81.png",
+        "modelo_proposta": "capa.docx",
+        "blocos_selecionados": [
+            "Termo_de_Confidencialidade",
+            "Sumario_Executivo",
+            "Visao_Geral_dos_Servicos"
+        ],
+        "usuario": "serviceit",
+        "data_atualizacao": "05/03/2025 20:18:47"
+    },
+    "3aae8a68-e272-4b00-864a-4c361f4dd5f0": {
+        "nome_cliente": "UNIMED",
+        "logo_cliente": "static\\uploads\\UNIMED_2c9cf79c-26a2-40d5-9623-462fb3c835c7.png",
+        "modelo_proposta": "capa.docx",
+        "blocos_selecionados": [
+            "Termo_de_Confidencialidade",
+            "Sumario_Executivo",
+            "Visao_Geral_dos_Servicos"
+        ],
+        "usuario": "serviceit",
+        "data_atualizacao": "05/03/2025 21:37:06"
+    },
+    "ac7a6862-59fe-4b53-bd1b-6f85e45d9126": {
+        "nome_cliente": "UNIMED",
+        "logo_cliente": "static\\uploads\\UNIMED_cc412646-db28-45e0-815a-cea077c6a3ea.png",
+        "modelo_proposta": "capa.docx",
+        "blocos_selecionados": [
+            "Termo_de_Confidencialidade",
+            "Sumario_Executivo",
+            "Visao_Geral_dos_Servicos"
+        ],
+        "usuario": "admin",
+        "data_atualizacao": "05/03/2025 21:45:48"
+    },
+    "9abb849c-9112-4f93-aa39-429a188aa76e": {
+        "nome_cliente": "UNIMED",
+        "logo_cliente": "static\\uploads\\UNIMED_c54fe73e-dd41-492f-83f3-3365f8f76d06.png",
+        "modelo_proposta": "capa.docx",
+        "blocos_selecionados": [
+            "Termo_de_Confidencialidade",
+            "Sumario_Executivo",
+            "Visao_Geral_dos_Servicos"
+        ],
+        "usuario": "admin",
+        "data_atualizacao": "05/03/2025 21:46:19"
+    }
+}

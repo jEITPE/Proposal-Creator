@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .container-white {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+    .section-title {
+        font-size: 24px;
+        color: #333;
+        margin: 0;
+        font-weight: 600;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: inline-block;
+    }
+    .btn-primary:hover {
+        background-color: #0069d9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: inline-block;
+    }
+    .btn-danger:hover {
+        background-color: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .table th, .table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+        border-top: none;
+    }
+    .table tr:last-child td {
+        border-bottom: none;
+    }
+    .table tr:hover {
+        background-color: #f8f9fa;
+    }
+    .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    .badge-admin {
+        background-color: #dc3545;
+        color: white;
+    }
+    .badge-am {
+        background-color: #28a745;
+        color: white;
+    }
+    .badge-vp {
+        background-color: #6f42c1;
+        color: white;
+    }
+    .badge-diretor {
+        background-color: #fd7e14;
+        color: white;
+    }
+    .badge-gerente {
+        background-color: #17a2b8;
+        color: white;
+    }
+    .badge-head {
+        background-color: #007bff;
+        color: white;
+    }
+    .badge-sales {
+        background-color: #20c997;
+        color: white;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #495057;
+    }
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+    .form-control:focus {
+        border-color: #80bdff;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    .form-select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: white;
+        transition: border-color 0.3s;
+    }
+    .form-select:focus {
+        border-color: #80bdff;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+    }
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -10px;
+        margin-left: -10px;
+    }
+    .form-col {
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding: 0 10px;
+    }
+    @media (max-width: 768px) {
+        .form-col {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .btn-primary, .btn-danger {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    }
+</style>
+
+{% if get_flashed_messages() %}
+    <div class="alert alert-info">
+        {% for message in get_flashed_messages() %}
+            {{ message }}
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="container-white">
+    <div class="section-header">
+        <h2 class="section-title">Gerenciar Usuários</h2>
+        <a href="{{ url_for('dashboard') }}" class="btn-primary">Voltar ao Dashboard</a>
+    </div>
+
+    <div class="form-row">
+        <div class="form-col">
+            <h3 style="margin-bottom: 20px; color: #333; font-weight: 500;">Adicionar Novo Usuário</h3>
+            <form method="post" action="{{ url_for('gerenciar_usuarios') }}">
+                <input type="hidden" name="acao" value="adicionar">
+                <div class="form-group">
+                    <label for="novo_usuario">Nome de Usuário:</label>
+                    <input type="text" id="novo_usuario" name="novo_usuario" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="nova_senha">Senha:</label>
+                    <input type="password" id="nova_senha" name="nova_senha" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="tipo_usuario">Tipo de Usuário:</label>
+                    <select id="tipo_usuario" name="tipo_usuario" class="form-select" required>
+                        <option value="am">AM</option>
+                        <option value="admin">Administrador</option>
+                        <option value="vp_comercial">VP Comercial</option>
+                        <option value="diretor_regional">Diretor Regional</option>
+                        <option value="gerente_comercial">Gerente Comercial</option>
+                        <option value="vp_tecnologia">VP de Tecnologia</option>
+                        <option value="head_sales_engineer">Head Sales Engineer</option>
+                        <option value="sales_engineer">Sales Engineer</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Adicionar Usuário</button>
+            </form>
+        </div>
+    </div>
+
+    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #333; font-weight: 500;">Usuários Existentes</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome de Usuário</th>
+                <th>Tipo</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario, dados in usuarios.items() %}
+            <tr>
+                <td>{{ usuario }}</td>
+                <td>
+                    {% if dados.tipo == 'admin' %}
+                    <span class="badge badge-admin">Administrador</span>
+                    {% elif dados.tipo == 'vp_comercial' %}
+                    <span class="badge badge-vp">VP Comercial</span>
+                    {% elif dados.tipo == 'diretor_regional' %}
+                    <span class="badge badge-diretor">Diretor Regional</span>
+                    {% elif dados.tipo == 'gerente_comercial' %}
+                    <span class="badge badge-gerente">Gerente Comercial</span>
+                    {% elif dados.tipo == 'vp_tecnologia' %}
+                    <span class="badge badge-vp">VP de Tecnologia</span>
+                    {% elif dados.tipo == 'head_sales_engineer' %}
+                    <span class="badge badge-head">Head Sales Engineer</span>
+                    {% elif dados.tipo == 'sales_engineer' %}
+                    <span class="badge badge-sales">Sales Engineer</span>
+                    {% else %}
+                    <span class="badge badge-am">AM</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if usuario != 'admin' %}
+                    <form method="post" action="{{ url_for('gerenciar_usuarios') }}" style="display: inline;">
+                        <input type="hidden" name="acao" value="remover">
+                        <input type="hidden" name="usuario_remover" value="{{ usuario }}">
+                        <button type="submit" class="btn-danger" onclick="return confirm('Tem certeza que deseja remover o usuário {{ usuario }}?')">Remover</button>
+                    </form>
+                    {% else %}
+                    <em>Usuário principal</em>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %} 

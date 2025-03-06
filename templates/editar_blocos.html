@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Blocos de Conteúdo</title>
+    <!-- Incluir Quill -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .header-container {
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 30px 0;
+            margin-bottom: 40px;
+        }
+        header {
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header img {
+            width: 120px;
+            margin-bottom: 15px;
+        }
+        header h1 {
+            font-size: 32px;
+            color: #333;
+            margin: 0;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .nav-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .nav-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 0 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,123,255,0.2);
+        }
+        .nav-link:hover {
+            background-color: #0069d9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+        .editor-container {
+            margin-bottom: 50px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            padding: 30px;
+        }
+        .bloco-titulo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .bloco-titulo h3 {
+            margin: 0;
+            color: #333;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .btn-excluir {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            box-shadow: 0 2px 5px rgba(220,53,69,0.2);
+        }
+        .btn-excluir:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(220,53,69,0.3);
+        }
+        .editor {
+            height: 350px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .dicas {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #666;
+            border-left: 4px solid #007bff;
+        }
+        .submit-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .btn-salvar {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(40,167,69,0.2);
+        }
+        .btn-salvar:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(40,167,69,0.3);
+        }
+        /* Estilo personalizado para o Quill */
+        .ql-toolbar {
+            border-radius: 6px 6px 0 0;
+            border-color: #ddd;
+            background-color: #f8f9fa;
+        }
+        .ql-container {
+            border-radius: 0 0 6px 6px;
+            border-color: #ddd;
+            font-size: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .ql-editor {
+            min-height: 350px;
+        }
+        /* Estilo para o scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+    <script>
+        function confirmarExclusao(nomeBloco) {
+            return confirm(`Tem certeza que deseja excluir o bloco "${nomeBloco.replace('_', ' ')}"?`);
+        }
+    </script>
+</head>
+<body>
+    <div class="header-container">
+        <header>
+            <img src="/static/img/logo_service_it.png" alt="Logo da Service IT">
+            <h1>Editar Blocos de Conteúdo</h1>
+        </header>
+    </div>
+
+    <div class="nav-container">
+        <a href="/" class="nav-link">Página Inicial</a>
+    </div>
+
+    <div class="container">
+        <form action="/salvar_blocos" method="post" id="form-blocos">
+            {% for bloco, conteudo in blocos.items() %}
+                <div class="editor-container">
+                    <div class="bloco-titulo">
+                        <h3>{{ bloco.replace('_', ' ').capitalize() }}</h3>
+                        <button type="button" class="btn-excluir" onclick="if(confirmarExclusao('{{ bloco }}')) window.location.href='/excluir_bloco/{{ bloco }}'">Excluir Bloco</button>
+                    </div>
+                    
+                    <!-- Div para o editor Quill -->
+                    <div id="editor-{{ bloco }}" class="editor"></div>
+                    
+                    <!-- Campo oculto para armazenar o HTML -->
+                    <textarea name="{{ bloco }}_texto" id="content-{{ bloco }}" style="display:none;"></textarea>
+                    
+                    <div class="dicas">
+                        <p>Dica: Use {{NOME_CLIENTE}} para inserir o nome do cliente automaticamente no documento.</p>
+                    </div>
+                </div>
+            {% endfor %}
+            
+            <div class="submit-container">
+                <button type="submit" class="btn-salvar">Salvar Todos os Blocos</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Inicializar os editores Quill
+        document.addEventListener('DOMContentLoaded', function() {
+            const editors = {};
+            
+            // Função para lidar com o upload de imagens
+            function imageHandler() {
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.click();
+                
+                input.onchange = () => {
+                    const file = input.files[0];
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        
+                        fetch('/upload_image', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.url) {
+                                // Obter o editor ativo
+                                const activeEditor = this;
+                                const range = activeEditor.getSelection();
+                                activeEditor.insertEmbed(range.index, 'image', result.url);
+                            } else {
+                                console.error('Erro ao fazer upload da imagem:', result.error);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro ao fazer upload da imagem:', error);
+                        });
+                    }
+                };
+            }
+            
+            {% for bloco, conteudo in blocos.items() %}
+                // Configuração do Quill para cada bloco
+                editors['{{ bloco }}'] = new Quill('#editor-{{ bloco }}', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: {
+                            container: [
+                                [{ 'header': [1, 2, 3, false] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ 'color': [] }, { 'background': [] }],
+                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                [{ 'align': [] }],
+                                ['link', 'image'],
+                                ['clean']
+                            ],
+                            handlers: {
+                                'image': function() { imageHandler.call(editors['{{ bloco }}']); }
+                            }
+                        }
+                    },
+                    placeholder: 'Escreva o conteúdo aqui...'
+                });
+                
+                // Carregar o conteúdo existente
+                editors['{{ bloco }}'].root.innerHTML = {{ conteudo['texto'] | tojson | safe }};
+                
+                // Atualizar o textarea oculto quando o conteúdo mudar
+                editors['{{ bloco }}'].on('text-change', function() {
+                    document.getElementById('content-{{ bloco }}').value = editors['{{ bloco }}'].root.innerHTML;
+                });
+                
+                // Inicializar o valor do textarea
+                document.getElementById('content-{{ bloco }}').value = editors['{{ bloco }}'].root.innerHTML;
+            {% endfor %}
+            
+            // Garantir que os valores sejam atualizados antes do envio do formulário
+            document.getElementById('form-blocos').addEventListener('submit', function() {
+                {% for bloco, conteudo in blocos.items() %}
+                    document.getElementById('content-{{ bloco }}').value = editors['{{ bloco }}'].root.innerHTML;
+                {% endfor %}
+            });
+        });
+    </script>
+</body>
+</html>

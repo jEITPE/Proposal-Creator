@@ -1,0 +1,58 @@
+{
+    "cf068b31-d731-41f7-83d0-a62c02f2bb0d": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "05/03/2025 21:48",
+        "gerado_por": "admin",
+        "arquivo": "C:\\Users\\joao.almeida\\Downloads\\Proposta\\propostas_geradas\\Proposta_UNIMED_20250305_214842.docx",
+        "blocos_utilizados": [
+            "Termo_de_Confidencialidade",
+            "Sumario_Executivo",
+            "Visao_Geral_dos_Servicos"
+        ]
+    },
+    "9c1c96c8-55cf-45d0-90cf-c57f9868a19d": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "06/03/2025 10:03",
+        "gerado_por": "admin",
+        "arquivo": "C:\\Users\\joao.almeida\\Downloads\\Proposta\\propostas_geradas\\Proposta_UNIMED_20250306_100339.docx",
+        "blocos_utilizados": [
+            "Termo_de_Confidencialidade",
+            "Sumario_Executivo",
+            "Visao_Geral_dos_Servicos"
+        ]
+    },
+    "9594f130-dd14-4000-a009-60454e485173": {
+        "nome_cliente": "unimed 123",
+        "data_geracao": "06/03/2025 10:05",
+        "gerado_por": "serviceit",
+        "arquivo": "C:\\Users\\joao.almeida\\Downloads\\Proposta\\propostas_geradas\\Proposta_unimed_123_20250306_100523.docx",
+        "blocos_utilizados": [
+            "Termo_de_Confidencialidade",
+            "Sumario_Executivo",
+            "Visao_Geral_dos_Servicos",
+            "Teste"
+        ]
+    },
+    "a0b0cb14-e2c3-4c70-92b7-23eb26b9103e": {
+        "nome_cliente": "Unimed",
+        "data_geracao": "06/03/2025 10:07",
+        "gerado_por": "admin",
+        "arquivo": "C:\\Users\\joao.almeida\\Downloads\\Proposta\\propostas_geradas\\Proposta_Unimed_20250306_100658.docx",
+        "blocos_utilizados": [
+            "Termo_de_Confidencialidade",
+            "Sumario_Executivo",
+            "Visao_Geral_dos_Servicos"
+        ]
+    },
+    "dbda91c1-580e-4e77-8e70-5e00b399d801": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "06/03/2025 10:30",
+        "gerado_por": "admin",
+        "arquivo": "C:\\Users\\joao.almeida\\Downloads\\Proposta\\propostas_geradas\\Proposta_UNIMED_20250306_103039.docx",
+        "blocos_utilizados": [
+            "Termo_de_Confidencialidade",
+            "Sumario_Executivo",
+            "Visao_Geral_dos_Servicos"
+        ]
+    }
+}

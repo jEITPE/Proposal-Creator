@@ -1,0 +1,1503 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .container-white {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    .section-title {
+        font-size: 28px;
+        color: #333;
+        margin: 0;
+    }
+    .btn-container {
+        display: flex;
+        gap: 10px;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+        background-color: #0069d9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+    }
+    .form-group {
+        margin-bottom: 25px;
+    }
+    .form-label {
+        display: block;
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 10px;
+        color: #333;
+    }
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+    .form-control:focus {
+        border-color: #80bdff;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    .form-text {
+        font-size: 14px;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    .logo-options {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+    .logo-option {
+        flex: 1;
+        background-color: white;
+        border-radius: 4px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    .logo-option-title {
+        font-weight: 500;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    .file-input-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .file-input-button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+    }
+    .file-input-button:hover {
+        background-color: #0069d9;
+    }
+    .file-input-button input[type="file"] {
+        display: none;
+    }
+    .file-name {
+        color: #6c757d;
+        font-size: 14px;
+    }
+    .blocos-section {
+        margin-top: 30px;
+    }
+    .alert {
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+    .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+    .blocos-category {
+        margin-bottom: 25px;
+    }
+    .blocos-category-title {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 15px;
+        color: #333;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .checkbox-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    .checkbox-item {
+        flex: 0 0 calc(33.333% - 15px);
+        display: flex;
+        align-items: flex-start;
+    }
+    .checkbox-item input[type="checkbox"] {
+        margin-right: 10px;
+        margin-top: 3px;
+    }
+    .checkbox-item label {
+        font-size: 16px;
+        color: #333;
+    }
+    .mandatory-badge {
+        display: inline-block;
+        background-color: #dc3545;
+        color: white;
+        font-size: 12px;
+        padding: 2px 6px;
+        border-radius: 3px;
+        margin-left: 5px;
+    }
+    .submit-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+    }
+    .preview-section {
+        margin-top: 30px;
+        background-color: white;
+        border-radius: 8px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .preview-container {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #fff;
+    }
+    .preview-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .preview-logo {
+        margin-right: 20px;
+    }
+    .preview-logo img {
+        max-width: 100px;
+        max-height: 100px;
+        border: 1px solid #e9ecef;
+        padding: 5px;
+        border-radius: 4px;
+    }
+    .preview-title {
+        flex: 1;
+    }
+    .preview-title h2 {
+        font-size: 22px;
+        color: #333;
+        margin: 0 0 5px 0;
+    }
+    .preview-title h3 {
+        font-size: 18px;
+        color: #6c757d;
+        margin: 0;
+        font-weight: normal;
+    }
+    .preview-content {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+    .preview-blocks {
+        flex: 1;
+        min-width: 250px;
+    }
+    .preview-blocks h4 {
+        font-size: 18px;
+        color: #333;
+        margin: 0 0 15px 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .preview-blocks ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+    .preview-blocks li {
+        padding: 8px 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    .preview-sample {
+        flex: 2;
+        min-width: 300px;
+    }
+    .preview-sample h4 {
+        font-size: 18px;
+        color: #333;
+        margin: 0 0 15px 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .preview-block-content {
+        margin-bottom: 20px;
+    }
+    .preview-block-content h5 {
+        font-size: 16px;
+        color: #333;
+        margin: 0 0 10px 0;
+    }
+    .preview-text {
+        font-size: 14px;
+        color: #6c757d;
+        line-height: 1.5;
+    }
+    .preview-text p {
+        margin: 0 0 10px 0;
+    }
+    @media (max-width: 768px) {
+        .checkbox-item {
+            flex: 0 0 100%;
+        }
+        .logo-options {
+            flex-direction: column;
+        }
+        .preview-content {
+            flex-direction: column;
+        }
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .section-header .btn-container {
+            flex-wrap: wrap;
+        }
+        .submit-container {
+            flex-direction: column;
+            gap: 15px;
+            align-items: stretch;
+        }
+        .submit-container button {
+            width: 100%;
+        }
+        .preview-header {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .preview-logo {
+            margin-right: 0;
+            margin-bottom: 15px;
+        }
+    }
+    .ofertas-section {
+        margin-bottom: 30px;
+    }
+    
+    .ofertas-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 10px;
+    }
+    
+    .oferta-tab {
+        padding: 10px 20px;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .oferta-tab:hover {
+        background-color: #e9ecef;
+    }
+    
+    .oferta-tab.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+    
+    .oferta-content {
+        display: none;
+        padding: 20px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        background-color: #fff;
+    }
+    
+    .oferta-content.active {
+        display: block;
+    }
+    
+    .oferta-header {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .oferta-title {
+        font-size: 20px;
+        color: #333;
+        margin: 0;
+    }
+    
+    .oferta-description {
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    @media (max-width: 768px) {
+        .ofertas-tabs {
+            flex-direction: column;
+        }
+        
+        .checkbox-item {
+            flex: 0 0 100%;
+        }
+    }
+    
+    /* Estilos para o modal de edição de blocos */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+    
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 900px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e9ecef;
+        margin-bottom: 20px;
+    }
+    
+    .modal-title {
+        font-size: 22px;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+    
+    .close {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+    }
+    
+    .modal-footer {
+        padding-top: 15px;
+        border-top: 1px solid #e9ecef;
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    
+    /* Estilos para o painel de visualização em tempo real */
+    .live-preview-panel {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        width: 350px;
+        height: 500px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        z-index: 9999;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: none; /* Remover transição para evitar problemas */
+        user-select: none; /* Impedir seleção de texto ao arrastar */
+    }
+    
+    /* Estilo para quando o painel está sendo arrastado */
+    .live-preview-panel.dragging {
+        opacity: 0.8;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+        pointer-events: none; /* Impedir interação com outros elementos durante o arrasto */
+    }
+    
+    .live-preview-header {
+        padding: 10px 15px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: grab;
+    }
+    
+    .live-preview-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+    
+    .live-preview-controls {
+        display: flex;
+        gap: 10px;
+        cursor: default;
+    }
+    
+    .live-preview-control {
+        background: none;
+        border: none;
+        color: #6c757d;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0;
+        transition: color 0.2s;
+    }
+    
+    .live-preview-control:hover {
+        color: #343a40;
+    }
+    
+    .live-preview-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        background-color: #fff;
+    }
+    
+    .live-preview-document {
+        background-color: white;
+        border: 1px solid #e9ecef;
+        padding: 30px;
+        font-size: 12px;
+        min-height: 100%;
+        font-family: 'Calibri', 'Arial', sans-serif;
+        line-height: 1.5;
+        color: #333;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1) inset;
+    }
+    
+    .live-preview-logo {
+        max-width: 150px;
+        max-height: 80px;
+        margin-bottom: 20px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .live-preview-cliente {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #2b579a; /* Cor azul do Word */
+        text-align: center;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 10px;
+    }
+    
+    .live-preview-bloco {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+    
+    .live-preview-bloco-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #2b579a; /* Cor azul do Word */
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 5px;
+    }
+    
+    .live-preview-bloco-content {
+        font-size: 12px;
+        color: #333;
+    }
+    
+    .live-preview-bloco-content p {
+        margin-bottom: 10px;
+        text-align: justify;
+    }
+    
+    .live-preview-bloco-content strong {
+        font-weight: 600;
+    }
+    
+    .live-preview-bloco-content ul, .live-preview-bloco-content ol {
+        margin-left: 20px;
+        margin-bottom: 10px;
+    }
+    
+    .live-preview-bloco-content li {
+        margin-bottom: 5px;
+    }
+    
+    .live-preview-minimized {
+        height: 40px !important;
+        overflow: hidden !important;
+    }
+    
+    .live-preview-minimized .live-preview-content,
+    .live-preview-minimized .live-preview-footer {
+        display: none !important;
+    }
+    
+    .live-preview-footer {
+        padding: 10px 15px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+        font-size: 12px;
+        color: #6c757d;
+        text-align: center;
+    }
+    
+    @media (max-width: 1200px) {
+        .live-preview-panel {
+            width: 300px;
+        }
+    }
+    
+    @media (max-width: 992px) {
+        .live-preview-panel {
+            width: 250px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .live-preview-panel {
+            position: static;
+            width: 100%;
+            height: auto;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+    }
+    
+    .btn-editar-bloco {
+        margin-left: 10px;
+        background: none;
+        border: none;
+        color: #007bff;
+        cursor: pointer;
+        z-index: 10;
+        position: relative;
+        display: inline-block;
+        padding: 2px 5px;
+        font-size: 14px;
+    }
+    
+    .btn-editar-bloco:hover {
+        color: #0056b3;
+        text-decoration: underline;
+        background-color: rgba(0, 123, 255, 0.1);
+        border-radius: 3px;
+    }
+</style>
+
+{% if get_flashed_messages() %}
+<div class="alert alert-info">
+    {% for message in get_flashed_messages() %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="container-white">
+    <div class="section-header">
+        <h2 class="section-title">Criar Nova Proposta</h2>
+        <div style="display: flex; gap: 10px;">
+            {% if cliente %}
+            <a href="{{ url_for('adicionar_bloco', cliente=cliente) }}" class="btn-primary">Adicionar Bloco</a>
+            {% else %}
+            <a href="{{ url_for('adicionar_bloco') }}" class="btn-primary">Adicionar Bloco</a>
+            {% endif %}
+            {% if session.get('tipo_usuario') == 'admin' %}
+            <a href="{{ url_for('editar_blocos') }}" class="btn-primary">Editar Blocos</a>
+            {% endif %}
+            <a href="{{ url_for('exibir_criar_proposta', nova=1) }}" class="btn-primary">Nova Proposta</a>
+            <a href="{{ url_for('dashboard') }}" class="btn-secondary">Voltar ao Dashboard</a>
+        </div>
+    </div>
+
+    <form id="propostaForm" action="{{ url_for('criar_proposta') }}" method="post" enctype="multipart/form-data">
+        {% if rascunho_id %}
+        <input type="hidden" name="rascunho_id" value="{{ rascunho_id }}">
+        {% endif %}
+        <div class="form-group">
+            <label for="nome_cliente" class="form-label">Nome do Cliente</label>
+            <input type="text" id="nome_cliente" name="nome_cliente" class="form-control" value="{{ rascunho.nome_cliente or cliente }}" required>
+            <small class="form-text">Digite o nome completo do cliente para a proposta.</small>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Logo do Cliente</label>
+            
+            <div class="logo-options">
+                <div class="logo-option">
+                    <div class="logo-option-title">Upload de Arquivo</div>
+                    <div class="file-input-container">
+                        <label class="file-input-button">
+                            Escolher arquivo
+                            <input type="file" id="logo_file" name="logo_file" accept="image/*" onchange="updateFileName(this); previewLogo(this)">
+                        </label>
+                        <span class="file-name" id="file-name">
+                            {% if rascunho.logo_cliente and ('/' in rascunho.logo_cliente or '\\' in rascunho.logo_cliente) %}
+                                Arquivo selecionado
+                            {% else %}
+                                Nenhum arquivo selecionado
+                            {% endif %}
+                        </span>
+                    </div>
+                    <small class="form-text">Formatos aceitos: JPG, PNG, GIF (máx. 2MB)</small>
+                </div>
+            </div>
+            
+            {% if rascunho.logo_cliente and ('/' in rascunho.logo_cliente or '\\' in rascunho.logo_cliente) %}
+            <div style="margin-top: 15px;">
+                <p><strong>Logo atual:</strong></p>
+                <img src="/{{ rascunho.logo_cliente }}" 
+                     alt="Logo do cliente" style="max-height: 100px; max-width: 200px; border: 1px solid #ddd; padding: 5px;">
+                <input type="hidden" name="logo_atual" value="{{ rascunho.logo_cliente }}">
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Seção de Ofertas -->
+        <div class="ofertas-section">
+            <label class="form-label">Selecione a Oferta</label>
+            
+            <div class="alert alert-info">
+                <strong>Nota:</strong> Clique no nome de qualquer bloco para editar seu conteúdo e personalizá-lo para este cliente específico.
+            </div>
+            
+            <div class="ofertas-tabs">
+                {% for oferta_nome, oferta_dados in ofertas.items() %}
+                <div class="oferta-tab {% if rascunho.oferta_selecionada == oferta_nome %}active{% elif loop.first and not rascunho.oferta_selecionada %}active{% endif %}" 
+                     data-oferta="{{ oferta_nome }}">
+                    {{ oferta_nome }}
+                </div>
+                {% endfor %}
+            </div>
+            
+            <input type="hidden" name="oferta_selecionada" id="oferta_selecionada" value="{{ rascunho.oferta_selecionada or primeira_oferta }}">
+            
+            {% for oferta_nome, oferta_dados in ofertas.items() %}
+            <div class="oferta-content {% if rascunho.oferta_selecionada == oferta_nome %}active{% elif loop.first and not rascunho.oferta_selecionada %}active{% endif %}" 
+                 id="oferta-{{ oferta_nome }}">
+                <div class="oferta-header">
+                    <h3 class="oferta-title">{{ oferta_nome }}</h3>
+                    <p class="oferta-description">Selecione os blocos para esta oferta</p>
+                </div>
+                
+                <!-- Blocos Obrigatórios -->
+                <div class="blocos-category">
+                    <h4 class="blocos-category-title">Blocos Obrigatórios</h4>
+                    <div class="checkbox-container">
+                        {% for bloco_nome in oferta_dados.obrigatorios %}
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="bloco-{{ bloco_nome }}" name="blocos" value="{{ bloco_nome }}" 
+                                   {% if bloco_nome in rascunho.blocos_selecionados %}checked{% endif %} checked disabled>
+                            <label for="bloco-{{ bloco_nome }}">
+                                {{ bloco_nome.replace('_', ' ').capitalize() }}
+                                <span class="mandatory-badge">Obrigatório</span>
+                                <button type="button" class="btn-editar-bloco" data-bloco="{{ bloco_nome }}">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Blocos Específicos -->
+                <div class="blocos-category">
+                    <h4 class="blocos-category-title">Blocos Específicos</h4>
+                    <div class="checkbox-container">
+                        {% for bloco_nome, bloco_dados in oferta_dados.blocos.items() %}
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="bloco-{{ bloco_nome }}" name="blocos" value="{{ bloco_nome }}"
+                                   {% if bloco_nome in rascunho.blocos_selecionados %}checked{% endif %}>
+                            <label for="bloco-{{ bloco_nome }}">
+                                {{ bloco_nome.replace('_', ' ').capitalize() }}
+                                <button type="button" class="btn-editar-bloco" data-bloco="{{ bloco_nome }}">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Blocos Adicionais -->
+        <div class="blocos-section">
+            <label class="form-label">Blocos Adicionais</label>
+            <div class="alert alert-info">
+                Selecione os blocos adicionais que deseja incluir na proposta.
+            </div>
+            
+            <div class="blocos-category">
+                <h4 class="blocos-category-title">Blocos Disponíveis</h4>
+                <div class="checkbox-container">
+                    {% for bloco_nome, bloco_dados in blocos.items() %}
+                        {% if not bloco_dados.obrigatorio %}
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="bloco-{{ bloco_nome }}" name="blocos" value="{{ bloco_nome }}"
+                                   {% if bloco_nome in rascunho.blocos_selecionados %}checked{% endif %}>
+                            <label for="bloco-{{ bloco_nome }}">
+                                {{ bloco_nome.replace('_', ' ').capitalize() }}
+                                <button type="button" class="btn-editar-bloco" data-bloco="{{ bloco_nome }}">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                            </label>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="submit-container">
+            <div>
+                <!-- Botão de salvar como rascunho removido, pois o auto-save já está implementado -->
+            </div>
+            <div>
+                <button type="submit" class="btn-primary">Gerar Proposta</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal de Edição de Bloco -->
+<div id="modalEditarBloco" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Editar Bloco: <span id="modalBlocoTitulo"></span></h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <!-- Editor Quill -->
+            <div id="editor-bloco" style="height: 300px;"></div>
+            <input type="hidden" id="blocoAtual" value="">
+            <input type="hidden" id="blocoConteudo" value="">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" id="btnCancelarEdicao">Cancelar</button>
+            <button type="button" class="btn-primary" id="btnSalvarEdicao">Salvar Alterações</button>
+        </div>
+    </div>
+</div>
+
+<!-- Adicionar o painel de visualização em tempo real após o formulário -->
+<div class="live-preview-panel" id="livePreviewPanel">
+    <div class="live-preview-header" id="livePreviewHeader">
+        <h3 class="live-preview-title">
+            <i class="fas fa-grip-lines" style="margin-right: 8px; font-size: 14px; color: #6c757d;"></i>
+            Visualização em Tempo Real
+        </h3>
+        <div class="live-preview-controls">
+            <button type="button" class="live-preview-control" id="btnReloadPreview" title="Atualizar visualização">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+            <button type="button" class="live-preview-control" id="btnMinimizePreview" title="Minimizar">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="live-preview-control" id="btnMaximizePreview" title="Maximizar" style="display: none;">
+                <i class="fas fa-expand"></i>
+            </button>
+        </div>
+    </div>
+    <div class="live-preview-content">
+        <div class="live-preview-document">
+            <div id="livePreviewLogo" style="text-align: center;">
+                <img src="/static/img/placeholder-logo.png" alt="Logo do cliente" class="live-preview-logo" id="livePreviewLogoImg">
+            </div>
+            <div class="live-preview-cliente" id="livePreviewCliente">
+                Nome do Cliente
+            </div>
+            <div id="livePreviewBlocos">
+                <!-- Os blocos serão adicionados dinamicamente aqui -->
+                <div class="live-preview-bloco">
+                    <div class="live-preview-bloco-title">Carregando blocos...</div>
+                    <div class="live-preview-bloco-content">
+                        <p>Selecione os blocos para visualizar o conteúdo da proposta.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="live-preview-footer">
+        Visualização simplificada da proposta
+    </div>
+</div>
+
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<script>
+    // Função para tornar o painel de visualização arrastável
+    function makeDraggable(element, handle) {
+        let isDragging = false;
+        let offsetX, offsetY;
+        
+        // Garantir que o elemento tenha position: fixed
+        element.style.position = 'fixed';
+        
+        handle.addEventListener('mousedown', function(e) {
+            // Verificar se o clique foi em um botão ou ícone dentro de um botão
+            if (e.target.tagName === 'BUTTON' || (e.target.tagName === 'I' && e.target.parentElement.tagName === 'BUTTON')) {
+                return;
+            }
+            
+            isDragging = true;
+            offsetX = e.clientX - element.getBoundingClientRect().left;
+            offsetY = e.clientY - element.getBoundingClientRect().top;
+            
+            // Adicionar classe para indicar que está sendo arrastado
+            element.classList.add('dragging');
+            handle.style.cursor = 'grabbing';
+            
+            // Prevenir comportamento padrão para evitar seleção de texto
+            e.preventDefault();
+        });
+        
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            
+            // Calcular a nova posição
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+            
+            // Limitar a posição para não sair da tela
+            const maxX = window.innerWidth - element.offsetWidth;
+            const maxY = window.innerHeight - element.offsetHeight;
+            
+            const newX = Math.max(0, Math.min(x, maxX));
+            const newY = Math.max(0, Math.min(y, maxY));
+            
+            // Aplicar a nova posição
+            element.style.left = newX + 'px';
+            element.style.top = newY + 'px';
+            element.style.right = 'auto'; // Remover a posição right para evitar conflitos
+            element.style.position = 'fixed'; // Garantir que a posição seja fixa
+            
+            // Marcar o painel como movido manualmente
+            element.setAttribute('data-moved', 'true');
+        });
+        
+        document.addEventListener('mouseup', function() {
+            if (isDragging) {
+                isDragging = false;
+                element.classList.remove('dragging');
+                handle.style.cursor = 'grab';
+            }
+        });
+    }
+
+    function updateFileName(input) {
+        const fileName = input.files[0] ? input.files[0].name : 'Nenhum arquivo selecionado';
+        document.getElementById('file-name').textContent = fileName;
+    }
+
+    function previewLogo(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // Atualizar a logo na visualização em tempo real
+                const logoImg = document.getElementById('livePreviewLogoImg');
+                if (logoImg) {
+                    logoImg.src = e.target.result;
+                    logoImg.style.display = 'inline-block'; // Garantir que a imagem seja exibida
+                    
+                    // Atualizar a visualização em tempo real
+                    setTimeout(atualizarVisualizacaoEmTempoReal, 100);
+                }
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar o editor Quill
+        const quill = new Quill('#editor-bloco', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'align': [] }],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Edite o conteúdo do bloco aqui...'
+        });
+        
+        // Inicializar o painel de visualização
+        const livePreviewPanel = document.getElementById('livePreviewPanel');
+        const livePreviewHeader = document.getElementById('livePreviewHeader');
+        
+        // Tornar o painel arrastável
+        makeDraggable(livePreviewPanel, livePreviewHeader);
+        
+        // Posicionar o painel no centro da tela inicialmente
+        function posicionarPainelInicial() {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const panelWidth = livePreviewPanel.offsetWidth;
+            const panelHeight = livePreviewPanel.offsetHeight;
+            
+            // Calcular posição central
+            const left = Math.max(20, (windowWidth - panelWidth) / 2);
+            const top = Math.max(100, (windowHeight - panelHeight) / 3);
+            
+            // Aplicar posição
+            livePreviewPanel.style.left = left + 'px';
+            livePreviewPanel.style.top = top + 'px';
+            livePreviewPanel.style.right = 'auto';
+            livePreviewPanel.style.position = 'fixed'; // Garantir que a posição seja fixa
+        }
+        
+        // Posicionar o painel inicialmente
+        setTimeout(posicionarPainelInicial, 300);
+        
+        // Reposicionar o painel quando a janela for redimensionada
+        window.addEventListener('resize', function() {
+            // Apenas reposicionar se o painel não tiver sido movido manualmente
+            if (!livePreviewPanel.hasAttribute('data-moved')) {
+                posicionarPainelInicial();
+            }
+        });
+        
+        // Controles do painel de visualização em tempo real
+        const btnReloadPreview = document.getElementById('btnReloadPreview');
+        const btnMinimizePreview = document.getElementById('btnMinimizePreview');
+        const btnMaximizePreview = document.getElementById('btnMaximizePreview');
+        
+        btnReloadPreview.addEventListener('click', function(e) {
+            // Impedir que o clique se propague
+            e.stopPropagation();
+            
+            // Adicionar classe de rotação para indicar que está atualizando
+            this.querySelector('i').classList.add('fa-spin');
+            
+            // Atualizar a visualização
+            atualizarVisualizacaoEmTempoReal();
+            
+            // Remover a classe de rotação após 1 segundo
+            setTimeout(() => {
+                this.querySelector('i').classList.remove('fa-spin');
+            }, 1000);
+        });
+        
+        btnMinimizePreview.addEventListener('click', function(e) {
+            // Impedir que o clique se propague
+            e.stopPropagation();
+            
+            livePreviewPanel.classList.add('live-preview-minimized');
+            btnMinimizePreview.style.display = 'none';
+            btnMaximizePreview.style.display = 'block';
+        });
+        
+        btnMaximizePreview.addEventListener('click', function(e) {
+            // Impedir que o clique se propague
+            e.stopPropagation();
+            
+            livePreviewPanel.classList.remove('live-preview-minimized');
+            btnMinimizePreview.style.display = 'block';
+            btnMaximizePreview.style.display = 'none';
+        });
+        
+        // Atualizar nome do cliente na visualização em tempo real
+        const nomeClienteInput = document.getElementById('nome_cliente');
+        if (nomeClienteInput) {
+            nomeClienteInput.addEventListener('input', function() {
+                // Atualizar o nome do cliente na visualização em tempo real
+                document.getElementById('livePreviewCliente').textContent = this.value || 'Nome do Cliente';
+                
+                // Atualizar também os placeholders {{NOME_CLIENTE}} nos blocos
+                atualizarVisualizacaoEmTempoReal();
+            });
+            
+            // Inicializar com o valor atual
+            document.getElementById('livePreviewCliente').textContent = nomeClienteInput.value || 'Nome do Cliente';
+        }
+        
+        // Função para atualizar a visualização em tempo real
+        function atualizarVisualizacaoEmTempoReal() {
+            const blocosContainer = document.getElementById('livePreviewBlocos');
+            blocosContainer.innerHTML = ''; // Limpar o conteúdo atual
+            
+            // Obter todos os blocos selecionados
+            const blocosCheckboxes = document.querySelectorAll('input[name="blocos"]:checked');
+            
+            if (blocosCheckboxes.length === 0) {
+                blocosContainer.innerHTML = '<div class="live-preview-bloco"><div class="live-preview-bloco-title">Nenhum bloco selecionado</div><div class="live-preview-bloco-content"><p>Selecione os blocos para visualizar o conteúdo da proposta.</p></div></div>';
+                return;
+            }
+            
+            // Obter dados do cliente para substituir placeholders
+            const nomeCliente = document.getElementById('nome_cliente').value || 'Nome do Cliente';
+            
+            // Para cada bloco selecionado, adicionar à visualização
+            blocosCheckboxes.forEach(checkbox => {
+                const blocoNome = checkbox.value;
+                
+                // Criar elemento para o bloco
+                const blocoElement = document.createElement('div');
+                blocoElement.className = 'live-preview-bloco';
+                
+                // Adicionar título do bloco
+                const blocoTitle = document.createElement('div');
+                blocoTitle.className = 'live-preview-bloco-title';
+                blocoTitle.textContent = blocoNome.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                blocoElement.appendChild(blocoTitle);
+                
+                // Adicionar conteúdo do bloco (carregado via AJAX)
+                const blocoContent = document.createElement('div');
+                blocoContent.className = 'live-preview-bloco-content';
+                blocoContent.innerHTML = '<p>Carregando conteúdo...</p>';
+                blocoElement.appendChild(blocoContent);
+                
+                // Adicionar o bloco ao container
+                blocosContainer.appendChild(blocoElement);
+                
+                // Carregar o conteúdo do bloco via AJAX
+                fetch(`/api/bloco/${blocoNome}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro ao carregar o bloco');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (!data || !data.texto) {
+                            throw new Error('Dados do bloco inválidos');
+                        }
+                        
+                        // Substituir placeholders no texto
+                        let texto = data.texto;
+                        
+                        // Substituir {{NOME_CLIENTE}} pelo nome do cliente
+                        texto = texto.replace(/{{NOME_CLIENTE}}/g, nomeCliente);
+                        
+                        // Substituir outros placeholders se necessário
+                        // ...
+                        
+                        blocoContent.innerHTML = texto;
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar o bloco:', error);
+                        blocoContent.innerHTML = '<p>Erro ao carregar o conteúdo do bloco.</p>';
+                    });
+            });
+        }
+        
+        // Atualizar a visualização quando os blocos são selecionados/deselecionados
+        document.querySelectorAll('input[name="blocos"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Atualizar a visualização em tempo real
+                setTimeout(atualizarVisualizacaoEmTempoReal, 100);
+            });
+        });
+        
+        // Atualizar a visualização quando a oferta é alterada
+        document.querySelectorAll('.oferta-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Dar um pequeno tempo para que os blocos sejam atualizados
+                setTimeout(atualizarVisualizacaoEmTempoReal, 100);
+            });
+        });
+        
+        // Atualizar a visualização quando um bloco é editado
+        document.getElementById('btnSalvarEdicao').addEventListener('click', function() {
+            // Dar um pequeno tempo para que o bloco seja salvo
+            setTimeout(atualizarVisualizacaoEmTempoReal, 500);
+            
+            // Atualizar a visualização em tempo real após fechar o modal
+            document.getElementById('modalEditarBloco').addEventListener('transitionend', function() {
+                if (this.style.display === 'none') {
+                    atualizarVisualizacaoEmTempoReal();
+                }
+            }, { once: true });
+        });
+        
+        // Inicializar a visualização em tempo real
+        setTimeout(function() {
+            try {
+                console.log('Inicializando visualização em tempo real...');
+                
+                // Verificar se o painel está visível
+                if (livePreviewPanel.offsetHeight > 0) {
+                    // Posicionar o painel
+                    posicionarPainelInicial();
+                    
+                    // Atualizar a visualização
+                    atualizarVisualizacaoEmTempoReal();
+                    
+                    console.log('Visualização em tempo real inicializada com sucesso');
+                } else {
+                    console.warn('Painel de visualização não está visível');
+                }
+            } catch (error) {
+                console.error('Erro ao inicializar visualização em tempo real:', error);
+            }
+        }, 500);
+        
+        // Garantir que a função atualizarVisualizacaoEmTempoReal seja chamada quando a página carregar
+        window.addEventListener('load', function() {
+            console.log('Página carregada, atualizando visualização...');
+            setTimeout(atualizarVisualizacaoEmTempoReal, 800);
+        });
+        
+        // Verificar se há uma logo atual e atualizá-la na visualização
+        const logoAtual = document.querySelector('input[name="logo_atual"]');
+        if (logoAtual && logoAtual.value) {
+            const logoImg = document.getElementById('livePreviewLogoImg');
+            logoImg.src = '/' + logoAtual.value;
+            logoImg.style.display = 'inline-block';
+        }
+        
+        // Verificar se há uma imagem de logo já carregada
+        const logoImg = document.querySelector('img[alt="Logo do cliente"]');
+        if (logoImg && logoImg.src && !logoImg.src.includes('placeholder-logo.png')) {
+            document.getElementById('livePreviewLogoImg').src = logoImg.src;
+        }
+        
+        // Obter o modal
+        const modal = document.getElementById('modalEditarBloco');
+        const span = document.getElementsByClassName('close')[0];
+        const btnCancelar = document.getElementById('btnCancelarEdicao');
+        const btnSalvar = document.getElementById('btnSalvarEdicao');
+        const modalTitulo = document.getElementById('modalBlocoTitulo');
+        const blocoAtualInput = document.getElementById('blocoAtual');
+        
+        // Carregar os blocos do servidor
+        let blocos = {};
+        
+        // Função para carregar os blocos via AJAX
+        function carregarBlocos() {
+            fetch('/api/blocos')
+                .then(response => response.json())
+                .then(data => {
+                    blocos = data;
+                })
+                .catch(error => console.error('Erro ao carregar blocos:', error));
+        }
+        
+        // Carregar blocos ao iniciar
+        carregarBlocos();
+        
+        // Configurar os botões de edição
+        function configurarBotoesEdicao() {
+            document.querySelectorAll('.btn-editar-bloco').forEach(btn => {
+                // Remover eventos anteriores para evitar duplicação
+                btn.removeEventListener('click', handleBtnEditarClick);
+                // Adicionar novo evento
+                btn.addEventListener('click', handleBtnEditarClick);
+            });
+        }
+        
+        // Função para lidar com o clique no botão de editar
+        function handleBtnEditarClick(e) {
+            // Impedir que o clique se propague para o label do checkbox
+            e.stopPropagation();
+            e.preventDefault();
+            
+            const blocoNome = this.getAttribute('data-bloco');
+            console.log('Abrindo modal para editar bloco:', blocoNome);
+            abrirModalEdicao(blocoNome);
+        }
+        
+        // Chamar a função para configurar os botões
+        configurarBotoesEdicao();
+        
+        // Função para abrir o modal de edição
+        function abrirModalEdicao(blocoNome) {
+            // Mostrar um indicador de carregamento
+            modalTitulo.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Carregando ${blocoNome.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}...`;
+            
+            // Exibir o modal imediatamente para mostrar o carregamento
+            modal.style.display = 'block';
+            
+            // Fazer uma requisição AJAX para obter o conteúdo atual do bloco
+            fetch(`/api/bloco/${blocoNome}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao carregar o bloco');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data || !data.texto) {
+                        throw new Error('Dados do bloco inválidos');
+                    }
+                    
+                    // Preencher o editor com o conteúdo do bloco
+                    quill.root.innerHTML = data.texto;
+                    
+                    // Atualizar o título do modal
+                    modalTitulo.textContent = blocoNome.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    
+                    // Armazenar o nome do bloco atual
+                    blocoAtualInput.value = blocoNome;
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar o bloco:', error);
+                    alert('Erro ao carregar o conteúdo do bloco. Por favor, tente novamente.');
+                    modal.style.display = 'none';
+                });
+        }
+        
+        // Fechar o modal quando clicar no X
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Fechar o modal quando clicar no botão Cancelar
+        btnCancelar.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Fechar o modal quando clicar fora dele
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // Salvar as alterações quando clicar no botão Salvar
+        btnSalvar.onclick = function() {
+            const blocoNome = blocoAtualInput.value;
+            const conteudo = quill.root.innerHTML;
+            
+            // Mostrar indicador de carregamento
+            btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            btnSalvar.disabled = true;
+            
+            // Enviar as alterações para o servidor via AJAX
+            fetch('/api/salvar_bloco', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    bloco_nome: blocoNome,
+                    texto: conteudo
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao salvar o bloco');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Fechar o modal
+                    modal.style.display = 'none';
+                    
+                    // Atualizar os blocos em memória
+                    carregarBlocos();
+                    
+                    // Atualizar a visualização em tempo real
+                    setTimeout(atualizarVisualizacaoEmTempoReal, 300);
+                    
+                    // Mostrar mensagem de sucesso
+                    alert('Bloco atualizado com sucesso!');
+                } else {
+                    alert('Erro ao salvar o bloco: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao salvar o bloco:', error);
+                alert('Erro ao salvar as alterações. Por favor, tente novamente.');
+            })
+            .finally(() => {
+                // Restaurar o botão
+                btnSalvar.innerHTML = 'Salvar Alterações';
+                btnSalvar.disabled = false;
+            });
+        }
+        
+        // Manipulação das abas de ofertas
+        function configurarAbasOfertas() {
+            const ofertaTabs = document.querySelectorAll('.oferta-tab');
+            const ofertaContents = document.querySelectorAll('.oferta-content');
+            const ofertaInput = document.getElementById('oferta_selecionada');
+            
+            ofertaTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    console.log('Clicou na aba:', this.textContent.trim());
+                    
+                    // Remover classe active de todas as abas
+                    ofertaTabs.forEach(t => t.classList.remove('active'));
+                    ofertaContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Adicionar classe active à aba clicada
+                    this.classList.add('active');
+                    
+                    // Mostrar o conteúdo correspondente
+                    const ofertaNome = this.getAttribute('data-oferta');
+                    console.log('Oferta selecionada:', ofertaNome);
+                    
+                    const ofertaContent = document.getElementById('oferta-' + ofertaNome);
+                    if (ofertaContent) {
+                        ofertaContent.classList.add('active');
+                        console.log('Conteúdo ativado:', ofertaContent.id);
+                    } else {
+                        console.error('Conteúdo não encontrado para oferta:', ofertaNome);
+                    }
+                    
+                    // Atualizar o valor do input hidden
+                    ofertaInput.value = ofertaNome;
+                    console.log('Input atualizado:', ofertaInput.value);
+                    
+                    // Atualizar a visualização em tempo real após a mudança de oferta
+                    setTimeout(atualizarVisualizacaoEmTempoReal, 100);
+                    
+                    // Atualizar os blocos obrigatórios como hidden inputs
+                    atualizarBlocosObrigatorios(ofertaNome);
+                });
+            });
+        }
+        
+        // Chamar a função para configurar as abas
+        configurarAbasOfertas();
+        
+        // Função para atualizar os blocos obrigatórios como hidden inputs
+        function atualizarBlocosObrigatorios(ofertaNome) {
+            // Remover os inputs hidden existentes
+            document.querySelectorAll('input[type="hidden"][name="blocos"]').forEach(input => {
+                input.remove();
+            });
+            
+            // Adicionar os blocos obrigatórios como hidden inputs
+            const obrigatorios = document.querySelectorAll('#oferta-' + ofertaNome + ' input[disabled]');
+            
+            obrigatorios.forEach(input => {
+                if (input.checked) {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'blocos';
+                    hiddenInput.value = input.value;
+                    document.getElementById('propostaForm').appendChild(hiddenInput);
+                }
+            });
+            
+            // Reconfigurar os botões de edição após a mudança de oferta
+            setTimeout(configurarBotoesEdicao, 100);
+        }
+        
+        // Inicializar os blocos obrigatórios quando a página carregar
+        const activeOferta = document.querySelector('.oferta-tab.active').getAttribute('data-oferta');
+        atualizarBlocosObrigatorios(activeOferta);
+        
+        // Adicionar método capitalize para strings
+        String.prototype.capitalize = function() {
+            return this.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        };
+
+        // Adicionar auto-save quando o usuário sair da página
+        window.addEventListener('beforeunload', function(e) {
+            // Verificar se há dados suficientes para salvar
+            const nomeCliente = document.getElementById('nome_cliente').value;
+            if (nomeCliente) {
+                // Criar um FormData com os dados do formulário
+                const formData = new FormData(document.getElementById('propostaForm'));
+                formData.append('salvar_rascunho', '1');
+                
+                // Enviar os dados para o servidor usando o método sendBeacon
+                navigator.sendBeacon('/criar_proposta', formData);
+            }
+        });
+
+        // Observar mudanças no DOM para reconfigurar os botões de edição
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    // Verificar se algum dos nós adicionados contém botões de edição
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1 && (node.classList.contains('btn-editar-bloco') || node.querySelector('.btn-editar-bloco'))) {
+                            console.log('Detectada adição de botões de edição, reconfigurando...');
+                            configurarBotoesEdicao();
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Configurar o observer para observar todo o documento
+        observer.observe(document.body, { childList: true, subtree: true });
+    });
+</script>
+{% endblock %} 

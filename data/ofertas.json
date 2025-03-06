@@ -1,0 +1,153 @@
+{
+    "Workplace": {
+        "obrigatorios": [
+            "Termo_de_Confidencialidade",
+            "Folha_de_Rosto",
+            "Controle_de_Versao",
+            "Sumario_Executivo",
+            "Sobre_a_Service_IT",
+            "Visao_Geral_dos_Servicos",
+            "Solucao_Proposta",
+            "Exclusoes",
+            "Transicao",
+            "Termo_de_Aceite_da_Proposta"
+        ],
+        "blocos": {
+            "Workplace_Service_Desk": {
+                "sub_blocos": []
+            },
+            "Workplace_Field_Services": {
+                "sub_blocos": []
+            },
+            "Workplace_Gestao_de_Processos": {
+                "sub_blocos": []
+            },
+            "Workplace_Gestao_de_ativos": {
+                "sub_blocos": []
+            },
+            "Workplace_Desktop_Mgm": {
+                "sub_blocos": []
+            }
+        }
+    },
+    "Infraestrutura": {
+        "obrigatorios": [
+            "Termo_de_Confidencialidade",
+            "Folha_de_Rosto",
+            "Controle_de_Versao",
+            "Sumario_Executivo",
+            "Sobre_a_Service_IT",
+            "Visao_Geral_dos_Servicos",
+            "Solucao_Proposta",
+            "Exclusoes",
+            "Transicao",
+            "Termo_de_Aceite_da_Proposta"
+        ],
+        "blocos": {
+            "Infraestrutura_Administracao": {
+                "sub_blocos": []
+            },
+            "Infraestrutura_Administracao_Torres": {
+                "sub_blocos": []
+            },
+            "Infraestrutura_Suporte": {
+                "sub_blocos": []
+            },
+            "Infraestrutura_Suporte_Torres": {
+                "sub_blocos": []
+            },
+            "Infraestrutura_Monitoramento": {
+                "sub_blocos": []
+            },
+            "Infraestrutura_Banco_de_Horas": {
+                "sub_blocos": []
+            },
+            "Infraestrutura_Command_Center": {
+                "sub_blocos": []
+            }
+        }
+    },
+    "Cloud": {
+        "obrigatorios": [
+            "Termo_de_Confidencialidade",
+            "Folha_de_Rosto",
+            "Controle_de_Versao",
+            "Sumario_Executivo",
+            "Sobre_a_Service_IT",
+            "Visao_Geral_dos_Servicos",
+            "Solucao_Proposta",
+            "Exclusoes",
+            "Transicao",
+            "Termo_de_Aceite_da_Proposta"
+        ],
+        "blocos": {
+            "Cloud_Observabilidade": {
+                "sub_blocos": []
+            },
+            "Cloud_Administracao": {
+                "sub_blocos": []
+            },
+            "Cloud_Finops": {
+                "sub_blocos": []
+            },
+            "Cloud_Broker": {
+                "sub_blocos": []
+            },
+            "Cloud_Suporte": {
+                "sub_blocos": []
+            }
+        }
+    },
+    "Seguranca": {
+        "obrigatorios": [
+            "Termo_de_Confidencialidade",
+            "Folha_de_Rosto",
+            "Controle_de_Versao",
+            "Sumario_Executivo",
+            "Sobre_a_Service_IT",
+            "Visao_Geral_dos_Servicos",
+            "Solucao_Proposta",
+            "Exclusoes",
+            "Transicao",
+            "Termo_de_Aceite_da_Proposta"
+        ],
+        "blocos": {
+            "Seguranca_SOC": {
+                "sub_blocos": []
+            },
+            "Seguranca_Conformidade": {
+                "sub_blocos": []
+            },
+            "Seguranca_Gestao_de_Vulnerabilidade": {
+                "sub_blocos": []
+            },
+            "Seguranca_Gestao_de_Ativos": {
+                "sub_blocos": []
+            },
+            "Seguranca_Monitoramento_e_Inteligencia_Cibernetica": {
+                "sub_blocos": []
+            },
+            "Seguranca_Response_Teams": {
+                "sub_blocos": []
+            },
+            "Seguranca_Governanca": {
+                "sub_blocos": []
+            }
+        }
+    },
+    "Governanca": {
+        "obrigatorios": [
+            "Termo_de_Confidencialidade",
+            "Folha_de_Rosto",
+            "Controle_de_Versao",
+            "Sumario_Executivo",
+            "Sobre_a_Service_IT",
+            "Visao_Geral_dos_Servicos",
+            "Solucao_Proposta",
+            "Exclusoes",
+            "Transicao",
+            "Termo_de_Aceite_da_Proposta"
+        ],
+        "blocos": {}
+    }
+} 
