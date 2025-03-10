@@ -1,6 +1,6 @@
 {
     "Termo_de_Confidencialidade": {
-        "texto": "<p>As partes <strong>envolvidas</strong> obrigam-se a respeitar estritamente em caráter confidencial e sigiloso todas as informações relativas aos equipamentos, softwares e serviços, que contenham neste documento. O conteúdo da presente proposta, bem como os dados pessoais obtidos na execução dos serviços ou fornecimento de produtos, ficam protegidos pela Lei n 13.709/18 (Lei Geral de Proteção de Dados), conforme Termo anexo devidamente assinado pelas Partes.</p><p><br></p>",
+        "texto": "<p>As partes <strong>envolvidas</strong> obrigam-se a respeitar estritamente em caráter confidencial e sigiloso todas as informações relativas aos equipamentos, softwares e serviços, que contenham neste documento. O conteúdo da presente proposta, bem como os dados pessoais obtidos na execução dos serviços ou fornecimento de produtos, ficam protegidos pela Lei n 13.709/18 (Lei Geral de Proteção de Dados), conforme Termo anexo devidamente assinado pelas Partes. TESTE</p><p><br></p>",
         "imagem": null,
         "obrigatorio": true
     },
@@ -20,6 +20,22 @@
         "obrigatorio": false,
         "criado_por": "admin",
         "data_criacao": "06/03/2025 19:42:59",
+        "cliente_associado": ""
+    },
+    "Workplace_Field_Services": {
+        "texto": "<h2>Workplace Field Services</h2>",
+        "imagem": null,
+        "obrigatorio": false,
+        "criado_por": "admin",
+        "data_criacao": "07/03/2025 10:21:56",
+        "cliente_associado": ""
+    },
+    "Seguranca_SOC": {
+        "texto": "<p>Segurança SOC</p><p><br></p>",
+        "imagem": null,
+        "obrigatorio": false,
+        "criado_por": "admin",
+        "data_criacao": "10/03/2025 09:57:00",
         "cliente_associado": ""
     }
 }

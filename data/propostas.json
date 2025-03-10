@@ -1,58 +1,104 @@
 {
-    "cf068b31-d731-41f7-83d0-a62c02f2bb0d": {
+    "798c73b7-d378-4c1e-a996-94b9890bc4d2": {
         "nome_cliente": "UNIMED",
-        "data_geracao": "05/03/2025 21:48",
+        "data_geracao": "10/03/2025 09:57:30",
         "gerado_por": "admin",
-        "arquivo": "C:\\Users\\joao.almeida\\Downloads\\Proposta\\propostas_geradas\\Proposta_UNIMED_20250305_214842.docx",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_095730.docx",
         "blocos_utilizados": [
-            "Termo_de_Confidencialidade",
-            "Sumario_Executivo",
-            "Visao_Geral_dos_Servicos"
-        ]
+            "Seguranca_SOC",
+            "Seguranca_Gestao_de_Ativos"
+        ],
+        "oferta_selecionada": "Seguranca"
     },
-    "9c1c96c8-55cf-45d0-90cf-c57f9868a19d": {
+    "a4d185e0-461d-48eb-b62f-8aee83603d2c": {
         "nome_cliente": "UNIMED",
-        "data_geracao": "06/03/2025 10:03",
+        "data_geracao": "10/03/2025 10:09:33",
         "gerado_por": "admin",
-        "arquivo": "C:\\Users\\joao.almeida\\Downloads\\Proposta\\propostas_geradas\\Proposta_UNIMED_20250306_100339.docx",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_100933.docx",
         "blocos_utilizados": [
-            "Termo_de_Confidencialidade",
-            "Sumario_Executivo",
-            "Visao_Geral_dos_Servicos"
-        ]
+            "Workplace_Service_Desk",
+            "Workplace_Gestao_de_ativos"
+        ],
+        "oferta_selecionada": "Workplace"
     },
-    "9594f130-dd14-4000-a009-60454e485173": {
-        "nome_cliente": "unimed 123",
-        "data_geracao": "06/03/2025 10:05",
-        "gerado_por": "serviceit",
-        "arquivo": "C:\\Users\\joao.almeida\\Downloads\\Proposta\\propostas_geradas\\Proposta_unimed_123_20250306_100523.docx",
-        "blocos_utilizados": [
-            "Termo_de_Confidencialidade",
-            "Sumario_Executivo",
-            "Visao_Geral_dos_Servicos",
-            "Teste"
-        ]
-    },
-    "a0b0cb14-e2c3-4c70-92b7-23eb26b9103e": {
-        "nome_cliente": "Unimed",
-        "data_geracao": "06/03/2025 10:07",
-        "gerado_por": "admin",
-        "arquivo": "C:\\Users\\joao.almeida\\Downloads\\Proposta\\propostas_geradas\\Proposta_Unimed_20250306_100658.docx",
-        "blocos_utilizados": [
-            "Termo_de_Confidencialidade",
-            "Sumario_Executivo",
-            "Visao_Geral_dos_Servicos"
-        ]
-    },
-    "dbda91c1-580e-4e77-8e70-5e00b399d801": {
+    "9d1f6e73-7982-44ab-9dae-5909482457fb": {
         "nome_cliente": "UNIMED",
-        "data_geracao": "06/03/2025 10:30",
+        "data_geracao": "10/03/2025 10:24:32",
         "gerado_por": "admin",
-        "arquivo": "C:\\Users\\joao.almeida\\Downloads\\Proposta\\propostas_geradas\\Proposta_UNIMED_20250306_103039.docx",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_102432.docx",
         "blocos_utilizados": [
-            "Termo_de_Confidencialidade",
-            "Sumario_Executivo",
-            "Visao_Geral_dos_Servicos"
-        ]
+            "Cloud_Observabilidade",
+            "Cloud_Administracao",
+            "Cloud_Suporte"
+        ],
+        "oferta_selecionada": "Cloud"
+    },
+    "bfe91732-9bef-4b9b-bd52-3f089cfdc027": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "10/03/2025 10:31:30",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_103130.docx",
+        "blocos_utilizados": [
+            "Cloud_Administracao",
+            "Cloud_Suporte"
+        ],
+        "oferta_selecionada": "Cloud"
+    },
+    "e06980e4-a67f-4ff4-b3bd-856bd6f90eff": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "10/03/2025 10:50:44",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_105044.docx",
+        "blocos_utilizados": [
+            "Workplace_Service_Desk",
+            "Cloud_Administracao",
+            "Cloud_Suporte"
+        ],
+        "oferta_selecionada": "Cloud"
+    },
+    "771629b6-0b86-4f7c-b51a-4d8b6788da80": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "10/03/2025 10:57:03",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_105703.docx",
+        "blocos_utilizados": [
+            "Cloud_Observabilidade",
+            "Cloud_Administracao",
+            "Cloud_Suporte"
+        ],
+        "oferta_selecionada": "Cloud"
+    },
+    "8c8c7c5d-01b2-4b2a-a1d0-cd47a873b554": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "10/03/2025 11:12:13",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_111213.docx",
+        "blocos_utilizados": [
+            "Cloud_Observabilidade",
+            "Cloud_Broker"
+        ],
+        "oferta_selecionada": "Cloud"
+    },
+    "8c9b0c5b-957a-4318-975c-abfdc109a86a": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "10/03/2025 11:17:02",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_111701.docx",
+        "blocos_utilizados": [
+            "Seguranca_Gestao_de_Ativos",
+            "Seguranca_Governanca"
+        ],
+        "oferta_selecionada": "Seguranca"
+    },
+    "8fa15c1b-9c57-4ada-9966-75f60de9c619": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "10/03/2025 11:23:32",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_112331.docx",
+        "blocos_utilizados": [
+            "Infraestrutura_Suporte_Torres",
+            "Infraestrutura_Command_Center"
+        ],
+        "oferta_selecionada": "Infraestrutura"
     }
 }

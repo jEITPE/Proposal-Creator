@@ -180,7 +180,6 @@
             <li><a href="{{ url_for('dashboard') }}" {% if request.path == url_for('dashboard') %}class="active"{% endif %}>Dashboard</a></li>
             <li><a href="{{ url_for('criar_proposta') }}" {% if request.path == url_for('criar_proposta') %}class="active"{% endif %}>Nova Proposta</a></li>
             {% if session.tipo_usuario == 'admin' %}
-            <li><a href="{{ url_for('editar_blocos') }}" {% if request.path == url_for('editar_blocos') %}class="active"{% endif %}>Editar Blocos</a></li>
             <li><a href="{{ url_for('gerenciar_usuarios') }}" {% if request.path == url_for('gerenciar_usuarios') %}class="active"{% endif %}>Gerenciar Usuários</a></li>
             {% endif %}
         </ul>
