@@ -235,12 +235,11 @@
                     <select id="tipo_usuario" name="tipo_usuario" class="form-select" required>
                         <option value="am">AM</option>
                         <option value="admin">Administrador</option>
-                        <option value="vp_comercial">VP Comercial</option>
-                        <option value="diretor_regional">Diretor Regional</option>
-                        <option value="gerente_comercial">Gerente Comercial</option>
-                        <option value="vp_tecnologia">VP de Tecnologia</option>
-                        <option value="head_sales_engineer">Head Sales Engineer</option>
-                        <option value="sales_engineer">Sales Engineer</option>
+                        <option value="comercialpr">Comercial Paraná</option>
+                        <option value="comercialrj">Comercial Rio de Janeiro</option>
+                        <option value="comercialrs">Comercial Rio Grande do Sul</option>
+                        <option value="comercialsp">Comercial São Paulo</option>
+                        <option value="se">Sales Engineer (Arquitetos)</option>
                     </select>
                 </div>
                 <button type="submit" class="btn-primary">Adicionar Usuário</button>
@@ -264,17 +263,15 @@
                 <td>
                     {% if dados.tipo == 'admin' %}
                     <span class="badge badge-admin">Administrador</span>
-                    {% elif dados.tipo == 'vp_comercial' %}
-                    <span class="badge badge-vp">VP Comercial</span>
-                    {% elif dados.tipo == 'diretor_regional' %}
-                    <span class="badge badge-diretor">Diretor Regional</span>
-                    {% elif dados.tipo == 'gerente_comercial' %}
-                    <span class="badge badge-gerente">Gerente Comercial</span>
-                    {% elif dados.tipo == 'vp_tecnologia' %}
-                    <span class="badge badge-vp">VP de Tecnologia</span>
-                    {% elif dados.tipo == 'head_sales_engineer' %}
-                    <span class="badge badge-head">Head Sales Engineer</span>
-                    {% elif dados.tipo == 'sales_engineer' %}
+                    {% elif dados.tipo == 'comercialpr' %}
+                    <span class="badge badge-diretor">Comercial Paraná</span>
+                    {% elif dados.tipo == 'comercialrj' %}
+                    <span class="badge badge-diretor">Comercial Rio de Janeiro</span>
+                    {% elif dados.tipo == 'comercialrs' %}
+                    <span class="badge badge-diretor">Comercial Rio Grande do Sul</span>
+                    {% elif dados.tipo == 'comercialsp' %}
+                    <span class="badge badge-diretor">Comercial São Paulo</span>
+                    {% elif dados.tipo == 'se' %}
                     <span class="badge badge-sales">Sales Engineer</span>
                     {% else %}
                     <span class="badge badge-am">AM</span>

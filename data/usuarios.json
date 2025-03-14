@@ -6,5 +6,9 @@
     "serviceit": {
         "senha": "serviceit123",
         "tipo": "am"
+    },
+    "se@service.com.br": {
+        "senha": "SEmarcos231",
+        "tipo": "se"
     }
 } 

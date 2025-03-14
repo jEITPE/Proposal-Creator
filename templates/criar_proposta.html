@@ -1,347 +1,298 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f8f9fa;
+        font-family: 'Poppins', 'Segoe UI', sans-serif;
+        background-color: #f5f7fa;
         color: #333;
         line-height: 1.6;
     }
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
+    
     .container-white {
         background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        padding: 35px;
         margin-bottom: 30px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
     }
+    
+    /* Estilos para cabeçalhos e títulos */
     .section-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 30px;
+        margin-bottom: 35px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f2f5;
     }
+    
     .section-title {
         font-size: 28px;
-        color: #333;
+        color: #2c3e50;
         margin: 0;
+        font-weight: 600;
+        position: relative;
     }
+    
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, #3498db, #2980b9);
+        border-radius: 2px;
+    }
+    
+    /* Estilos para botões */
     .btn-container {
         display: flex;
-        gap: 10px;
+        gap: 12px;
     }
+    
     .btn-primary {
-        background-color: #007bff;
+        background: linear-gradient(135deg, #3498db, #2980b9);
         color: white;
         border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
+        padding: 12px 24px;
+        border-radius: 8px;
         text-decoration: none;
         font-weight: 500;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
     }
+    
     .btn-primary:hover {
-        background-color: #0069d9;
+        background: linear-gradient(135deg, #2980b9, #3498db);
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
     }
+    
     .btn-secondary {
-        background-color: #6c757d;
+        background: linear-gradient(135deg, #7f8c8d, #95a5a6);
         color: white;
         border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
+        padding: 12px 24px;
+        border-radius: 8px;
         text-decoration: none;
         font-weight: 500;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(127, 140, 141, 0.2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
     }
+    
     .btn-secondary:hover {
-        background-color: #5a6268;
+        background: linear-gradient(135deg, #95a5a6, #7f8c8d);
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+        box-shadow: 0 6px 15px rgba(127, 140, 141, 0.3);
     }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    .btn-success:hover {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #c0392b, #e74c3c);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3);
+    }
+    
+    .btn-info {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    .btn-info:hover {
+        background: linear-gradient(135deg, #2980b9, #3498db);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
+    }
+    
+    /* Estilos para formulários */
     .form-group {
-        margin-bottom: 25px;
+        margin-bottom: 30px;
     }
+    
     .form-label {
         display: block;
-        font-size: 18px;
-        font-weight: 500;
-        margin-bottom: 10px;
-        color: #333;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #2c3e50;
     }
+    
     .form-control {
         width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+        padding: 14px 18px;
+        border: 1px solid #e0e6ed;
+        border-radius: 8px;
         font-size: 16px;
-        transition: border-color 0.3s;
+        transition: all 0.3s ease;
+        background-color: #f9fafc;
+        color: #2c3e50;
     }
+    
     .form-control:focus {
-        border-color: #80bdff;
+        border-color: #3498db;
         outline: none;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        background-color: #fff;
     }
+    
     .form-text {
         font-size: 14px;
-        color: #6c757d;
-        margin-top: 5px;
+        color: #7f8c8d;
+        margin-top: 8px;
     }
+    
+    /* Estilos para upload de logo */
     .logo-options {
         display: flex;
         gap: 20px;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
+    
     .logo-option {
         flex: 1;
-        background-color: white;
-        border-radius: 4px;
-        padding: 20px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        background-color: #f9fafc;
+        border-radius: 8px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e0e6ed;
     }
+    
     .logo-option-title {
-        font-weight: 500;
+        font-weight: 600;
         margin-bottom: 15px;
-        color: #333;
+        color: #2c3e50;
+        font-size: 16px;
     }
+    
     .file-input-container {
         display: flex;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
+    
     .file-input-button {
-        background-color: #007bff;
+        background: linear-gradient(135deg, #3498db, #2980b9);
         color: white;
-        padding: 10px 15px;
-        border-radius: 4px;
+        padding: 12px 20px;
+        border-radius: 8px;
         cursor: pointer;
         transition: all 0.3s ease;
-        margin-right: 10px;
+        margin-right: 15px;
+        font-weight: 500;
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
     }
+    
     .file-input-button:hover {
-        background-color: #0069d9;
+        background: linear-gradient(135deg, #2980b9, #3498db);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
     }
+    
     .file-input-button input[type="file"] {
         display: none;
     }
+    
     .file-name {
-        color: #6c757d;
+        color: #7f8c8d;
         font-size: 14px;
     }
-    .blocos-section {
-        margin-top: 30px;
-    }
+    
+    /* Estilos para alertas */
     .alert {
-        padding: 15px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-    }
-    .alert-info {
-        background-color: #d1ecf1;
-        color: #0c5460;
-        border: 1px solid #bee5eb;
-    }
-    .blocos-category {
+        padding: 18px 20px;
+        border-radius: 8px;
         margin-bottom: 25px;
-    }
-    .blocos-category-title {
-        font-size: 18px;
-        font-weight: 500;
-        margin-bottom: 15px;
-        color: #333;
-        padding-bottom: 5px;
-        border-bottom: 1px solid #e9ecef;
-    }
-    .checkbox-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-    .checkbox-item {
-        flex: 0 0 calc(33.333% - 15px);
-        display: flex;
-        align-items: flex-start;
-    }
-    .checkbox-item input[type="checkbox"] {
-        margin-right: 10px;
-        margin-top: 3px;
-    }
-    .checkbox-item label {
-        font-size: 16px;
-        color: #333;
-    }
-    .mandatory-badge {
-        display: inline-block;
-        background-color: #dc3545;
-        color: white;
-        font-size: 12px;
-        padding: 2px 6px;
-        border-radius: 3px;
-        margin-left: 5px;
-    }
-    .submit-container {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #e9ecef;
-    }
-    .preview-section {
-        margin-top: 30px;
-        background-color: white;
-        border-radius: 8px;
-        padding: 25px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-    .preview-container {
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 20px;
-        background-color: #fff;
-    }
-    .preview-header {
+        font-size: 15px;
         display: flex;
         align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #e9ecef;
+        border-left: 4px solid;
     }
-    .preview-logo {
-        margin-right: 20px;
+    
+    .alert-info {
+        background-color: #e1f0fa;
+        color: #2980b9;
+        border-color: #3498db;
     }
-    .preview-logo img {
-        max-width: 100px;
-        max-height: 100px;
-        border: 1px solid #e9ecef;
-        padding: 5px;
-        border-radius: 4px;
-    }
-    .preview-title {
-        flex: 1;
-    }
-    .preview-title h2 {
-        font-size: 22px;
-        color: #333;
-        margin: 0 0 5px 0;
-    }
-    .preview-title h3 {
-        font-size: 18px;
-        color: #6c757d;
-        margin: 0;
-        font-weight: normal;
-    }
-    .preview-content {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 30px;
-    }
-    .preview-blocks {
-        flex: 1;
-        min-width: 250px;
-    }
-    .preview-blocks h4 {
-        font-size: 18px;
-        color: #333;
-        margin: 0 0 15px 0;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #e9ecef;
-    }
-    .preview-blocks ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
-    .preview-blocks li {
-        padding: 8px 0;
-        border-bottom: 1px solid #f8f9fa;
-    }
-    .preview-sample {
-        flex: 2;
-        min-width: 300px;
-    }
-    .preview-sample h4 {
-        font-size: 18px;
-        color: #333;
-        margin: 0 0 15px 0;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #e9ecef;
-    }
-    .preview-block-content {
-        margin-bottom: 20px;
-    }
-    .preview-block-content h5 {
-        font-size: 16px;
-        color: #333;
-        margin: 0 0 10px 0;
-    }
-    .preview-text {
-        font-size: 14px;
-        color: #6c757d;
-        line-height: 1.5;
-    }
-    .preview-text p {
-        margin: 0 0 10px 0;
-    }
-    @media (max-width: 768px) {
-        .checkbox-item {
-            flex: 0 0 100%;
-        }
-        .logo-options {
-            flex-direction: column;
-        }
-        .preview-content {
-            flex-direction: column;
-        }
-        .section-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 15px;
-        }
-        .section-header .btn-container {
-            flex-wrap: wrap;
-        }
-        .submit-container {
-            flex-direction: column;
-            gap: 15px;
-            align-items: stretch;
-        }
-        .submit-container button {
-            width: 100%;
-        }
-        .preview-header {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        .preview-logo {
-            margin-right: 0;
-            margin-bottom: 15px;
-        }
-    }
+    
+    /* Estilos para as abas de ofertas */
     .ofertas-section {
-        margin-bottom: 30px;
+        margin-bottom: 35px;
     }
     
     .ofertas-tabs {
         display: flex;
         flex-wrap: wrap;
-        gap: 5px;
-        margin-bottom: 20px;
-        border-bottom: 1px solid #dee2e6;
-        padding-bottom: 10px;
+        gap: 10px;
+        margin-bottom: 25px;
+        border-bottom: 2px solid #e0e6ed;
+        padding-bottom: 15px;
     }
     
     .oferta-tab {
-        padding: 10px 20px;
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
+        padding: 12px 24px;
+        background-color: #f9fafc;
+        border: 1px solid #e0e6ed;
+        border-radius: 8px;
         cursor: pointer !important;
         pointer-events: auto !important;
         transition: all 0.3s ease;
@@ -349,59 +300,235 @@
         text-align: center;
         position: relative;
         z-index: 10;
+        color: #7f8c8d;
     }
     
     .oferta-tab:hover {
-        background-color: #e9ecef;
+        background-color: #e9f2fa;
         transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        color: #2980b9;
     }
     
     .oferta-tab.active {
-        background-color: #007bff;
+        background: linear-gradient(135deg, #3498db, #2980b9);
         color: white;
-        border-color: #007bff;
+        border-color: #2980b9;
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
     }
     
     .oferta-content {
         display: none;
-        padding: 20px;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
+        padding: 25px;
+        border: 1px solid #e0e6ed;
+        border-radius: 8px;
         background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
     
     .oferta-content.active {
         display: block;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
     
     .oferta-header {
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #e9ecef;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e0e6ed;
     }
     
     .oferta-title {
-        font-size: 20px;
-        color: #333;
+        font-size: 22px;
+        color: #2c3e50;
         margin: 0;
+        font-weight: 600;
     }
     
     .oferta-description {
-        color: #6c757d;
-        margin-top: 5px;
+        color: #7f8c8d;
+        margin-top: 8px;
+        font-size: 15px;
     }
     
-    @media (max-width: 768px) {
-        .ofertas-tabs {
-            flex-direction: column;
-        }
-        
+    /* Estilos para blocos de conteúdo */
+    .blocos-category {
+        margin-bottom: 30px;
+        background-color: #f9fafc;
+        border-radius: 8px;
+        padding: 20px;
+        border: 1px solid #e0e6ed;
+    }
+    
+    .blocos-category-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e0e6ed;
+    }
+    
+    .checkbox-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
         .checkbox-item {
-            flex: 0 0 100%;
-        }
+        flex: 0 0 calc(33.333% - 15px);
+        display: flex;
+            align-items: flex-start;
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #e0e6ed;
+        transition: all 0.3s ease;
     }
     
-    /* Estilos para o modal de edição de blocos */
+    .checkbox-item:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+    }
+    
+    .checkbox-item input[type="checkbox"] {
+        margin-right: 12px;
+        margin-top: 3px;
+        width: 18px;
+        height: 18px;
+        accent-color: #3498db;
+    }
+    
+    .checkbox-item label {
+        font-size: 15px;
+        color: #2c3e50;
+        font-weight: 500;
+        display: flex;
+            flex-direction: column;
+        gap: 8px;
+    }
+    
+    .mandatory-badge {
+        display: inline-block;
+        background-color: #e74c3c;
+        color: white;
+        font-size: 11px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        margin-left: 8px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .btn-editar-bloco {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer !important;
+        font-size: 12px;
+        margin-top: 8px;
+        pointer-events: auto !important;
+        position: relative;
+        z-index: 100;
+        align-self: flex-start;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .btn-editar-bloco:hover {
+        background: linear-gradient(135deg, #2980b9, #3498db);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+    }
+    
+    /* Estilos para blocos selecionados */
+    .card {
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        height: 100%;
+        border: none;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+    
+    .card-header.bg-dark {
+        background: linear-gradient(135deg, #2c3e50, #34495e) !important;
+        color: #ffffff;
+        padding: 18px 20px;
+        font-weight: 600;
+        border: none;
+    }
+    
+    .card-header.bg-primary {
+        background: linear-gradient(135deg, #3498db, #2980b9) !important;
+        color: #ffffff;
+        padding: 15px 20px;
+        font-weight: 600;
+        border: none;
+    }
+    
+    .card-body.bg-light {
+        background-color: #f9fafc;
+        padding: 25px;
+    }
+    
+    .border-primary {
+        border: none !important;
+    }
+    
+    .btn-success.btn-lg {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        border: none;
+        padding: 15px 25px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-success.btn-lg:hover {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+    }
+    
+    .btn-group.w-100 {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-group.w-100 .btn {
+        flex: 1;
+        padding: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+    
+    /* Estilos para o modal */
     .modal {
         display: none;
         position: fixed;
@@ -411,114 +538,135 @@
         width: 100%;
         height: 100%;
         overflow: auto;
-        background-color: rgba(0,0,0,0.4);
+        background-color: rgba(0,0,0,0.5);
+        backdrop-filter: blur(5px);
     }
     
     .modal-content {
-        background-color: #fefefe;
+        background-color: #fff;
         margin: 5% auto;
-        padding: 20px;
-        border: 1px solid #888;
+        padding: 30px;
+        border: none;
         width: 80%;
         max-width: 900px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        animation: modalFadeIn 0.3s ease;
+    }
+    
+    @keyframes modalFadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     
     .modal-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #e9ecef;
-        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f0f2f5;
+        margin-bottom: 25px;
     }
     
     .modal-title {
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 600;
-        color: #333;
+        color: #2c3e50;
         margin: 0;
     }
     
     .close {
-        color: #aaa;
-        font-size: 28px;
+        color: #7f8c8d;
+        font-size: 30px;
         font-weight: bold;
         cursor: pointer;
+        transition: all 0.3s ease;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
     }
     
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
+    .close:hover {
+        color: #2c3e50;
+        background-color: #f0f2f5;
     }
     
     .modal-footer {
-        padding-top: 15px;
-        border-top: 1px solid #e9ecef;
-        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 2px solid #f0f2f5;
+        margin-top: 25px;
         display: flex;
         justify-content: flex-end;
-        gap: 10px;
+        gap: 15px;
     }
     
-    .btn-editar-bloco {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 3px 8px;
-        border-radius: 4px;
-        cursor: pointer !important;
-        font-size: 12px;
-        margin-left: 10px;
-        pointer-events: auto !important;
-        position: relative;
-        z-index: 100;
-    }
-    
-    .btn-editar-bloco:hover {
-        background-color: #0069d9;
-    }
-    
-    /* Estilos para as abas de ofertas */
-    .oferta-tab {
-        cursor: pointer !important;
-        pointer-events: auto !important;
-    }
-
-    /* Estilos para o indicador de carregamento */
-    .loading {
-        position: relative;
-    }
-    
-    .loading:after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.7) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" fill="none" stroke="%23007bff" stroke-width="10" r="35" stroke-dasharray="164.93361431346415 56.97787143782138"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform></circle></svg>') center center no-repeat;
-        background-size: 50px 50px;
-        z-index: 10;
+    /* Estilos responsivos */
+    @media (max-width: 768px) {
+        .checkbox-item {
+            flex: 0 0 100%;
+        }
+        
+        .logo-options {
+            flex-direction: column;
+        }
+        
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        
+        .section-header .btn-container {
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        
+        .section-header .btn-container a {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .submit-container {
+            flex-direction: column;
+            gap: 15px;
+            align-items: stretch;
+        }
+        
+        .submit-container button {
+            width: 100%;
+        }
+        
+        .ofertas-tabs {
+            flex-direction: column;
+            gap: 10px;
+        }
     }
 </style>
 
 {% if get_flashed_messages() %}
-<div class="alert alert-info">
+<div class="alert alert-info" style="background-color: #e1f0fa; color: #2980b9; border-left: 4px solid #3498db; padding: 18px 20px; border-radius: 8px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(52, 152, 219, 0.1); animation: fadeIn 0.5s ease;">
+    <i class="fas fa-info-circle" style="font-size: 24px;"></i>
+    <div>
     {% for message in get_flashed_messages() %}
         {{ message }}
     {% endfor %}
+    </div>
 </div>
 {% endif %}
 
 <div class="container-white">
     <div class="section-header">
         <h2 class="section-title">Criar Nova Proposta</h2>
-        <div style="display: flex; gap: 10px;">
-            <a href="{{ url_for('exibir_criar_proposta', nova=1) }}" class="btn-primary">Nova Proposta</a>
-            <a href="{{ url_for('dashboard') }}" class="btn-secondary">Voltar ao Dashboard</a>
+        <div style="display: flex; gap: 12px;">
+            <a href="{{ url_for('exibir_criar_proposta', nova=1) }}" class="btn-primary" style="background: linear-gradient(135deg, #3498db, #2980b9); padding: 12px 20px; font-weight: 600; border-radius: 8px; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2); display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-plus"></i> Nova Proposta
+            </a>
+            <a href="{{ url_for('dashboard') }}" class="btn-secondary" style="background: linear-gradient(135deg, #7f8c8d, #95a5a6); padding: 12px 20px; font-weight: 600; border-radius: 8px; box-shadow: 0 4px 10px rgba(127, 140, 141, 0.2); display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-arrow-left"></i> Voltar ao Dashboard
+            </a>
         </div>
     </div>
 
@@ -536,14 +684,16 @@
             <label class="form-label">Logo do Cliente</label>
             
             <div class="logo-options">
-                <div class="logo-option">
-                    <div class="logo-option-title">Upload de Arquivo</div>
+                <div class="logo-option" style="background-color: #f9fafc; border-radius: 10px; padding: 25px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); border: 1px solid #e0e6ed; transition: all 0.3s ease;">
+                    <div class="logo-option-title" style="font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #2c3e50; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-image" style="color: #3498db;"></i> Upload de Arquivo
+                    </div>
                     <div class="file-input-container">
-                        <label class="file-input-button">
-                            Escolher arquivo
+                        <label class="file-input-button" style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 12px 20px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; margin-right: 15px; font-weight: 500; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2); display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-upload"></i> Escolher arquivo
                             <input type="file" id="logo_file" name="logo_file" accept="image/*" onchange="updateFileName(this); previewLogo(this)">
                         </label>
-                        <span class="file-name" id="file-name">
+                        <span class="file-name" id="file-name" style="color: #7f8c8d; font-size: 14px;">
                             {% if rascunho.logo_cliente and ('/' in rascunho.logo_cliente or '\\' in rascunho.logo_cliente) %}
                                 Arquivo selecionado
                             {% else %}
@@ -551,15 +701,19 @@
                             {% endif %}
                         </span>
                     </div>
-                    <small class="form-text">Formatos aceitos: JPG, PNG, GIF (máx. 2MB)</small>
+                    <small class="form-text" style="color: #7f8c8d; margin-top: 10px; display: flex; align-items: center; gap: 5px;">
+                        <i class="fas fa-info-circle"></i> Formatos aceitos: JPG, PNG, GIF (máx. 2MB)
+                    </small>
                 </div>
             </div>
             
             {% if rascunho.logo_cliente and ('/' in rascunho.logo_cliente or '\\' in rascunho.logo_cliente) %}
-            <div style="margin-top: 15px;">
-                <p><strong>Logo atual:</strong></p>
+            <div style="margin-top: 20px; background-color: #f9fafc; border-radius: 10px; padding: 20px; border: 1px solid #e0e6ed; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+                <p style="font-weight: 600; color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-check-circle" style="color: #2ecc71;"></i> <strong>Logo atual:</strong>
+                </p>
                 <img src="/{{ rascunho.logo_cliente }}" 
-                     alt="Logo do cliente" style="max-height: 100px; max-width: 200px; border: 1px solid #ddd; padding: 5px;">
+                     alt="Logo do cliente" style="max-height: 100px; max-width: 200px; border: 1px solid #e0e6ed; padding: 10px; border-radius: 8px; background-color: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
                 <input type="hidden" name="logo_atual" value="{{ rascunho.logo_cliente }}">
             </div>
             {% endif %}
@@ -569,8 +723,12 @@
         <div class="ofertas-section">
             <label class="form-label">Selecione a Oferta</label>
             
-            <div class="alert alert-info">
-                <strong>Nota:</strong> Clique no nome de qualquer bloco para editar seu conteúdo e personalizá-lo para este cliente específico.
+            <div class="alert alert-info" style="background-color: #e1f0fa; color: #2980b9; border-left: 4px solid #3498db; padding: 18px 20px; border-radius: 8px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(52, 152, 219, 0.1); animation: fadeIn 0.5s ease;">
+                <i class="fas fa-info-circle" style="font-size: 24px;"></i>
+                <div>
+                    <strong style="font-weight: 600; display: block; margin-bottom: 5px;">Dica:</strong>
+                    Clique no nome de qualquer bloco para editar seu conteúdo e personalizá-lo para este cliente específico.
+                </div>
             </div>
             
             <div class="ofertas-tabs">
@@ -636,28 +794,33 @@
 
         <!-- Blocos Adicionais -->
         <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">Blocos Selecionados</h5>
+            <div class="card-header bg-dark" style="background: linear-gradient(135deg, #2c3e50, #1a1a2e) !important; padding: 20px; border-radius: 8px 8px 0 0;">
+                <h5 class="mb-0 text-white" style="font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-layer-group"></i> Blocos Selecionados
+                </h5>
             </div>
-            <div class="card-body">
-                <div class="row mb-3">
+            <div class="card-body bg-light">
+                <div class="row mb-4">
                     <div class="col-12">
-                        <button type="button" id="btnNovoBloco" class="btn btn-success" onclick="novoBloco()">
-                            <i class="fas fa-plus"></i> Adicionar Novo Bloco
+                        <button type="button" id="btnNovoBloco" class="btn btn-success btn-lg" onclick="novoBloco()" style="background: linear-gradient(135deg, #2ecc71, #27ae60); border: none; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2); display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease; width: 100%;">
+                            <i class="fas fa-plus" style="font-size: 18px;"></i> 
+                            <span style="font-size: 18px; font-weight: 600;">Adicionar Novo Bloco</span>
                         </button>
                     </div>
                 </div>
                 <div class="row">
                     {% for bloco in blocos_selecionados %}
                     <div class="col-md-4 mb-3">
-                        <div class="card">
+                        <div class="card h-100 border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="card-title mb-0">{{ bloco.replace('_', ' ').title() }}</h6>
+                            </div>
                             <div class="card-body">
-                                <h6 class="card-title">{{ bloco.replace('_', ' ').title() }}</h6>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-primary btn-sm" onclick="editarBloco('{{ bloco }}')">
+                                <div class="btn-group w-100" role="group">
+                                    <button type="button" class="btn btn-info" onclick="editarBloco('{{ bloco }}')" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #3498db, #2980b9); border: none; border-radius: 6px; padding: 10px 15px; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);">
                                         <i class="fas fa-edit"></i> Editar
                                     </button>
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="excluirBloco('{{ bloco }}')">
+                                    <button type="button" class="btn btn-danger" onclick="excluirBloco('{{ bloco }}')" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #e74c3c, #c0392b); border: none; border-radius: 6px; padding: 10px 15px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);">
                                         <i class="fas fa-trash"></i> Excluir
                                     </button>
                                 </div>
@@ -674,7 +837,9 @@
                 <!-- Botão de salvar como rascunho removido, pois o auto-save já está implementado -->
             </div>
             <div>
-                <button type="submit" class="btn-primary">Gerar Proposta</button>
+                <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, #3498db, #2980b9); padding: 15px 30px; font-size: 18px; font-weight: 600; border-radius: 8px; box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3); display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;">
+                    <i class="fas fa-file-pdf" style="font-size: 20px;"></i> Gerar Proposta
+                </button>
             </div>
         </div>
     </form>
@@ -682,45 +847,57 @@
 
 <!-- Modal de Edição de Bloco -->
 <div id="modalEditarBloco" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title">Editar Bloco: <span id="modalBlocoTitulo"></span></h2>
-            <span class="close">&times;</span>
+    <div class="modal-content" style="background-color: #fff; border-radius: 12px; box-shadow: 0 15px 50px rgba(0,0,0,0.2); border: none; padding: 30px; animation: modalFadeIn 0.3s ease;">
+        <div class="modal-header" style="border-bottom: 2px solid #f0f2f5; margin-bottom: 25px; padding-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="modal-title" style="font-size: 24px; font-weight: 600; color: #2c3e50; margin: 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-edit" style="color: #3498db;"></i> Editar Bloco: <span id="modalBlocoTitulo"></span>
+            </h2>
+            <span class="close" style="color: #7f8c8d; font-size: 30px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">&times;</span>
         </div>
         <div class="modal-body">
             <!-- Editor Quill -->
-            <div id="editor-bloco" style="height: 300px;"></div>
+            <div id="editor-bloco" style="height: 350px; border-radius: 8px; border: 1px solid #e0e6ed; margin-bottom: 20px;"></div>
             <input type="hidden" id="blocoAtual" value="">
             <input type="hidden" id="blocoConteudo" value="">
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn-secondary" id="btnCancelarEdicao">Cancelar</button>
-            <button type="button" class="btn-primary" id="btnSalvarEdicao">Salvar Alterações</button>
+        <div class="modal-footer" style="border-top: 2px solid #f0f2f5; margin-top: 25px; padding-top: 20px; display: flex; justify-content: flex-end; gap: 15px;">
+            <button type="button" class="btn-secondary" id="btnCancelarEdicao" style="background: linear-gradient(135deg, #7f8c8d, #95a5a6); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 500; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button type="button" class="btn-primary" id="btnSalvarEdicao" style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 500; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-save"></i> Salvar Alterações
+            </button>
         </div>
     </div>
 </div>
 
 <!-- Modal de Novo Bloco -->
 <div id="modalNovoBloco" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title">Criar Novo Bloco</h2>
-            <span class="close">&times;</span>
+    <div class="modal-content" style="background-color: #fff; border-radius: 12px; box-shadow: 0 15px 50px rgba(0,0,0,0.2); border: none; padding: 30px; animation: modalFadeIn 0.3s ease;">
+        <div class="modal-header" style="border-bottom: 2px solid #f0f2f5; margin-bottom: 25px; padding-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="modal-title" style="font-size: 24px; font-weight: 600; color: #2c3e50; margin: 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-plus-circle" style="color: #2ecc71;"></i> Criar Novo Bloco
+            </h2>
+            <span class="close" style="color: #7f8c8d; font-size: 30px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">&times;</span>
         </div>
         <div class="modal-body">
             <div class="form-group mb-3">
-                <label for="nomeNovoBloco" class="form-label">Nome do Bloco:</label>
-                <input type="text" id="nomeNovoBloco" class="form-control" placeholder="Ex: Descrição do Serviço">
+                <label for="nomeNovoBloco" class="form-label" style="font-weight: 600; color: #2c3e50; margin-bottom: 10px; display: block;">Nome do Bloco:</label>
+                <input type="text" id="nomeNovoBloco" class="form-control" placeholder="Ex: Descrição do Serviço" style="width: 100%; padding: 14px 18px; border: 1px solid #e0e6ed; border-radius: 8px; font-size: 16px; background-color: #f9fafc;">
             </div>
             <!-- Editor Quill para o conteúdo -->
             <div class="form-group">
-                <label for="editor-novo-bloco" class="form-label">Conteúdo do Bloco:</label>
-                <div id="editor-novo-bloco" style="height: 300px;"></div>
+                <label for="editor-novo-bloco" class="form-label" style="font-weight: 600; color: #2c3e50; margin-bottom: 10px; display: block;">Conteúdo do Bloco:</label>
+                <div id="editor-novo-bloco" style="height: 350px; border-radius: 8px; border: 1px solid #e0e6ed;"></div>
             </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn-secondary" id="btnCancelarNovo">Cancelar</button>
-            <button type="button" class="btn-primary" id="btnSalvarNovo">Criar Bloco</button>
+        <div class="modal-footer" style="border-top: 2px solid #f0f2f5; margin-top: 25px; padding-top: 20px; display: flex; justify-content: flex-end; gap: 15px;">
+            <button type="button" class="btn-secondary" id="btnCancelarNovo" style="background: linear-gradient(135deg, #7f8c8d, #95a5a6); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 500; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button type="button" class="btn-primary" id="btnSalvarNovo" style="background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 500; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-plus"></i> Criar Bloco
+            </button>
         </div>
     </div>
 </div>

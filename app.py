@@ -20,6 +20,7 @@ from docx.oxml.ns import nsdecls, qn
 from docx.oxml import parse_xml
 import html
 import logging
+from docxtpl import DocxTemplate, InlineImage  # Importar DocxTemplate e InlineImage
 
 logging.basicConfig(level=logging.INFO)
 
@@ -36,6 +37,12 @@ USUARIOS_FILE = os.path.join('data', 'usuarios.json')
 
 # Arquivo para armazenar ofertas
 OFERTAS_FILE = os.path.join('data', 'ofertas.json')
+
+# Extensões permitidas para upload
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Função para carregar usuários
 def carregar_usuarios():
@@ -196,19 +203,30 @@ def dashboard():
     # Carregar propostas existentes
     propostas = carregar_propostas()
     
-    # Carregar rascunhos do usuário atual
+    # Carregar rascunhos do usuário
     rascunhos = carregar_rascunhos()
     rascunhos_usuario = {}
     
-    usuario_atual = session.get('usuario_logado')
+    # Filtrar rascunhos do usuário atual
     for rascunho_id, rascunho in rascunhos.items():
-        if rascunho.get('usuario') == usuario_atual:
+        if rascunho.get('usuario') == session.get('usuario_logado'):
             rascunhos_usuario[rascunho_id] = rascunho
     
+    # Contar propostas de hoje
+    hoje = datetime.datetime.now().strftime("%d/%m/%Y")
+    propostas_hoje = 0
+    for proposta in propostas.values():
+        if hoje in proposta.get('data_geracao', ''):
+            propostas_hoje += 1
+    
+    # Verificar tipo de usuário para permissões
+    tipo_usuario = session.get('tipo_usuario', 'usuario')
+    
     return render_template('dashboard.html', 
-                          propostas=propostas,
-                          rascunhos_usuario=rascunhos_usuario,
-                          tipo_usuario=session.get('tipo_usuario', ''))
+                          propostas=propostas, 
+                          rascunhos_usuario=rascunhos_usuario, 
+                          tipo_usuario=tipo_usuario,
+                          propostas_hoje=propostas_hoje)
 
 # Rota para visualizar uma proposta específica
 @app.route('/visualizar_proposta/<proposta_id>')
@@ -282,107 +300,117 @@ def excluir_proposta(proposta_id):
 @login_required
 def exibir_criar_proposta():
     # Verificar se é uma nova proposta (reiniciar)
-    nova_proposta = request.args.get('nova', False)
+    reiniciar = request.args.get('reiniciar', 'false') == 'true'
     
-    # Obter o cliente da query string (se existir)
+    # Obter o cliente da URL, se fornecido
     cliente = request.args.get('cliente', '')
     
-    # Verificar se há um rascunho para continuar
-    rascunho_id = request.args.get('rascunho_id', '')
-    rascunho_data = {}
-    
-    if rascunho_id and not nova_proposta:
-        rascunhos = carregar_rascunhos()
-        if rascunho_id in rascunhos and rascunhos[rascunho_id].get('usuario') == session.get('usuario_logado'):
-            rascunho_data = rascunhos[rascunho_id]
-            cliente = rascunho_data.get('nome_cliente', cliente)
-    
-    # Limpar qualquer seleção anterior de blocos (para reiniciar a página)
-    if nova_proposta or ('blocos_selecionados' in session and not rascunho_id):
-        if 'blocos_selecionados' in session:
-            session.pop('blocos_selecionados')
-        # Limpar outros dados de sessão relacionados à proposta
-        if 'cliente' in session:
-            session.pop('cliente')
-        if 'logo_cliente' in session:
-            session.pop('logo_cliente')
-        cliente = ''  # Limpar o cliente se for uma nova proposta
-        rascunho_id = ''  # Limpar o ID do rascunho
-        rascunho_data = {}  # Limpar os dados do rascunho
-    
-    # Verificar tipo de usuário
-    is_admin = session.get('tipo_usuario') == 'admin'
-    
-    # Carregar blocos de texto
+    # Carregar blocos disponíveis
     blocos = carregar_blocos()
     
     # Carregar ofertas disponíveis
     ofertas = carregar_ofertas()
     
-    # Obter a primeira oferta, se existir
-    primeira_oferta = next(iter(ofertas.keys())) if ofertas else ''
+    # Carregar rascunhos
+    rascunhos = carregar_rascunhos()
     
-    # Filtrar blocos: mostrar apenas blocos obrigatórios e blocos específicos para este cliente
-    blocos_filtrados = {}
+    # Verificar se há um rascunho para este cliente
+    rascunho = None
+    rascunho_id = None
+    
+    if not reiniciar and cliente:
+        # Procurar rascunho para este cliente
+        for r_id, r_data in rascunhos.items():
+            if r_data.get('nome_cliente') == cliente:
+                rascunho = r_data
+                rascunho_id = r_id
+                break
+    
+    # Adicionar mensagem informativa sobre o formato das variáveis
+    flash('Lembre-se: Use {{NOME_CLIENTE}} para o nome do cliente e {{logo_cliente}} para o logo na capa.')
+    
+    # Preparar dados para o template
+    template_data = {
+        'cliente': cliente,
+        'blocos': blocos,
+        'ofertas': ofertas,
+        'rascunho': rascunho or {},
+        'rascunho_id': rascunho_id
+    }
+    
+    # Adicionar blocos específicos do cliente
+    blocos_cliente = []
     for bloco_nome, bloco_info in blocos.items():
-        # Incluir blocos obrigatórios
-        if bloco_info.get('obrigatorio', False):
-            blocos_filtrados[bloco_nome] = bloco_info
-        # Incluir blocos específicos para este cliente
-        elif cliente and bloco_info.get('cliente_associado') == cliente:
-            blocos_filtrados[bloco_nome] = bloco_info
-        # Incluir blocos gerais (não associados a nenhum cliente)
-        elif not bloco_info.get('cliente_associado'):
-            blocos_filtrados[bloco_nome] = bloco_info
-        # Administradores podem ver todos os blocos
-        elif is_admin:
-            blocos_filtrados[bloco_nome] = bloco_info
+        if bloco_info.get('cliente_associado') == cliente:
+            blocos_cliente.append(bloco_nome)
     
-    # Renderizar o template com os dados
-    return render_template('criar_proposta.html', 
-                          blocos=blocos_filtrados, 
-                          ofertas=ofertas,
-                          is_admin=is_admin,
-                          cliente=cliente,
-                          rascunho=rascunho_data,
-                          rascunho_id=rascunho_id,
-                          primeira_oferta=primeira_oferta)
+    template_data['blocos_cliente'] = blocos_cliente
+    
+    return render_template('criar_proposta.html', **template_data)
 
 # Rota para processar a criação de uma proposta
 @app.route('/criar_proposta', methods=['POST'])
 @login_required
 def criar_proposta():
     nome_cliente = request.form.get('nome_cliente', '')
+    
+    # Verificar se o nome do cliente foi fornecido
+    if not nome_cliente:
+        flash('Nome do cliente é obrigatório.')
+        return redirect(url_for('exibir_criar_proposta'))
+    
+    # Verificar se há um rascunho para salvar
+    rascunho_id = request.form.get('rascunho_id')
+    
+    # Obter os blocos selecionados
     blocos_selecionados = request.form.getlist('blocos')
-    rascunho_id = request.form.get('rascunho_id', '')
-    logo_atual = request.form.get('logo_atual', '')
-    auto_save = request.form.get('auto_save', '')
-    oferta_selecionada = request.form.get('oferta_selecionada', '')
     
-    # Verificar se é para salvar como rascunho ou salvamento automático
-    if 'salvar_rascunho' in request.form or auto_save == '1':
-        return salvar_como_rascunho(nome_cliente, None, None, blocos_selecionados, rascunho_id, logo_atual, oferta_selecionada)
+    # Obter a oferta selecionada
+    oferta_selecionada = request.form.get('oferta')
     
-    # Processar upload de arquivo de logo
+    # Verificar se há um logo para o cliente
     logo_path = None
-    if 'logo_file' in request.files and request.files['logo_file'].filename:
-        logo_file = request.files['logo_file']
-        # Verificar extensão
-        if logo_file and '.' in logo_file.filename and logo_file.filename.rsplit('.', 1)[1].lower() in ['png', 'jpg', 'jpeg', 'gif']:
-            # Gerar nome único para o arquivo
-            filename = secure_filename(f"{nome_cliente.replace(' ', '_')}_{uuid.uuid4()}.{logo_file.filename.rsplit('.', 1)[1].lower()}")
+    logo_atual = request.form.get('logo_atual')
+    
+    if 'logo_cliente' in request.files and request.files['logo_cliente'].filename:
+        logo_file = request.files['logo_cliente']
+        if logo_file and allowed_file(logo_file.filename):
+            # Salvar o arquivo
+            filename = secure_filename(logo_file.filename)
             logo_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             logo_file.save(logo_path)
-        else:
-            flash('Formato de arquivo não suportado. Use PNG, JPG ou GIF.')
-            return redirect(url_for('exibir_criar_proposta', cliente=nome_cliente))
+            logging.info(f"Logo salvo em: {logo_path}")
     elif logo_atual:
         # Usar o logo atual se disponível
         logo_path = os.path.join(app.root_path, logo_atual)
     
+    # Carregar os blocos disponíveis
+    blocos = carregar_blocos()
+    
+    # Carregar ofertas disponíveis
+    ofertas = carregar_ofertas()
+    
+    # Verificar se há oferta selecionada para incluir os blocos obrigatórios
+    blocos_obrigatorios = []
+    if oferta_selecionada and oferta_selecionada in ofertas:
+        blocos_obrigatorios = ofertas[oferta_selecionada].get('obrigatorios', [])
+        logging.info(f"Blocos obrigatórios da oferta '{oferta_selecionada}': {blocos_obrigatorios}")
+        
+        # Adicionar blocos obrigatórios à lista se ainda não estiverem lá
+        for bloco_obrigatorio in blocos_obrigatorios:
+            if bloco_obrigatorio not in blocos_selecionados:
+                blocos_selecionados.append(bloco_obrigatorio)
+                logging.info(f"Adicionando bloco obrigatório: {bloco_obrigatorio}")
+    
+    # Adicionar blocos específicos do cliente
+    for bloco_nome, bloco_info in blocos.items():
+        if bloco_info.get('cliente_associado') == nome_cliente and bloco_nome not in blocos_selecionados:
+            blocos_selecionados.append(bloco_nome)
+            logging.info(f"Adicionando bloco específico do cliente à lista de selecionados: {bloco_nome}")
+    
     # Verificar se há blocos selecionados
     if not blocos_selecionados:
-        flash('Selecione pelo menos um bloco de conteúdo.')
+        flash('Selecione pelo menos um bloco para gerar a proposta.')
         return redirect(url_for('exibir_criar_proposta', cliente=nome_cliente))
     
     # Gerar a proposta
@@ -408,113 +436,183 @@ def criar_proposta():
             if rascunho_id in rascunhos:
                 del rascunhos[rascunho_id]
                 salvar_rascunhos(rascunhos)
+                logging.info(f"Rascunho {rascunho_id} excluído após geração da proposta")
         
         flash('Proposta gerada com sucesso!')
         return redirect(url_for('visualizar_proposta', proposta_id=proposta_id))
     except Exception as e:
+        logging.error(f"Erro ao gerar proposta: {str(e)}")
         flash(f'Erro ao gerar proposta: {str(e)}')
         return redirect(url_for('exibir_criar_proposta', cliente=nome_cliente))
 
-# Função para gerar proposta
+# Função para criar imagem placeholder
+def criar_imagem_placeholder(caminho, texto, largura=500, altura=200, cor_fundo=(0, 0, 0), cor_texto=(255, 255, 255)):
+    """
+    Cria uma imagem placeholder com texto centralizado.
+    
+    Args:
+        caminho: Caminho onde a imagem será salva
+        texto: Texto a ser exibido na imagem
+        largura: Largura da imagem em pixels
+        altura: Altura da imagem em pixels
+        cor_fundo: Cor de fundo da imagem (R, G, B)
+        cor_texto: Cor do texto (R, G, B)
+    """
+    try:
+        # Criar diretório se não existir
+        os.makedirs(os.path.dirname(caminho), exist_ok=True)
+        
+        # Criar uma imagem com fundo preto
+        imagem = Image.new('RGB', (largura, altura), color=cor_fundo)
+        draw = ImageDraw.Draw(imagem)
+        
+        # Tentar carregar uma fonte, ou usar a fonte padrão
+        try:
+            fonte = ImageFont.truetype("arial.ttf", 20)
+        except IOError:
+            fonte = ImageFont.load_default()
+        
+        # Calcular posição do texto para centralizá-lo
+        try:
+            # Para versões mais recentes do PIL
+            left, top, right, bottom = draw.textbbox((0, 0), texto, font=fonte)
+            largura_texto = right - left
+            altura_texto = bottom - top
+        except AttributeError:
+            try:
+                # Para versões intermediárias do PIL
+                largura_texto, altura_texto = draw.textsize(texto, font=fonte)
+            except AttributeError:
+                # Fallback para valores aproximados
+                largura_texto, altura_texto = len(texto) * 10, 20
+        
+        posicao = ((largura - largura_texto) // 2, (altura - altura_texto) // 2)
+        
+        # Desenhar o texto
+        draw.text(posicao, texto, fill=cor_texto, font=fonte)
+        
+        # Salvar a imagem
+        imagem.save(caminho)
+        logging.info(f"Imagem placeholder criada em: {caminho}")
+        return True
+    except Exception as e:
+        logging.error(f"Erro ao criar imagem placeholder: {e}")
+        return False
+
 def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_selecionados, oferta_selecionada=None):
     try:
-        # 1. Copiar o template
-        template_path = os.path.join(app.root_path, 'capa.docx')
+        # 1. Definir o nome do arquivo de saída
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"proposta_{nome_cliente.replace(' ', '_')}_{timestamp}.docx"
         output_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         
+        # 2. Usar o template da capa na raiz do projeto
+        template_path = os.path.join(app.root_path, 'capa.docx')
+        logging.info(f"Usando template da capa: {template_path}")
+        
+        # Verificar se o template existe
         if not os.path.exists(template_path):
-            logging.error(f"Arquivo de template não encontrado: {template_path}")
-            raise FileNotFoundError(f"Template capa.docx não encontrado em {template_path}")
+            logging.error(f"Template da capa não encontrado em: {template_path}")
+            raise FileNotFoundError(f"Template da capa não encontrado em: {template_path}")
         
-        shutil.copy2(template_path, output_path)
-        logging.info(f"Template copiado de {template_path} para {output_path}")
+        # Abrir o template usando DocxTemplate em vez de Document
+        doc = DocxTemplate(template_path)
+        logging.info("Template carregado com sucesso usando DocxTemplate")
         
-        # 2. Abrir o documento copiado
-        doc = Document(output_path)
+        # 3. Preparar o contexto para substituição de variáveis
+        context = {
+            'NOME_CLIENTE': nome_cliente,
+        }
         
-        # 3. Substituir as variáveis na capa
-        logging.info(f"Substituindo variáveis: nome_cliente={nome_cliente}")
-        for paragraph in doc.paragraphs:
-            # Substituir nome do cliente
-            if "[[NOME_CLIENTE]]" in paragraph.text:
-                logging.info(f"Substituindo [[NOME_CLIENTE]] por {nome_cliente} em: {paragraph.text}")
-                paragraph.text = paragraph.text.replace("[[NOME_CLIENTE]]", nome_cliente)
-            
-            # Substituir logo do cliente
-            if "[[logo_cliente]]" in paragraph.text and logo_cliente:
-                logging.info(f"Substituindo logo do cliente em: {paragraph.text}")
-                if os.path.exists(logo_cliente):
-                    paragraph.clear()  # Limpar o parágrafo atual
-                    run = paragraph.add_run()
-                    run.add_picture(logo_cliente, width=Inches(2))
-                else:
-                    logging.warning(f"Arquivo de logo não encontrado: {logo_cliente}")
+        # Verificar se há logo do cliente
+        if logo_cliente and os.path.exists(logo_cliente):
+            context['logo_cliente'] = InlineImage(doc, logo_cliente, width=Inches(2))
+            logging.info(f"Logo do cliente adicionado ao contexto: {logo_cliente}")
         
-        # Substituir nos cabeçalhos e rodapés
-        for section in doc.sections:
-            for paragraph in section.header.paragraphs:
-                if "[[NOME_CLIENTE]]" in paragraph.text:
-                    paragraph.text = paragraph.text.replace("[[NOME_CLIENTE]]", nome_cliente)
-            
-            for paragraph in section.footer.paragraphs:
-                if "[[NOME_CLIENTE]]" in paragraph.text:
-                    paragraph.text = paragraph.text.replace("[[NOME_CLIENTE]]", nome_cliente)
-                    
-        # Substituir nas tabelas
-        for table in doc.tables:
-            for row in table.rows:
-                for cell in row.cells:
-                    for paragraph in cell.paragraphs:
-                        if "[[NOME_CLIENTE]]" in paragraph.text:
-                            paragraph.text = paragraph.text.replace("[[NOME_CLIENTE]]", nome_cliente)
+        # Renderizar o template com o contexto
+        doc.render(context)
+        logging.info("Template renderizado com sucesso")
         
-        # 4. Adicionar uma quebra de página e os blocos de conteúdo
+        # 4. Converter para Document para continuar com a adição de blocos
+        # Salvar temporariamente o documento renderizado
+        temp_path = os.path.join(app.config['UPLOAD_FOLDER'], f"temp_{timestamp}.docx")
+        doc.save(temp_path)
+        
+        # Reabrir com python-docx para adicionar os blocos
+        doc_with_blocks = Document(temp_path)
+        logging.info("Documento reaberto com python-docx para adicionar blocos")
+        
         # Adicionar quebra de página após a capa
-        logging.info("Adicionando quebra de página")
-        doc.add_page_break()
+        doc_with_blocks.add_page_break()
+        logging.info("Adicionada quebra de página após a capa")
         
-        # Carregar todos os blocos disponíveis e ofertas
+        # 5. Carregar todos os blocos disponíveis e ofertas
         blocos = carregar_blocos()
         ofertas = carregar_ofertas()
         
-        # Converter para lista para fácil manipulação 
-        # (importante: blocos_selecionados pode ser um ImmutableMultiDict do Flask)
+        # 6. Preparar a lista de blocos a adicionar
+        # Converter para lista para fácil manipulação e garantir que seja uma lista de strings
         if blocos_selecionados:
-            if isinstance(blocos_selecionados, (list, tuple)):
+            # Se for uma lista imutável do Flask, converter para lista Python
+            if hasattr(blocos_selecionados, 'getlist'):
+                logging.info("blocos_selecionados é um tipo de objeto Flask")
+                blocos_a_adicionar = blocos_selecionados.getlist('blocos')
+            # Se for uma lista Python regular
+            elif isinstance(blocos_selecionados, (list, tuple)):
                 blocos_a_adicionar = list(blocos_selecionados)
+            # Se for um único valor
             else:
-                blocos_a_adicionar = []
-                for bloco in blocos_selecionados:
-                    blocos_a_adicionar.append(bloco)
+                blocos_a_adicionar = [blocos_selecionados]
         else:
             blocos_a_adicionar = []
+        
+        logging.info(f"Blocos selecionados (inicial): {blocos_a_adicionar}")
             
-        # Verificar se há oferta selecionada para incluir os blocos obrigatórios
+        # 7. Verificar se há oferta selecionada para incluir os blocos obrigatórios
         if oferta_selecionada and oferta_selecionada in ofertas:
             blocos_obrigatorios = ofertas[oferta_selecionada].get('obrigatorios', [])
             logging.info(f"Blocos obrigatórios da oferta '{oferta_selecionada}': {blocos_obrigatorios}")
             
+            # Adicionar blocos obrigatórios à lista se ainda não estiverem lá
             for bloco_obrigatorio in blocos_obrigatorios:
                 if bloco_obrigatorio not in blocos_a_adicionar:
                     blocos_a_adicionar.append(bloco_obrigatorio)
                     logging.info(f"Adicionando bloco obrigatório: {bloco_obrigatorio}")
+
+        logging.info(f"Lista final de blocos a adicionar: {blocos_a_adicionar}")
         
-        logging.info(f"Blocos a adicionar ({len(blocos_a_adicionar)}): {blocos_a_adicionar}")
+        # 8. Adicionar blocos específicos do cliente se não estiverem já incluídos
+        for bloco_nome, bloco_info in blocos.items():
+            if bloco_info.get('cliente_associado') == nome_cliente and bloco_nome not in blocos_a_adicionar:
+                blocos_a_adicionar.append(bloco_nome)
+                logging.info(f"Adicionando bloco específico do cliente: {bloco_nome}")
+        
+        # Se não houver blocos para adicionar, dê um aviso
+        if not blocos_a_adicionar:
+            logging.warning("Nenhum bloco selecionado ou obrigatório para adicionar à proposta")
+        
+        logging.info(f"Total de blocos a adicionar ({len(blocos_a_adicionar)}): {blocos_a_adicionar}")
+        
+        # 9. Adicionar os blocos ao documento
+        secao_atual = 1
         
         # Processar cada bloco selecionado, mesmo que não exista no dicionário de blocos
-        for bloco_nome in blocos_a_adicionar:
-            logging.info(f"Processando bloco: {bloco_nome}")
+        for indice, bloco_nome in enumerate(blocos_a_adicionar, 1):
+            logging.info(f"Processando bloco {indice}: {bloco_nome}")
             
-            # 1. Adicionar título do bloco (mesmo que o bloco não exista)
-            heading = doc.add_heading(level=2)
-            heading_run = heading.add_run(bloco_nome.replace('_', ' ').title())
-            heading_run.bold = True
-            heading_run.font.name = 'Calibri'
-            heading_run.font.size = Pt(14)
+            # 9.1. Adicionar título do bloco com numeração (1.1, 1.2, etc.)
+            titulo_formatado = f"{secao_atual}.{indice} {bloco_nome.replace('_', ' ').title()}"
             
-            # 2. Verificar se o bloco existe na biblioteca
+            # Adicionar título como parágrafo estilizado
+            p = doc_with_blocks.add_paragraph()
+            p.style = 'Heading 2'  # Usar estilo de título 2
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            run = p.add_run(titulo_formatado)
+            run.bold = True
+            run.font.name = 'Calibri'
+            run.font.size = Pt(12)
+            
+            # 9.2. Verificar se o bloco existe na biblioteca
             if bloco_nome in blocos:
                 bloco = blocos[bloco_nome]
                 
@@ -523,10 +621,24 @@ def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_seleciona
                 
                 # Substituir placeholders no texto
                 if texto_bloco:
-                    if "[[NOME_CLIENTE]]" in texto_bloco:
-                        texto_bloco = texto_bloco.replace("[[NOME_CLIENTE]]", nome_cliente)
-                    if "{{NOME_CLIENTE}}" in texto_bloco:
-                        texto_bloco = texto_bloco.replace("{{NOME_CLIENTE}}", nome_cliente)
+                    # Padronizando para o formato {{}}
+                    formatos_placeholder = [
+                        "{{NOME_CLIENTE}}",
+                        "{{nome_cliente}}"
+                    ]
+                    
+                    # Mantendo formatos antigos para compatibilidade
+                    formatos_placeholder_compat = [
+                        "[[NOME_CLIENTE]]",
+                        "NOME_CLIENTE",
+                        "[[nome_cliente]]",
+                        "nome_cliente"
+                    ]
+                    
+                    # Substituir cada formato possível
+                    for formato in formatos_placeholder + formatos_placeholder_compat:
+                        if formato in texto_bloco:
+                            texto_bloco = texto_bloco.replace(formato, nome_cliente)
                     
                     # Usar BeautifulSoup para processar HTML
                     soup = BeautifulSoup(texto_bloco, 'html.parser')
@@ -539,52 +651,68 @@ def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_seleciona
                                 # Processar texto simples
                                 if element.name is None:
                                     if element.strip():
-                                        p = doc.add_paragraph()
+                                        p = doc_with_blocks.add_paragraph()
                                         run = p.add_run(element.strip())
                                         p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-                                        p.paragraph_format.first_line_indent = Inches(0.5)
                                         run.font.name = 'Calibri'
                                         run.font.size = Pt(11)
                                 
                                 # Processar parágrafos
                                 elif element.name == 'p':
-                                    p = doc.add_paragraph()
+                                    p = doc_with_blocks.add_paragraph()
                                     p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-                                    p.paragraph_format.first_line_indent = Inches(0.5)
                                     
-                                    # Se não houver filhos, adicionar o texto diretamente
-                                    if not element.contents:
-                                        run = p.add_run(element.get_text())
-                                        run.font.name = 'Calibri'
-                                        run.font.size = Pt(11)
-                                    else:
-                                        # Processar cada filho do parágrafo para manter formatação
-                                        for child in element.children:
-                                            if child.name == 'strong' or child.name == 'b':
-                                                run = p.add_run(child.get_text())
-                                                run.bold = True
-                                            elif child.name == 'em' or child.name == 'i':
-                                                run = p.add_run(child.get_text())
-                                                run.italic = True
-                                            elif child.name == 'u':
-                                                run = p.add_run(child.get_text())
-                                                run.underline = True
-                                            elif child.name is None:
-                                                run = p.add_run(str(child))
-                                            else:
-                                                run = p.add_run(child.get_text())
-                                            
+                                    # Processar o conteúdo do parágrafo
+                                    for child in element.children:
+                                        # Texto simples
+                                        if child.name is None:
+                                            run = p.add_run(child.string)
+                                            run.font.name = 'Calibri'
+                                            run.font.size = Pt(11)
+                                        
+                                        # Negrito
+                                        elif child.name == 'strong' or child.name == 'b':
+                                            run = p.add_run(child.get_text())
+                                            run.bold = True
+                                            run.font.name = 'Calibri'
+                                            run.font.size = Pt(11)
+                                        
+                                        # Itálico
+                                        elif child.name == 'em' or child.name == 'i':
+                                            run = p.add_run(child.get_text())
+                                            run.italic = True
+                                            run.font.name = 'Calibri'
+                                            run.font.size = Pt(11)
+                                        
+                                        # Sublinhado
+                                        elif child.name == 'u':
+                                            run = p.add_run(child.get_text())
+                                            run.underline = True
+                                            run.font.name = 'Calibri'
+                                            run.font.size = Pt(11)
+                                        
+                                        # Links
+                                        elif child.name == 'a':
+                                            run = p.add_run(child.get_text())
+                                            run.font.color.rgb = RGBColor(0, 0, 255)  # Azul
+                                            run.underline = True
+                                            run.font.name = 'Calibri'
+                                            run.font.size = Pt(11)
+                                        
+                                        # Outros elementos
+                                        else:
+                                            run = p.add_run(child.get_text())
                                             run.font.name = 'Calibri'
                                             run.font.size = Pt(11)
                                 
-                                # Processar títulos
+                                # Processar cabeçalhos
                                 elif element.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
                                     level = int(element.name[1])
-                                    h = doc.add_heading(level=level)
-                                    run = h.add_run(element.get_text())
+                                    p = doc_with_blocks.add_paragraph()
+                                    p.style = f'Heading {level}'
+                                    run = p.add_run(element.get_text())
                                     run.bold = True
                                     run.font.name = 'Calibri'
-                                    
                                     if level == 1:
                                         run.font.size = Pt(16)
                                     elif level == 2:
@@ -592,17 +720,20 @@ def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_seleciona
                                     else:
                                         run.font.size = Pt(12)
                                 
-                                # Processar listas
+                                # Processar listas não ordenadas
                                 elif element.name == 'ul':
                                     for li in element.find_all('li', recursive=False):
-                                        p = doc.add_paragraph(style='List Bullet')
+                                        p = doc_with_blocks.add_paragraph(style='List Bullet')
+                                        p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
                                         run = p.add_run(li.get_text())
                                         run.font.name = 'Calibri'
                                         run.font.size = Pt(11)
                                 
+                                # Processar listas ordenadas
                                 elif element.name == 'ol':
-                                    for li in element.find_all('li', recursive=False):
-                                        p = doc.add_paragraph(style='List Number')
+                                    for idx, li in enumerate(element.find_all('li', recursive=False), 1):
+                                        p = doc_with_blocks.add_paragraph(style='List Number')
+                                        p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
                                         run = p.add_run(li.get_text())
                                         run.font.name = 'Calibri'
                                         run.font.size = Pt(11)
@@ -611,32 +742,45 @@ def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_seleciona
                                 elif element.name == 'img':
                                     img_src = element.get('src', '')
                                     if img_src:
-                                        if img_src.startswith('/'):
-                                            img_path = img_src[1:]
-                                        else:
-                                            img_path = img_src
-                                        
-                                        if os.path.exists(img_path):
-                                            p = doc.add_paragraph()
+                                        # Verificar se é uma imagem base64
+                                        if img_src.startswith('data:image'):
+                                            # Extrair os dados base64
+                                            img_data = img_src.split(',')[1]
+                                            img_bytes = base64.b64decode(img_data)
+                                            
+                                            # Criar um arquivo temporário para a imagem
+                                            img_temp = BytesIO(img_bytes)
+                                            
+                                            # Adicionar a imagem ao documento
+                                            p = doc_with_blocks.add_paragraph()
                                             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
                                             run = p.add_run()
-                                            run.add_picture(img_path, width=Inches(5))
+                                            run.add_picture(img_temp, width=Inches(6))
                                         else:
-                                            logging.warning(f"Imagem não encontrada: {img_path}")
+                                            # Tentar carregar a imagem de um caminho
+                                            try:
+                                                p = doc_with_blocks.add_paragraph()
+                                                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                                                run = p.add_run()
+                                                run.add_picture(img_src, width=Inches(6))
+                                            except Exception as e:
+                                                logging.error(f"Erro ao adicionar imagem: {str(e)}")
                             
                             except Exception as e:
                                 logging.error(f"Erro ao processar elemento HTML: {str(e)}")
                                 continue
                     else:
-                        # Adicionar um parágrafo genérico se o bloco não tiver conteúdo HTML válido
-                        p = doc.add_paragraph()
+                        # Adicionar um parágrafo genérico se o bloco não tiver texto
+                        p = doc_with_blocks.add_paragraph()
+                        p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
                         run = p.add_run(f"Conteúdo a ser definido para '{bloco_nome.replace('_', ' ').title()}'")
                         run.italic = True
                         run.font.name = 'Calibri'
                         run.font.size = Pt(11)
                 else:
                     # Adicionar um parágrafo genérico se o bloco não tiver texto
-                    p = doc.add_paragraph()
+                    p = doc_with_blocks.add_paragraph()
+                    p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
                     run = p.add_run(f"Conteúdo a ser definido para '{bloco_nome.replace('_', ' ').title()}'")
                     run.italic = True
                     run.font.name = 'Calibri'
@@ -644,24 +788,80 @@ def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_seleciona
             else:
                 # Adicionar um parágrafo genérico se o bloco não existir na biblioteca
                 logging.warning(f"Bloco não encontrado: {bloco_nome}")
-                p = doc.add_paragraph()
+                p = doc_with_blocks.add_paragraph()
+                p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
                 run = p.add_run(f"[Bloco '{bloco_nome.replace('_', ' ').title()}' não encontrado na biblioteca]")
                 run.italic = True
                 run.font.name = 'Calibri'
                 run.font.size = Pt(11)
-            
-            # Adicionar um espaço após cada bloco
-            doc.add_paragraph()
         
-        # 5. Salvar o documento
-        doc.save(output_path)
+        # 10. Salvar o documento final
+        doc_with_blocks.save(output_path)
         logging.info(f"Documento salvo com sucesso: {output_path}")
         
-        return output_path, filename
+        # Remover o arquivo temporário
+        try:
+            os.remove(temp_path)
+            logging.info(f"Arquivo temporário removido: {temp_path}")
+        except:
+            logging.warning(f"Não foi possível remover o arquivo temporário: {temp_path}")
         
+        return output_path, filename
     except Exception as e:
         logging.error(f"Erro na geração da proposta: {str(e)}")
+        logging.error("Detalhes do erro:", exc_info=True)
         raise
+
+# Função auxiliar para substituir variáveis nos parágrafos
+def substituir_variaveis(paragraph, placeholder, valor):
+    if not paragraph or not placeholder or not valor:
+        return
+    
+    # Padronizando para o formato {{}}
+    # Verificar se o placeholder já está no formato {{}}
+    if placeholder.startswith('{{') and placeholder.endswith('}}'):
+        formato_padrao = placeholder
+    else:
+        # Converter para o formato {{}}
+        formato_padrao = '{{' + placeholder.replace('[[', '').replace(']]', '').replace('{{', '').replace('}}', '') + '}}'
+    
+    # Lista de possíveis formatos de placeholder
+    formatos_placeholder = [
+        formato_padrao,  # Formato padrão (ex: {{NOME_CLIENTE}})
+        formato_padrao.lower(),  # Minúsculas (ex: {{nome_cliente}})
+    ]
+    
+    # Formatos antigos para compatibilidade
+    formatos_compat = [
+        placeholder,  # Formato original (ex: [[NOME_CLIENTE]])
+        placeholder.replace('[[', '').replace(']]', ''),  # Sem delimitadores (ex: NOME_CLIENTE)
+        placeholder.lower(),  # Minúsculas (ex: [[nome_cliente]])
+    ]
+    
+    # Substituir cada formato possível
+    for formato in formatos_placeholder + formatos_compat:
+        if formato in paragraph.text:
+            for run in paragraph.runs:
+                if formato in run.text:
+                    run.text = run.text.replace(formato, valor)
+
+def substituir_variaveis_robusto(doc, placeholder, valor):
+    for paragraph in doc.paragraphs:
+        full_text = ''.join(run.text for run in paragraph.runs)
+        if placeholder in full_text:
+            # Limpar o texto existente
+            for run in paragraph.runs:
+                run.text = ''
+            # Recriar o texto com o valor substituído
+            if placeholder == '{{logo_cliente}}' and os.path.exists(valor):
+                paragraph.add_run().add_picture(valor, width=Inches(2))
+            else:
+                paragraph.add_run(full_text.replace(placeholder, valor))
+
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                substituir_variaveis_robusto(cell, placeholder, valor)
 
 # Rota padrão - redireciona para login se não estiver autenticado
 @app.route('/')
@@ -692,7 +892,9 @@ def gerenciar_usuarios():
                 flash('Todos os campos são obrigatórios.')
                 return redirect(url_for('gerenciar_usuarios'))
             
-            if tipo_usuario not in ['admin', 'am']:
+            tipos_validos = ['admin', 'am', 'comercialpr', 'comercialrj', 'comercialrs', 'comercialsp', 'se']
+            
+            if tipo_usuario not in tipos_validos:
                 flash('Tipo de usuário inválido.')
                 return redirect(url_for('gerenciar_usuarios'))
             
@@ -742,8 +944,7 @@ def adicionar_usuario():
         flash('Todos os campos são obrigatórios.')
         return redirect(url_for('gerenciar_usuarios'))
     
-    tipos_validos = ['admin', 'am', 'vp_comercial', 'diretor_regional', 'gerente_comercial', 
-                     'vp_tecnologia', 'head_sales_engineer', 'sales_engineer']
+    tipos_validos = ['admin', 'am', 'comercialpr', 'comercialrj', 'comercialrs', 'comercialsp', 'se']
     
     if tipo not in tipos_validos:
         flash('Tipo de usuário inválido.')
@@ -1005,13 +1206,18 @@ def adicionar_bloco():
         nome_bloco = request.form['nome_bloco'].replace(' ', '_')
         texto_bloco = request.form['texto_bloco']
         cliente_associado = request.form.get('cliente_associado', '')
+        reutilizavel = request.form.get('reutilizavel', 'off') == 'on'
         
         blocos = carregar_blocos()
         
         # Verificar se o bloco já existe
-        if nome_bloco in blocos:
-            flash('Já existe um bloco com este nome.')
-            return render_template('criar_proposta.html', cliente=cliente)
+        if nome_bloco in blocos and reutilizavel:
+            flash('Já existe um bloco com este nome. Escolha outro nome para o bloco reutilizável.')
+            return render_template('adicionar_bloco.html', cliente=cliente)
+        
+        # Se não for reutilizável, tornar o nome do bloco único para este cliente
+        if not reutilizavel and cliente_associado:
+            nome_bloco = f"{cliente_associado}_{nome_bloco}"
         
         # Adicionar o novo bloco
         blocos[nome_bloco] = {
@@ -1020,18 +1226,21 @@ def adicionar_bloco():
             'obrigatorio': False,
             'criado_por': session.get('usuario_logado'),
             'data_criacao': datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
-            'cliente_associado': cliente_associado
+            'cliente_associado': cliente_associado,
+            'reutilizavel': reutilizavel
         }
         
         salvar_blocos(blocos)
         flash('Bloco adicionado com sucesso!')
         
+        # Redirecionar para a página de criação de proposta, passando o bloco como selecionado
         if cliente_associado:
-            return redirect(url_for('exibir_criar_proposta', cliente=cliente_associado))
+            # Se estamos criando um bloco para uma proposta específica, pré-selecionar o bloco
+            return redirect(url_for('exibir_criar_proposta', cliente=cliente_associado, bloco_novo=nome_bloco))
         else:
             return redirect(url_for('exibir_criar_proposta'))
     
-    return redirect(url_for('exibir_criar_proposta', cliente=cliente))
+    return render_template('adicionar_bloco.html', cliente=cliente)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=8080)

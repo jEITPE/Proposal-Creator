@@ -37,5 +37,37 @@
         "criado_por": "admin",
         "data_criacao": "10/03/2025 09:57:00",
         "cliente_associado": ""
+    },
+    "BLOCO_DE_TESTE": {
+        "texto": "<p>kjkjkjkj</p>",
+        "imagem": null,
+        "obrigatorio": false,
+        "criado_por": "admin",
+        "data_criacao": "10/03/2025 11:31:07",
+        "cliente_associado": null
+    },
+    "Solucao_Proposta": {
+        "texto": "<p>Este é um novo bloco. Edite o conteúdo e salve para criá-lo</p>",
+        "imagem": null,
+        "obrigatorio": false,
+        "criado_por": "admin",
+        "data_criacao": "14/03/2025 09:02:52",
+        "cliente_associado": null
+    },
+    "Workplace_Service_Desk": {
+        "texto": "<p>Este é um novo bloco. Edite o conteúdo e salve para criá-lo.</p>",
+        "imagem": null,
+        "obrigatorio": false,
+        "criado_por": "admin",
+        "data_criacao": "14/03/2025 09:33:49",
+        "cliente_associado": null
+    },
+    "Bloco_criado_por_mim": {
+        "texto": "<p>Cliente interessante {{NOME_CLIENTE}}</p>",
+        "imagem": null,
+        "obrigatorio": false,
+        "criado_por": "admin",
+        "data_criacao": "14/03/2025 09:50:58",
+        "cliente_associado": null
     }
 }

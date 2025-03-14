@@ -4,127 +4,262 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Gerador de Propostas Service IT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2ecc71;
+            --secondary-dark: #27ae60;
+            --accent: #9b59b6;
+            --accent-dark: #8e44ad;
+            --dark: #1a1a2e;
+            --dark-lighter: #16213e;
+            --dark-medium: #0f3460;
+            --text-light: #f1f1f1;
+            --text-muted: #b2bec3;
+            --danger: #e74c3c;
+            --border-radius: 8px;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f5f5f5;
+            min-height: 100vh;
+            background-color: var(--dark);
+            background-image: linear-gradient(135deg, rgba(26, 26, 46, 0.97) 0%, rgba(22, 33, 62, 0.97) 100%), 
+                              url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="1.5" fill="%233498db" opacity="0.2"/></svg>');
+            background-size: cover, 30px 30px;
+            background-attachment: fixed;
         }
+        
         .login-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 450px;
-            padding: 40px;
+            max-width: 420px;
+            padding: 0;
             text-align: center;
+            position: relative;
+            z-index: 1;
         }
+        
+        .login-card {
+            background-color: var(--dark-lighter);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .login-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .login-header {
+            padding: 30px 20px;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
         .logo {
-            width: 180px;
-            margin-bottom: 30px;
-        }
-        .form-group {
+            width: 160px;
             margin-bottom: 20px;
+            filter: drop-shadow(0 2px 5px rgba(52, 152, 219, 0.3));
+        }
+        
+        .login-title {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-light);
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .login-subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .login-body {
+            padding: 30px 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
             text-align: left;
         }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-light);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
         .input-group {
-            display: flex;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            overflow: hidden;
+            position: relative;
         }
+        
         .input-icon {
-            background-color: #f8f9fa;
-            padding: 12px 15px;
-            color: #6c757d;
-            border-right: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 46px;
-        }
-        input[type="text"], input[type="password"] {
-            flex: 1;
-            padding: 12px 15px;
-            border: none;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
             font-size: 16px;
-            outline: none;
         }
+        
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background-color: rgba(15, 52, 96, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            color: var(--text-light);
+            font-family: 'Roboto', sans-serif;
+            font-size: 15px;
+            transition: var(--transition);
+        }
+        
         input[type="text"]:focus, input[type="password"]:focus {
-            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
+        
         .btn-login {
-            background-color: #0275d8;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            font-family: 'Montserrat', sans-serif;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            letter-spacing: 0.5px;
         }
+        
         .btn-login:hover {
-            background-color: #025aa5;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
         }
+        
         .forgot-password {
-            display: block;
-            margin-top: 15px;
-            color: #0275d8;
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--text-muted);
             text-decoration: none;
             font-size: 14px;
+            transition: var(--transition);
         }
+        
         .forgot-password:hover {
-            text-decoration: underline;
+            color: var(--primary);
         }
+        
         .error-message {
-            color: #dc3545;
-            margin-bottom: 15px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--danger);
+            color: var(--text-light);
+            padding: 12px 15px;
+            margin-bottom: 25px;
             font-size: 14px;
+            border-radius: var(--border-radius);
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-message i {
+            margin-right: 10px;
+            color: var(--danger);
+        }
+        
+        .login-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                max-width: 100%;
+                padding: 0 20px;
+            }
+            
+            .login-body {
+                padding: 25px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <img src="/static/img/logo_service_it.png" alt="Logo Service IT" class="logo">
-        
-        {% if error %}
-        <div class="error-message">
-            {{ error }}
+        <div class="login-card">
+            <div class="login-header">
+                <img src="/static/img/logo_service_it.png" alt="Logo Service IT" class="logo">
+                <h1 class="login-title">Gerador de Propostas</h1>
+                <p class="login-subtitle">Faça login para acessar o sistema</p>
+            </div>
+            
+            <div class="login-body">
+                {% if error %}
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ error }}
+                </div>
+                {% endif %}
+                
+                <form action="/login" method="post">
+                    <div class="form-group">
+                        <label for="username" class="form-label">Nome de Usuário</label>
+                        <div class="input-group">
+                            <div class="input-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">Senha</label>
+                        <div class="input-group">
+                            <div class="input-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-login">ENTRAR</button>
+                    <a href="#" class="forgot-password">Esqueceu sua senha?</a>
+                </form>
+            </div>
+            
+            <div class="login-footer">
+                &copy; 2025 Service IT - Todos os direitos reservados
+            </div>
         </div>
-        {% endif %}
-        
-        <form action="/login" method="post">
-            <div class="form-group">
-                <div class="input-group">
-                    <div class="input-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                        </svg>
-                    </div>
-                    <input type="text" name="username" placeholder="Insira o seu usuário" required>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <div class="input-group">
-                    <div class="input-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
-                        </svg>
-                    </div>
-                    <input type="password" name="password" placeholder="Insira sua senha" required>
-                </div>
-            </div>
-            
-            <button type="submit" class="btn-login">ENTRAR</button>
-            <a href="#" class="forgot-password">Esqueceu sua senha?</a>
-        </form>
     </div>
 </body>
 </html> 

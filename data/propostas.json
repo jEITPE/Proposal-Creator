@@ -1,26 +1,4 @@
 {
-    "798c73b7-d378-4c1e-a996-94b9890bc4d2": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 09:57:30",
-        "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_095730.docx",
-        "blocos_utilizados": [
-            "Seguranca_SOC",
-            "Seguranca_Gestao_de_Ativos"
-        ],
-        "oferta_selecionada": "Seguranca"
-    },
-    "a4d185e0-461d-48eb-b62f-8aee83603d2c": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 10:09:33",
-        "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_100933.docx",
-        "blocos_utilizados": [
-            "Workplace_Service_Desk",
-            "Workplace_Gestao_de_ativos"
-        ],
-        "oferta_selecionada": "Workplace"
-    },
     "9d1f6e73-7982-44ab-9dae-5909482457fb": {
         "nome_cliente": "UNIMED",
         "data_geracao": "10/03/2025 10:24:32",
@@ -100,5 +78,167 @@
             "Infraestrutura_Command_Center"
         ],
         "oferta_selecionada": "Infraestrutura"
+    },
+    "f000efa4-179d-441b-a09b-ae7a67e63750": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "10/03/2025 11:31:34",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_113133.docx",
+        "blocos_utilizados": [
+            "Workplace_Service_Desk",
+            "Workplace_Gestao_de_ativos"
+        ],
+        "oferta_selecionada": "Workplace"
+    },
+    "580fcf11-33c0-4226-a8f1-aaede31fa377": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "10/03/2025 11:47:34",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_114733.docx",
+        "blocos_utilizados": [
+            "Termo_de_Confidencialidade",
+            "Folha_de_Rosto",
+            "Controle_de_Versao",
+            "Sumario_Executivo",
+            "Sobre_a_Service_IT",
+            "Visao_Geral_dos_Servicos",
+            "Solucao_Proposta",
+            "Exclusoes",
+            "Transicao",
+            "Termo_de_Aceite_da_Proposta"
+        ],
+        "oferta_selecionada": "Workplace"
+    },
+    "b3f4a63f-c51f-45b6-b692-b41335b7b50d": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "10/03/2025 11:47:35",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_114734.docx",
+        "blocos_utilizados": [
+            "Termo_de_Confidencialidade",
+            "Folha_de_Rosto",
+            "Controle_de_Versao",
+            "Sumario_Executivo",
+            "Sobre_a_Service_IT",
+            "Visao_Geral_dos_Servicos",
+            "Solucao_Proposta",
+            "Exclusoes",
+            "Transicao",
+            "Termo_de_Aceite_da_Proposta"
+        ],
+        "oferta_selecionada": "Workplace"
+    },
+    "14e7a39d-8cd3-43d2-856e-64a0a8182fe7": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "10/03/2025 11:53:24",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_115323.docx",
+        "blocos_utilizados": [
+            "Workplace_Service_Desk",
+            "Workplace_Gestao_de_ativos",
+            "Termo_de_Confidencialidade",
+            "Folha_de_Rosto",
+            "Controle_de_Versao",
+            "Sumario_Executivo",
+            "Sobre_a_Service_IT",
+            "Visao_Geral_dos_Servicos",
+            "Solucao_Proposta",
+            "Exclusoes",
+            "Transicao",
+            "Termo_de_Aceite_da_Proposta"
+        ],
+        "oferta_selecionada": "Workplace"
+    },
+    "3640aebb-3a7d-4154-b8f1-eb1c8144a258": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "12/03/2025 10:12:20",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250312_101219.docx",
+        "blocos_utilizados": [
+            "Infraestrutura_Administracao",
+            "Infraestrutura_Administracao_Torres",
+            "Infraestrutura_Command_Center",
+            "Termo_de_Confidencialidade",
+            "Folha_de_Rosto",
+            "Controle_de_Versao",
+            "Sumario_Executivo",
+            "Sobre_a_Service_IT",
+            "Visao_Geral_dos_Servicos",
+            "Solucao_Proposta",
+            "Exclusoes",
+            "Transicao",
+            "Termo_de_Aceite_da_Proposta"
+        ],
+        "oferta_selecionada": "Infraestrutura"
+    },
+    "673ced8f-141e-4620-a974-2471559e5a5e": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "14/03/2025 09:34:25",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_093424.docx",
+        "blocos_utilizados": [
+            "Workplace_Service_Desk",
+            "Workplace_Field_Services",
+            "Workplace_Gestao_de_Processos",
+            "Workplace_Desktop_Mgm"
+        ],
+        "oferta_selecionada": ""
+    },
+    "351714a4-f212-4e6d-895c-69eebda82c6b": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "14/03/2025 09:51:20",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_095119.docx",
+        "blocos_utilizados": [
+            "Workplace_Service_Desk",
+            "Workplace_Gestao_de_ativos"
+        ],
+        "oferta_selecionada": ""
+    },
+    "8cee04b0-7474-4d42-bc08-d81fc449f331": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "14/03/2025 10:31:18",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_103117.docx",
+        "blocos_utilizados": [
+            "Workplace_Service_Desk",
+            "Workplace_Field_Services"
+        ],
+        "oferta_selecionada": null
+    },
+    "5d769c8a-967b-4a01-9193-354df90ca6bc": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "14/03/2025 10:39:19",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_103918.docx",
+        "blocos_utilizados": [
+            "Workplace_Service_Desk",
+            "Workplace_Field_Services"
+        ],
+        "oferta_selecionada": null
+    },
+    "df9185ec-7311-4470-97d7-8791194046b0": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "14/03/2025 10:50:04",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_105004.docx",
+        "blocos_utilizados": [
+            "Workplace_Field_Services",
+            "Workplace_Gestao_de_ativos",
+            "Workplace_Desktop_Mgm"
+        ],
+        "oferta_selecionada": null
+    },
+    "e9c5e168-a9cd-4d1e-80f6-8fdca00bf4f6": {
+        "nome_cliente": "UNIMED",
+        "data_geracao": "14/03/2025 11:03:12",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_110311.docx",
+        "blocos_utilizados": [
+            "Cloud_Observabilidade",
+            "Cloud_Administracao",
+            "Cloud_Suporte"
+        ],
+        "oferta_selecionada": null
     }
 }
