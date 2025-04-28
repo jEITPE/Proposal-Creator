@@ -1,0 +1,208 @@
+/* Forçar modo claro - Proposal Creator */
+
+/* Garantir que o tema seja sempre claro, ignorando as preferências do sistema */
+:root {
+    color-scheme: light !important;
+}
+
+/* Cores de fundo claras */
+body, 
+.main-content, 
+.sidebar {
+    background-color: var(--background) !important;
+}
+
+.card, 
+.card-header, 
+.alert, 
+.dropdown-menu, 
+.form-control, 
+.modal-content,
+select,
+textarea,
+.table,
+.pagination {
+    background-color: var(--background-light) !important;
+}
+
+/* Cores de texto escuras para contraste com fundo claro */
+body,
+p, 
+.card-body, 
+.form-control, 
+.btn-text, 
+.dropdown-item,
+.text-normal,
+label {
+    color: var(--text-dark) !important;
+}
+
+.text-muted,
+.form-text,
+.small,
+.text-secondary,
+.card-subtitle {
+    color: var(--text-medium) !important;
+}
+
+/* Bordas sutis para elementos */
+.card,
+.form-control,
+.alert,
+.dropdown-menu,
+.table,
+.modal-content {
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Sombras sutis para elementos */
+.card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.dropdown-menu,
+.modal-content {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Remover qualquer estilo de modo escuro */
+* {
+    filter: none !important;
+}
+
+/* Melhorar a acessibilidade do texto em fundo claro */
+.text-danger,
+.text-success,
+.text-warning,
+.text-info {
+    font-weight: 500;
+}
+
+/* Cores acessíveis para ações */
+.btn-danger {
+    background-color: #d9534f !important;
+    border-color: #d43f3a !important;
+}
+
+.btn-success {
+    background-color: #5cb85c !important;
+    border-color: #4cae4c !important;
+}
+
+.btn-warning {
+    background-color: #f0ad4e !important;
+    border-color: #eea236 !important;
+}
+
+.btn-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary-hover) !important;
+}
+
+/* Estilos para notificações e alertas com cores acessíveis */
+.alert-danger {
+    background-color: #f2dede !important;
+    border-color: #ebccd1 !important;
+    color: #a94442 !important;
+}
+
+.alert-success {
+    background-color: #dff0d8 !important;
+    border-color: #d6e9c6 !important;
+    color: #3c763d !important;
+}
+
+.alert-warning {
+    background-color: #fcf8e3 !important;
+    border-color: #faebcc !important;
+    color: #8a6d3b !important;
+}
+
+.alert-info {
+    background-color: #d9edf7 !important;
+    border-color: #bce8f1 !important;
+    color: #31708f !important;
+}
+
+/* Melhorar a legibilidade de links em tema claro */
+a:not(.btn):not(.menu-link) {
+    color: var(--primary) !important;
+}
+
+a:not(.btn):not(.menu-link):hover {
+    color: var(--primary-hover) !important;
+}
+
+/* Garantir que os links do menu tenham a cor correta */
+.menu-link {
+    color: var(--text-dark) !important;
+}
+
+.menu-link:hover {
+    color: var(--text-dark) !important;
+    font-weight: 600 !important;
+}
+
+.menu-link.active {
+    color: var(--text-dark) !important;
+    font-weight: 600 !important;
+}
+
+.menu-link i,
+.menu-link:hover i,
+.menu-link.active i {
+    color: var(--text-dark) !important;
+}
+
+/* Garantir que ícones tenham cores apropriadas */
+.text-danger i,
+.btn-danger i {
+    color: #d9534f !important;
+}
+
+.text-success i,
+.btn-success i {
+    color: #5cb85c !important;
+}
+
+.text-warning i,
+.btn-warning i {
+    color: #f0ad4e !important;
+}
+
+.text-info i,
+.btn-info i {
+    color: #5bc0de !important;
+}
+
+/* Garantir que botões coloridos tenham texto branco para melhor legibilidade */
+.btn-primary,
+.btn-success, 
+.btn-danger, 
+.btn-secondary,
+.btn-warning,
+.btn-info,
+a[href*="Dashboard"],
+[class*="btn-"][class*="primary"],
+[class*="btn-"][class*="success"],
+[class*="btn-"][class*="danger"],
+[class*="btn-"][class*="secondary"],
+.file-input-button,
+a.btn-primary,
+a.btn-secondary,
+.container-white a.btn-primary,
+.container-white a.btn-secondary,
+.container-white .btn-primary,
+.container-white .btn-secondary {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+    font-weight: 600 !important;
+}
+
+/* Estilos específicos para botões Nova Proposta e Voltar ao Dashboard */
+.section-header .btn-primary,
+.section-header .btn-secondary {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+    font-weight: 600 !important;
+} 

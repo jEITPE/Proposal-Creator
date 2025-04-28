@@ -1,0 +1,342 @@
+/* Estilos responsivos específicos para páginas complexas - Proposal Creator */
+
+/* Dashboard */
+@media (max-width: 768px) {
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .dashboard-header .actions {
+        margin-top: 15px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+    .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+/* Criar Proposta */
+.proposal-container {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    .block-selector {
+        flex-direction: column;
+    }
+    
+    .block-list, .block-preview {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .block-preview {
+        margin-top: 20px;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+    }
+    
+    .form-step {
+        padding: 15px;
+    }
+    
+    .form-navigation {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .form-navigation .btn {
+        width: 100%;
+    }
+    
+    /* Otimização para visualização de conteúdo */
+    .block-content-preview {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+    .block-selector {
+        flex-direction: row;
+    }
+    
+    .block-list {
+        width: 40%;
+    }
+    
+    .block-preview {
+        width: 60%;
+    }
+}
+
+/* Estilos para a página de visualização de proposta responsiva */
+@media (max-width: 768px) {
+    .proposal-preview-container {
+        padding: 10px;
+    }
+    
+    .proposal-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .proposal-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Estilos responsivos para gerenciamento de blocos */
+.mobile-layout .block-editor {
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-layout .editor-toolbar {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+}
+
+.mobile-layout .editor-panel,
+.mobile-layout .preview-panel {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Visualização em dispositivos pequenos */
+.compact-layout {
+    position: relative;
+}
+
+.compact-layout .editor-panel,
+.compact-layout .preview-panel {
+    display: none;
+    width: 100%;
+}
+
+.compact-layout[data-active-view="editor"] .editor-panel,
+.compact-layout[data-active-view="preview"] .preview-panel {
+    display: block;
+}
+
+.mobile-editor-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.mobile-nav-btn {
+    flex: 1;
+    max-width: 150px;
+}
+
+.mobile-nav-btn.active {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* Otimizações para laptops (específicas para pré-visualização de propostas) */
+@media (min-width: 993px) and (max-width: 1400px) {
+    .laptop-optimized {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 20px;
+    }
+    
+    .laptop-optimized .controls-panel {
+        position: sticky;
+        top: 20px;
+        height: calc(100vh - 120px);
+        overflow-y: auto;
+    }
+    
+    .laptop-optimized .preview-panel {
+        height: calc(100vh - 120px);
+        overflow-y: auto;
+    }
+}
+
+/* Melhorias para tabelas responsivas */
+@media (max-width: 768px) {
+    .responsive-table {
+        display: block;
+        width: 100%;
+        border: 0;
+    }
+    
+    .responsive-table thead {
+        display: none;
+    }
+    
+    .responsive-table tbody {
+        display: block;
+        width: 100%;
+    }
+    
+    .responsive-table tr {
+        display: block;
+        width: 100%;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .responsive-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        border-bottom: 1px solid #eee;
+        text-align: right;
+    }
+    
+    .responsive-table td:last-child {
+        border-bottom: none;
+    }
+    
+    .responsive-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        margin-right: 15px;
+        text-align: left;
+        color: var(--text-dark);
+    }
+    
+    .responsive-table td:last-child {
+        border-bottom: 0;
+    }
+}
+
+/* Otimizações para formulários responsivos */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-group {
+        width: 100% !important;
+        margin-right: 0;
+    }
+    
+    /* Melhorar visualização de formulários complexos */
+    .complex-form {
+        padding: 10px;
+    }
+    
+    .form-section {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    /* Melhorar interação com campos sensíveis ao toque */
+    input, select, textarea, button {
+        min-height: 44px; /* Mínimo recomendado para alvos de toque */
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        margin: 5px 0;
+        width: 100%;
+    }
+}
+
+/* Ajustes para elementos colapsáveis em dispositivos móveis */
+.collapsible {
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.collapsible.show-options {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.toggle-advanced {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Otimizações para dispositivos de entrada não precisos (touch screens) */
+.touch-device .card-header,
+.touch-device .menu-link,
+.touch-device .btn,
+.touch-device .form-control {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.touch-device .btn-sm {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.touch-target {
+    position: relative;
+}
+
+.touch-target::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    z-index: -1;
+}
+
+/* Ajustes para modo landscape em dispositivos móveis */
+@media (max-height: 500px) and (orientation: landscape) {
+    .sidebar {
+        width: 220px;
+    }
+    
+    .sidebar-header {
+        padding: 10px;
+    }
+    
+    .main-content {
+        margin-left: 220px;
+        padding: 15px;
+    }
+    
+    .mobile-toggle {
+        top: 10px;
+        left: 10px;
+    }
+}
+
+/* Animações reduzidas para dispositivos com preferência de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+} 

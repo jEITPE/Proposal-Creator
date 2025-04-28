@@ -6,4 +6,13 @@ Pillow==10.0.0
 Flask-Session==0.5.0
 python-dotenv==1.0.0
 Markdown==3.4.4
-gunicorn==21.2.0 
+gunicorn==21.2.0
+matplotlib==3.7.2
+docxtpl==0.16.7
+beautifulsoup4==4.12.2
+psycopg2-binary==2.9.9
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.23
+alembic==1.12.1
+docxcompose==1.4.0
+APScheduler==3.11.0 

@@ -1,73 +1,90 @@
 {
     "Termo_de_Confidencialidade": {
-        "texto": "<p>As partes <strong>envolvidas</strong> obrigam-se a respeitar estritamente em caráter confidencial e sigiloso todas as informações relativas aos equipamentos, softwares e serviços, que contenham neste documento. O conteúdo da presente proposta, bem como os dados pessoais obtidos na execução dos serviços ou fornecimento de produtos, ficam protegidos pela Lei n 13.709/18 (Lei Geral de Proteção de Dados), conforme Termo anexo devidamente assinado pelas Partes. TESTE</p><p><br></p>",
+        "texto": "<p>Termo de Confidencialidade</p>",
         "imagem": null,
-        "obrigatorio": true
+        "obrigatorio": true,
+        "criado_por": "admin",
+        "data_criacao": "25/04/2025 22:03",
+        "titulo": "Termo De Confidencialidade"
+    },
+    "Folha_de_Rosto": {
+        "texto": "<p>Folha de Rosto</p>",
+        "imagem": null,
+        "obrigatorio": true,
+        "criado_por": "admin",
+        "data_criacao": "25/04/2025 22:03",
+        "titulo": "Folha De Rosto"
+    },
+    "Controle_de_Versao": {
+        "texto": "<p>Controle de Versão</p>",
+        "imagem": null,
+        "obrigatorio": true,
+        "criado_por": "admin",
+        "data_criacao": "25/04/2025 22:03",
+        "titulo": "Controle De Versao"
     },
     "Sumario_Executivo": {
-        "texto": "<p>A Service IT entende as necessidades da {{NOME_CLIENTE}} e está alinhada em disponibilizar todos os recursos necessários para a demanda. Neste momento, entendemos estar diante de um marco que determina um avanço necessário e significativo nesta jornada e sentimo-nos plenamente capazes de apoiá-los nesta transformação. Observando o escopo desta requisição, entendemos e aceitamos os itens solicitados pela {{NOME_CLIENTE}} e demonstramos a capacidade de atendê-los, abrangendo espaços que reconhecemos importantes para a resposta aos desafios do seu ambiente de negócios.</p>",
+        "texto": "<p>Sumário Executivo</p>",
         "imagem": null,
-        "obrigatorio": true
+        "obrigatorio": true,
+        "criado_por": "admin",
+        "data_criacao": "25/04/2025 22:03",
+        "titulo": "Sumario Executivo"
+    },
+    "Sobre_a_Service_IT": {
+        "texto": "<p>Sobre a Service IT</p>",
+        "imagem": null,
+        "obrigatorio": true,
+        "criado_por": "admin",
+        "data_criacao": "25/04/2025 22:03",
+        "titulo": "Sobre A Service It"
+    },
+    "Conhecendo_a_Service_IT": {
+        "texto": "<p>Conhecendo a Service IT</p>",
+        "imagem": null,
+        "obrigatorio": true,
+        "criado_por": "admin",
+        "data_criacao": "25/04/2025 22:03",
+        "titulo": "Conhecendo A Service It"
     },
     "Visao_Geral_dos_Servicos": {
-        "texto": "<p>Esta seção busca apresentar uma visão geral sobre a estrutura proposta pela Service IT para a prestação dos serviços, a fim de atender às solicitações realizadas pela {{NOME_CLIENTE}}. A estrutura de serviços proposta pela Service IT, visa, principalmente, a geração de sinergia, otimização e inovação, com melhor aproveitamento da liderança na gestão técnica das equipes e o atendimento às demandas, no que tange as linhas de serviço aqui propostas para a {{NOME_CLIENTE}}.</p>",
+        "texto": "<p>Visão Geral dos Serviços</p>",
         "imagem": null,
-        "obrigatorio": true
-    },
-    "olá": {
-        "texto": "<p>olá</p>",
-        "imagem": null,
-        "obrigatorio": false,
+        "obrigatorio": true,
         "criado_por": "admin",
-        "data_criacao": "06/03/2025 19:42:59",
-        "cliente_associado": ""
-    },
-    "Workplace_Field_Services": {
-        "texto": "<h2>Workplace Field Services</h2>",
-        "imagem": null,
-        "obrigatorio": false,
-        "criado_por": "admin",
-        "data_criacao": "07/03/2025 10:21:56",
-        "cliente_associado": ""
-    },
-    "Seguranca_SOC": {
-        "texto": "<p>Segurança SOC</p><p><br></p>",
-        "imagem": null,
-        "obrigatorio": false,
-        "criado_por": "admin",
-        "data_criacao": "10/03/2025 09:57:00",
-        "cliente_associado": ""
-    },
-    "BLOCO_DE_TESTE": {
-        "texto": "<p>kjkjkjkj</p>",
-        "imagem": null,
-        "obrigatorio": false,
-        "criado_por": "admin",
-        "data_criacao": "10/03/2025 11:31:07",
-        "cliente_associado": null
+        "data_criacao": "25/04/2025 22:03",
+        "titulo": "Visao Geral Dos Servicos"
     },
     "Solucao_Proposta": {
-        "texto": "<p>Este é um novo bloco. Edite o conteúdo e salve para criá-lo</p>",
+        "texto": "<p>Solução Proposta</p>",
         "imagem": null,
-        "obrigatorio": false,
+        "obrigatorio": true,
         "criado_por": "admin",
-        "data_criacao": "14/03/2025 09:02:52",
-        "cliente_associado": null
+        "data_criacao": "25/04/2025 22:03",
+        "titulo": "Solucao Proposta"
     },
-    "Workplace_Service_Desk": {
-        "texto": "<p>Este é um novo bloco. Edite o conteúdo e salve para criá-lo.</p>",
+    "Exclusoes": {
+        "texto": "<p>Exclusões</p>",
         "imagem": null,
-        "obrigatorio": false,
+        "obrigatorio": true,
         "criado_por": "admin",
-        "data_criacao": "14/03/2025 09:33:49",
-        "cliente_associado": null
+        "data_criacao": "25/04/2025 22:03",
+        "titulo": "Exclusoes"
     },
-    "Bloco_criado_por_mim": {
-        "texto": "<p>Cliente interessante {{NOME_CLIENTE}}</p>",
+    "Transicao": {
+        "texto": "<p>Transição</p>",
         "imagem": null,
-        "obrigatorio": false,
+        "obrigatorio": true,
         "criado_por": "admin",
-        "data_criacao": "14/03/2025 09:50:58",
-        "cliente_associado": null
+        "data_criacao": "25/04/2025 22:03",
+        "titulo": "Transicao"
+    },
+    "Termo_de_Aceite_da_Proposta": {
+        "texto": "<p>Termo de Aceite da Proposta</p>",
+        "imagem": null,
+        "obrigatorio": true,
+        "criado_por": "admin",
+        "data_criacao": "25/04/2025 22:03",
+        "titulo": "Termo De Aceite Da Proposta"
     }
 }

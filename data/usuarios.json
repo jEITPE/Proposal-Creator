@@ -1,14 +1,51 @@
 {
-    "admin": {
-        "senha": "admin123",
-        "tipo": "admin"
-    },
     "serviceit": {
-        "senha": "serviceit123",
-        "tipo": "am"
+        "senha": "pbkdf2:sha256:600000$w5PUQQxg9IHWgyKc$9eda352b008736c06df0d7c9a0ceb4a593bb33763d64c159b90cc1de254ad25a",
+        "tipo": "usuario",
+        "nome": "serviceit",
+        "status": 1
     },
     "se@service.com.br": {
-        "senha": "SEmarcos231",
-        "tipo": "se"
+        "senha": "pbkdf2:sha256:600000$649np1ymT8LvTj22$3b65fd51c7644775bf089d5081f467732371e355b4051164643cbee6df7108d6",
+        "tipo": "usuario",
+        "nome": "se@service.com.br",
+        "status": 1
+    },
+    "admin": {
+        "senha": "admin",
+        "tipo": "admin",
+        "nome": "admin",
+        "status": 1
+    },
+    "joao.almeida": {
+        "senha": "joaopedro123",
+        "tipo": "admin",
+        "nome": "João Pedro Santos Almeida",
+        "status": 1,
+        "superusuario": true
+    },
+    "carlos.almeida": {
+        "nome": "Carlos Roberto dos Santos de Almeida",
+        "senha": "pbkdf2:sha256:600000$Nw0PA3qaFCRpdzVO$b2297f6f00349fa0adddcaafbf3fcf63667c1d175513aef0bfe2f2ca65749cab",
+        "status": 1,
+        "tipo": "admin",
+        "perfil": "Comercial São Paulo",
+        "superusuario": true
+    },
+    "matheus.araujo": {
+        "nome": "Matheus Araujo",
+        "senha": "pbkdf2:sha256:600000$e81CFz7tHr7uAiiw$22ec59054d95639bdce9fe81258bc83fc6f8bb7858e97acc3c5b8120680398f5",
+        "status": 1,
+        "tipo": "admin",
+        "perfil": "Sales Engineer (Arquitetos)",
+        "superusuario": true
+    },
+    "marcos.costa": {
+        "nome": "Marcos Costa",
+        "senha": "Service@2025",
+        "status": 1,
+        "tipo": "admin",
+        "perfil": "Sales Engineer (Arquitetos)",
+        "superusuario": true
     }
-} 
+}

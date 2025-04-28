@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Visualizar Logs do Sistema{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mt-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4>Logs do Sistema</h4>
+                    <div>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Voltar</a>
+                        <a href="{{ url_for('visualizar_logs') }}" class="btn btn-primary">Atualizar</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Exibindo as 500 últimas linhas de log. Para visualizar logs completos, acesse o arquivo de log diretamente.
+                    </div>
+                    
+                    <div class="logs-container" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; height: 600px; overflow-y: auto; font-family: monospace; font-size: 12px; white-space: pre-wrap;">
+                        {{ logs|safe }}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Caminho do arquivo de log: <code>logs/app.log</code></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

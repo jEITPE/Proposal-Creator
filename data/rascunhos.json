@@ -1,16 +1,4 @@
 {
-    "3aae8a68-e272-4b00-864a-4c361f4dd5f0": {
-        "nome_cliente": "UNIMED",
-        "logo_cliente": "static\\uploads\\UNIMED_2c9cf79c-26a2-40d5-9623-462fb3c835c7.png",
-        "modelo_proposta": "capa.docx",
-        "blocos_selecionados": [
-            "Termo_de_Confidencialidade",
-            "Sumario_Executivo",
-            "Visao_Geral_dos_Servicos"
-        ],
-        "usuario": "serviceit",
-        "data_atualizacao": "05/03/2025 21:37:06"
-    },
     "ac7a6862-59fe-4b53-bd1b-6f85e45d9126": {
         "nome_cliente": "UNIMED",
         "logo_cliente": "static\\uploads\\UNIMED_cc412646-db28-45e0-815a-cea077c6a3ea.png",
@@ -34,5 +22,12 @@
         ],
         "usuario": "admin",
         "data_atualizacao": "05/03/2025 21:46:19"
+    },
+    "c8885125-28be-4bf7-8c54-48903a71eaf6": {
+        "nome_cliente": "UNIMED",
+        "data_criacao": "14/03/2025 19:43:12",
+        "criado_por": "admin",
+        "blocos_selecionados": [],
+        "blocos_temporarios": {}
     }
 }

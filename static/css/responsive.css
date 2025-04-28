@@ -1,0 +1,321 @@
+/* Arquivo de responsividade aprimorada - Proposal Creator */
+
+/* Variáveis globais para breakpoints */
+:root {
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-xxl: 1400px;
+}
+
+/* Base - Estilos para dispositivos móveis primeiro */
+body {
+  overflow-x: hidden;
+}
+
+/* Para todos os dispositivos - ajustes que melhoram a experiência */
+.layout-container {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-content {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px;
+  height: 100vh;
+}
+
+/* Estilos para telas muito pequenas (até 480px) - Dispositivos móveis compactos */
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100%;
+    max-width: 280px;
+  }
+  
+  .sidebar-header {
+    padding: 15px 10px;
+  }
+  
+  .logo {
+    height: 40px;
+    width: 40px;
+    margin-right: 10px;
+  }
+  
+  .site-title {
+    font-size: 14px;
+  }
+  
+  .menu-link {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+  
+  .menu-link i {
+    font-size: 16px;
+    margin-right: 8px;
+  }
+  
+  .menu-category {
+    padding: 10px 15px 6px;
+    font-size: 11px;
+  }
+  
+  .user-info {
+    padding: 8px;
+  }
+  
+  .user-avatar {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .user-name {
+    font-size: 13px;
+  }
+  
+  .user-role {
+    font-size: 11px;
+  }
+  
+  .logout-link {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .main-content {
+    padding: 15px;
+    padding-top: 70px;
+  }
+  
+  .page-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+  
+  .card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    padding: 12px 15px;
+  }
+  
+  .card-body {
+    padding: 15px;
+  }
+  
+  .form-control {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  table {
+    font-size: 13px;
+  }
+  
+  th, td {
+    padding: 8px 10px;
+  }
+}
+
+/* Estilos para celulares maiores e tablets pequenos (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    max-width: 320px;
+  }
+  
+  .main-content {
+    padding: 20px;
+    padding-top: 75px;
+  }
+  
+  .card-header {
+    padding: 15px 18px;
+  }
+  
+  .card-body {
+    padding: 18px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .btn {
+    padding: 9px 16px;
+  }
+}
+
+/* Estilos para tablets (769px - 992px) */
+@media (min-width: 769px) and (max-width: 992px) {
+  .sidebar {
+    width: 100%;
+    max-width: 320px;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    padding: 25px;
+    padding-top: 70px;
+  }
+  
+  .card {
+    margin-bottom: 20px;
+  }
+}
+
+/* Estilos para laptops e desktops menores (993px - 1200px) */
+@media (min-width: 993px) and (max-width: 1200px) {
+  .sidebar {
+    width: 250px;
+  }
+  
+  .main-content {
+    margin-left: 250px;
+    padding: 30px;
+  }
+  
+  .card {
+    margin-bottom: 25px;
+  }
+}
+
+/* Estilos para desktops (1201px - 1400px) */
+@media (min-width: 1201px) and (max-width: 1400px) {
+  .sidebar {
+    width: 280px;
+  }
+  
+  .main-content {
+    margin-left: 280px;
+    padding: 30px 35px;
+  }
+}
+
+/* Estilos para monitores grandes (acima de 1400px) */
+@media (min-width: 1401px) {
+  .sidebar {
+    width: 300px;
+  }
+  
+  .main-content {
+    margin-left: 300px;
+    padding: 35px 40px;
+  }
+  
+  .container {
+    max-width: 1320px;
+  }
+  
+  .card {
+    margin-bottom: 30px;
+  }
+  
+  .card-header {
+    padding: 18px 25px;
+  }
+  
+  .card-body {
+    padding: 25px;
+  }
+  
+  .form-control {
+    padding: 12px 18px;
+  }
+  
+  .btn {
+    padding: 12px 22px;
+    font-size: 16px;
+  }
+}
+
+/* Ajustes específicos para criar_proposta.html e gerenciar_blocos.html */
+@media (max-width: 768px) {
+  .block-selector {
+    flex-direction: column;
+  }
+  
+  .block-list {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .block-preview {
+    margin-top: 20px;
+    max-height: 350px;
+    overflow-y: auto;
+  }
+}
+
+/* Fix para elementos que podem quebrar o layout em telas menores */
+img, svg, video, canvas, audio, iframe, embed, object {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Melhorias na navegação por toque para dispositivos móveis */
+@media (hover: none) and (pointer: coarse) {
+  .menu-link, .btn, .card, .form-control {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  
+  .custom-control {
+    min-height: 30px;
+  }
+  
+  select.form-control {
+    height: 45px;
+  }
+}
+
+/* Melhorias para dispositivos móveis na rotação horizontal */
+@media (max-height: 500px) and (orientation: landscape) {
+  .sidebar {
+    overflow-y: auto;
+  }
+  
+  .sidebar-header {
+    padding: 10px;
+  }
+  
+  .menu-category {
+    padding: 8px 15px 4px;
+  }
+  
+  .menu-link {
+    padding: 8px 15px;
+  }
+  
+  .sidebar-footer {
+    padding: 10px;
+  }
+}
+
+/* Melhorias no contraste para visualização em telas brilhantes (como notebooks em áreas externas) */
+@media (prefers-contrast: more) {
+  :root {
+    --text-dark: #000000;
+    --text-medium: #222222;
+    --primary: #cc0000;
+    --secondary-light: #888888;
+  }
+  
+  .form-control {
+    border-width: 2px;
+  }
+} 

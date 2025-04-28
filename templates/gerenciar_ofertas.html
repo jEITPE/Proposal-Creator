@@ -1,0 +1,1581 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerenciar Ofertas{% endblock %}
+
+{% block page_title %}Gerenciar Ofertas{% endblock %}
+
+{% block head %}
+<style>
+    /* Estilos para cards de oferta */
+    .oferta-card {
+        background-color: var(--background-light);
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .oferta-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--primary), var(--primary-hover));
+    }
+    
+    .oferta-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .oferta-header {
+        padding: 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .oferta-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0;
+        padding-left: 10px;
+    }
+    
+    .oferta-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .oferta-body {
+        padding: 20px;
+    }
+    
+    .oferta-description {
+        color: var(--text-medium);
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .oferta-section {
+        margin-bottom: 20px;
+    }
+    
+    .oferta-section-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .oferta-section-title i {
+        margin-right: 8px;
+        color: var(--primary);
+    }
+    
+    .blocos-container {
+        max-height: 150px;
+        overflow-y: auto;
+        background-color: rgba(0, 0, 0, 0.02);
+        border-radius: 5px;
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    
+    .bloco-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        background-color: rgba(0, 0, 0, 0.05);
+        color: var(--text-medium);
+        transition: var(--transition);
+    }
+    
+    .bloco-badge.obrigatorio {
+        background-color: rgba(230, 0, 0, 0.1);
+        color: var(--primary);
+        border: 1px solid rgba(230, 0, 0, 0.1);
+    }
+    
+    /* Estilos para o modal */
+    .form-section {
+        margin-bottom: 20px;
+    }
+    
+    .form-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .form-section-title i {
+        margin-right: 8px;
+        color: var(--primary);
+    }
+    
+    /* Pesquisa de blocos */
+    .search-container {
+        margin-bottom: 15px;
+        position: relative;
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 10px 15px 10px 40px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: var(--border-radius);
+        font-size: 14px;
+    }
+    
+    .search-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(230, 0, 0, 0.1);
+    }
+    
+    .blocos-selector {
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: var(--border-radius);
+        padding: 15px;
+    }
+    
+    .bloco-checkbox-container {
+        margin-bottom: 10px;
+        padding: 8px 10px;
+        background-color: var(--background-light);
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: var(--transition);
+    }
+    
+    .bloco-checkbox-container:hover {
+        background-color: rgba(230, 0, 0, 0.03);
+        border-color: rgba(230, 0, 0, 0.1);
+    }
+    
+    .selection-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+    
+    .selection-actions button {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        background-color: var(--background-light);
+        border-radius: var(--border-radius);
+        margin-top: 20px;
+        border: 1px dashed rgba(0, 0, 0, 0.1);
+    }
+    
+    .empty-state-icon {
+        font-size: 48px;
+        color: var(--text-light);
+        margin-bottom: 20px;
+    }
+    
+    .empty-state-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+    }
+    
+    .empty-state-description {
+        color: var(--text-medium);
+        max-width: 500px;
+        margin: 0 auto 20px;
+    }
+    
+    .info-badge {
+        background-color: rgba(230, 0, 0, 0.1);
+        padding: 15px;
+        border-radius: var(--border-radius);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .info-badge i {
+        margin-right: 10px;
+        margin-top: 3px;
+        color: var(--primary);
+    }
+    
+    /* Estilos para toasts */
+    .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+    
+    .toast {
+        min-width: 280px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        border: none;
+        opacity: 1;
+    }
+    
+    .toast .close {
+        color: #fff;
+        opacity: 0.8;
+        text-shadow: none;
+    }
+    
+    .toast .close:hover {
+        opacity: 1;
+    }
+    
+    .toast.bg-success, .toast.bg-danger {
+        color: white;
+    }
+    
+    .toast.bg-warning, .toast.bg-info {
+        color: #343a40;
+    }
+    
+    /* Melhorias na UX de ações */
+    .btn-spinner {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: relative;
+        vertical-align: middle;
+        margin-right: 5px;
+    }
+    
+    /* Efeitos de hover e focus para melhor feedback */
+    .btn-primary:hover, .btn-primary:focus {
+        box-shadow: 0 5px 15px rgba(230, 0, 0, 0.2);
+    }
+    
+    .btn-danger:hover, .btn-danger:focus {
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.2);
+    }
+    
+    /* Botão de excluir melhorado */
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+    
+    .btn-danger i {
+        color: white;
+    }
+    
+    /* Animações para feedback visual */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease forwards;
+    }
+    
+    /* Efeito de carregamento */
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        border-radius: var(--border-radius);
+    }
+    
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        color: var(--primary);
+    }
+    
+    /* Mensagem de sucesso */
+    .success-message {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        padding: 10px 15px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        display: none;
+    }
+    
+    /* Estilo para o overlay de edição em destaque */
+    .editar-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.95);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        z-index: 10;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        overflow-y: auto;
+        padding: 20px;
+    }
+    
+    .editar-overlay.ativo {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    
+    .editar-overlay-conteudo {
+        width: 90%;
+        max-width: 600px;
+        text-align: left;
+    }
+    
+    .editar-overlay h3 {
+        margin-bottom: 15px;
+        color: var(--primary);
+        text-align: center;
+    }
+    
+    .editar-overlay p {
+        margin-bottom: 20px;
+    }
+    
+    .editar-acoes {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+    
+    .bloco-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        border: 1px solid #eee;
+    }
+    
+    .bloco-item-nome {
+        flex-grow: 1;
+    }
+    
+    .bloco-item-acoes {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .bloco-item-acoes button {
+        padding: 2px 6px;
+        font-size: 12px;
+    }
+    
+    .bloco-obrigatorio {
+        background-color: rgba(230, 0, 0, 0.05);
+        border-color: rgba(230, 0, 0, 0.1);
+    }
+    
+    .form-bloco-texto {
+        display: none;
+        margin-top: 10px;
+    }
+    
+    .form-bloco-texto textarea {
+        width: 100%;
+        min-height: 100px;
+        margin-bottom: 10px;
+    }
+    
+    .form-adicionar-bloco {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+    
+    .form-adicionar-bloco select {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+    
+    /* Animação para destacar o formulário (usado no fallback) */
+    @keyframes highlightForm {
+        0% { box-shadow: 0 0 0 0 rgba(230, 0, 0, 0.5); }
+        70% { box-shadow: 0 0 0 15px rgba(230, 0, 0, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(230, 0, 0, 0); }
+    }
+    
+    .highlight-form {
+        animation: highlightForm 1.5s ease-in-out;
+        border-radius: 8px;
+    }
+    
+    /* Melhorias nos estilos de checkboxes */
+    .bloco-checkbox-container {
+        transition: all 0.2s ease;
+        margin-bottom: 12px;
+        border-radius: 6px;
+    }
+    
+    .bloco-checkbox-container:hover {
+        background-color: #f8f9fa;
+        transform: translateX(4px);
+    }
+    
+    /* Estilo para o modal melhorado */
+    .modal-content {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .form-section {
+        transition: all 0.3s ease;
+    }
+    
+    .form-section:hover {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+</style>
+<script src="{{ url_for('static', filename='js/ofertas.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0"><i class="fas fa-tag"></i> Gestão de Ofertas</h5>
+            <button class="btn btn-primary" id="nova-oferta-btn">
+                <i class="fas fa-plus"></i> Nova Oferta
+            </button>
+        </div>
+        
+        <!-- Mensagem de Sucesso (inicialmente oculta) -->
+        <div id="mensagem-sucesso" class="success-message">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span>Operação realizada com sucesso!</span>
+        </div>
+        
+        <div class="card-body">
+            <div class="info-badge">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    As ofertas permitem agrupar blocos de proposta específicos para cada tipo de serviço.
+                    Ao criar uma proposta, os clientes poderão selecionar uma ou mais ofertas para incluir na proposta.
+                </div>
+            </div>
+            
+            {% if ofertas %}
+                <div class="row">
+                    {% for tipo_oferta, oferta in ofertas.items() %}
+                    <div class="col-lg-6 col-md-12 mb-4">
+                        <div class="oferta-card" id="oferta-{{ tipo_oferta|replace(' ', '_') }}">
+                            <!-- Overlay de edição melhorado (inicialmente oculto) -->
+                            <div class="editar-overlay" id="editar-overlay-{{ tipo_oferta|replace(' ', '_') }}">
+                                <div class="editar-overlay-conteudo">
+                                    <h3><i class="fas fa-edit"></i> Editar Oferta: {{ tipo_oferta }}</h3>
+                                    
+                                    <div class="form-group">
+                                        <label for="edit-descricao-{{ tipo_oferta|replace(' ', '_') }}">Descrição da Oferta:</label>
+                                        <textarea class="form-control" id="edit-descricao-{{ tipo_oferta|replace(' ', '_') }}" rows="3">{{ oferta.descricao }}</textarea>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <h5><i class="fas fa-cubes"></i> Blocos da Oferta</h5>
+                                        <p class="small text-muted">Você pode marcar/desmarcar como obrigatório, editar o conteúdo ou remover blocos.</p>
+                                        
+                                        <div class="mt-3">
+                                            {% if oferta.blocos %}
+                                                {% for bloco_nome in oferta.blocos %}
+                                                <div class="bloco-item {% if bloco_nome in oferta.obrigatorios %}bloco-obrigatorio{% endif %}">
+                                                    <div class="bloco-item-nome">{{ bloco_nome }}</div>
+                                                    <div class="bloco-item-acoes">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" 
+                                                                id="obrigatorio-{{ tipo_oferta|replace(' ', '_') }}-{{ bloco_nome|replace(' ', '_') }}"
+                                                                {% if bloco_nome in oferta.obrigatorios %}checked{% endif %}>
+                                                            <label class="custom-control-label" for="obrigatorio-{{ tipo_oferta|replace(' ', '_') }}-{{ bloco_nome|replace(' ', '_') }}">
+                                                                Obrigatório
+                                                            </label>
+                                                        </div>
+                                                        <button class="btn btn-sm btn-outline-primary editar-texto-btn" 
+                                                                data-oferta="{{ tipo_oferta|replace(' ', '_') }}" 
+                                                                data-bloco="{{ bloco_nome|replace(' ', '_') }}">
+                                                            <i class="fas fa-pencil-alt"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger remover-bloco-btn"
+                                                                data-oferta="{{ tipo_oferta|replace(' ', '_') }}" 
+                                                                data-bloco="{{ bloco_nome }}">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <!-- Formulário de edição de texto (inicialmente oculto) -->
+                                                <div id="form-texto-{{ tipo_oferta|replace(' ', '_') }}-{{ bloco_nome|replace(' ', '_') }}" class="form-bloco-texto">
+                                                    <textarea class="form-control" placeholder="Edite o conteúdo deste bloco..."></textarea>
+                                                    <div class="text-right">
+                                                        <button class="btn btn-sm btn-outline-secondary cancelar-edicao-btn" 
+                                                                data-oferta="{{ tipo_oferta|replace(' ', '_') }}" 
+                                                                data-bloco="{{ bloco_nome|replace(' ', '_') }}">
+                                                            Cancelar
+                                                        </button>
+                                                        <button class="btn btn-sm btn-primary salvar-texto-btn" 
+                                                                data-oferta="{{ tipo_oferta|replace(' ', '_') }}" 
+                                                                data-bloco="{{ bloco_nome|replace(' ', '_') }}">
+                                                            Salvar Alterações
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <p class="text-muted">Nenhum bloco adicionado a esta oferta.</p>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- Formulário para adicionar um novo bloco -->
+                                        <div class="form-adicionar-bloco">
+                                            <h6><i class="fas fa-plus-circle"></i> Adicionar Novo Bloco</h6>
+                                            <select class="form-control" id="select-bloco-{{ tipo_oferta|replace(' ', '_') }}">
+                                                <option value="">Selecione um bloco para adicionar</option>
+                                                <option value="bloco1">Bloco 1</option>
+                                                <option value="bloco2">Bloco 2</option>
+                                                <option value="bloco3">Bloco 3</option>
+                                                <!-- Aqui idealmente viria uma lista de todos os blocos disponíveis no sistema -->
+                                            </select>
+                                            <div class="custom-control custom-checkbox mb-3">
+                                                <input type="checkbox" class="custom-control-input" id="novo-bloco-obrigatorio-{{ tipo_oferta|replace(' ', '_') }}">
+                                                <label class="custom-control-label" for="novo-bloco-obrigatorio-{{ tipo_oferta|replace(' ', '_') }}">
+                                                    Marcar como obrigatório
+                                                </label>
+                                            </div>
+                                            <button class="btn btn-sm btn-success adicionar-bloco-btn" data-oferta="{{ tipo_oferta|replace(' ', '_') }}">
+                                                <i class="fas fa-plus"></i> Adicionar Bloco
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="editar-acoes">
+                                        <button class="btn btn-secondary btn-fechar" data-target="{{ tipo_oferta|replace(' ', '_') }}">
+                                            <i class="fas fa-times"></i> Cancelar
+                                        </button>
+                                        <button class="btn btn-primary salvar-oferta-btn" data-oferta="{{ tipo_oferta|replace(' ', '_') }}">
+                                            <i class="fas fa-save"></i> Salvar Alterações
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="oferta-header">
+                                <h5 class="oferta-title">{{ tipo_oferta }}</h5>
+                                <div class="oferta-actions">
+                                    <button class="btn btn-sm btn-primary editar-btn" data-tipo="{{ tipo_oferta|replace(' ', '_') }}">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-danger delete-oferta-btn" data-tipo="{{ tipo_oferta }}">
+                                        <i class="fas fa-trash text-white"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="oferta-body">
+                                <div class="oferta-description">
+                                    {{ oferta.descricao or "Sem descrição definida." }}
+                                </div>
+                                
+                                <div class="oferta-section">
+                                    <h6 class="oferta-section-title">
+                                        <i class="fas fa-exclamation-circle"></i> Blocos Obrigatórios
+                                    </h6>
+                                    {% if oferta.obrigatorios %}
+                                        <div class="blocos-container">
+                                            {% for bloco in oferta.obrigatorios %}
+                                                <span class="bloco-badge obrigatorio">{{ bloco }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted small">Nenhum bloco obrigatório definido.</p>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="oferta-section">
+                                    <h6 class="oferta-section-title">
+                                        <i class="fas fa-list"></i> Blocos Disponíveis
+                                    </h6>
+                                    {% if oferta.blocos %}
+                                        <div class="blocos-container">
+                                            {% for bloco_nome in oferta.blocos %}
+                                                <span class="bloco-badge">{{ bloco_nome }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted small">Nenhum bloco específico definido.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <h5 class="empty-state-title">Nenhuma oferta cadastrada</h5>
+                    <p class="empty-state-description">
+                        As ofertas permitem agrupar blocos de conteúdo relacionados para facilitar a criação de propostas específicas para cada tipo de serviço.
+                    </p>
+                    <button class="btn btn-primary" id="criar-primeira-oferta-btn">
+                        <i class="fas fa-plus"></i> Criar Primeira Oferta
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Adicionar/Editar Oferta -->
+<div class="modal fade" id="addOfertaModal" tabindex="-1" role="dialog" aria-labelledby="addOfertaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addOfertaModalLabel">Nova Oferta</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="ofertaForm">
+                    <input type="hidden" name="acao" id="acao" value="adicionar">
+                    
+                    <div class="form-section bg-light p-3 rounded mb-4 border-left border-primary" style="border-left-width: 4px !important;">
+                        <h5 class="form-section-title text-primary">
+                            <i class="fas fa-info-circle"></i> Informações Básicas
+                        </h5>
+                        
+                        <div class="form-group">
+                            <label for="tipo_oferta" class="font-weight-bold">Tipo de Oferta</label>
+                            <input type="text" class="form-control" id="tipo_oferta" name="tipo_oferta" placeholder="Ex: Consultoria de TI" required>
+                            <small class="form-text text-muted">Nome que identifica a oferta, ex: "Suporte Técnico", "Consultoria", etc.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="descricao" class="font-weight-bold">Descrição</label>
+                            <textarea class="form-control" id="descricao" name="descricao" rows="3" placeholder="Descreva brevemente esta oferta..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section bg-light p-3 rounded mb-4 border-left border-primary" style="border-left-width: 4px !important;">
+                        <h5 class="form-section-title text-primary">
+                            <i class="fas fa-cubes"></i> Blocos da Oferta
+                        </h5>
+                        
+                        <div class="alert alert-info d-flex align-items-center mb-3" style="background-color: #e8f4f8; border-color: #bee5eb;">
+                            <i class="fas fa-info-circle text-info mr-2" style="font-size: 1.2rem;"></i>
+                            <div>Selecione os blocos que estarão disponíveis nesta oferta e marque quais são obrigatórios.</div>
+                        </div>
+                        
+                        <div class="selection-actions d-flex justify-content-between align-items-center mb-3">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="selecionar-todos-blocos">
+                                    <i class="fas fa-check-square"></i> Selecionar Todos
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="deselecionar-todos-blocos">
+                                    <i class="fas fa-square"></i> Desmarcar Todos
+                                </button>
+                            </div>
+                            <div class="search-container position-relative w-50">
+                                <i class="fas fa-search position-absolute text-muted" style="left:10px; top:50%; transform: translateY(-50%);"></i>
+                                <input type="text" id="pesquisar-blocos" class="form-control form-control-sm pl-4" placeholder="Filtrar blocos...">
+                            </div>
+                        </div>
+                        
+                        <div class="blocos-selector bg-white rounded border p-3" style="max-height: 300px; overflow-y: auto;">
+                            <!-- Os checkboxes dos blocos serão preenchidos via JavaScript -->
+                            <div id="blocos-checkboxes-container">
+                                <p class="text-center text-muted py-4">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i> Carregando blocos disponíveis...
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6 class="font-weight-bold mb-2">Blocos Obrigatórios</h6>
+                            <div id="blocos-obrigatorios-container" class="blocos-container bg-white p-3 rounded border">
+                                <p class="text-muted small mb-0">Nenhum bloco marcado como obrigatório.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer border-0 px-0 pb-0">
+                        <div class="w-100 d-flex justify-content-between align-items-center">
+                            <div id="status-message" class="d-none alert alert-info py-2 px-3 mb-0">
+                                <span id="status-text"></span>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary ml-2">
+                                    <i class="fas fa-save mr-1"></i> Salvar Oferta
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="deleteOfertaModal" tabindex="-1" role="dialog" aria-labelledby="deleteOfertaModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteOfertaModalLabel">Confirmar Exclusão</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir esta oferta? Esta ação não pode ser desfeita.</p>
+                <form id="deleteOfertaForm">
+                    <input type="hidden" id="delete_tipo_oferta" name="delete_tipo_oferta">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" form="deleteOfertaForm" class="btn btn-danger">Excluir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Container de Toasts -->
+<div class="toast-container"></div>
+
+<script>
+// Script para manipulação de eventos de botões
+document.addEventListener('DOMContentLoaded', function() {
+    // Handler para botão de nova oferta
+    document.getElementById('nova-oferta-btn')?.addEventListener('click', function() {
+        // Resetar o modal para valores iniciais
+        resetModal();
+        
+        try {
+            // Inicializar e mostrar o modal
+            const ofertaModal = $('#addOfertaModal');
+            
+            // Garantir que o modal está inicializado corretamente
+            if (typeof ofertaModal.modal !== 'function') {
+                console.error('Função modal não encontrada. Verificar se o Bootstrap está carregado corretamente.');
+                // Fallback: rolar até o formulário
+                scrollToForm();
+                return;
+            }
+            
+            // Mostrar o modal
+            ofertaModal.modal({
+                backdrop: 'static',
+                keyboard: false,
+                show: true
+            });
+            
+            // Verificar se o modal foi aberto após um curto intervalo
+            setTimeout(function() {
+                if (!$('#addOfertaModal').hasClass('show')) {
+                    console.warn('Modal não apareceu. Usando fallback de rolagem.');
+                    scrollToForm();
+                }
+            }, 500);
+        } catch (error) {
+            console.error('Erro ao abrir modal:', error);
+            // Fallback: rolar até o formulário
+            scrollToForm();
+        }
+    });
+
+    // Handler para o botão de criar primeira oferta
+    document.getElementById('criar-primeira-oferta-btn')?.addEventListener('click', function() {
+        // Resetar o modal para valores iniciais
+        resetModal();
+        
+        try {
+            // Inicializar e mostrar o modal
+            const ofertaModal = $('#addOfertaModal');
+            
+            // Garantir que o modal está inicializado corretamente
+            if (typeof ofertaModal.modal !== 'function') {
+                console.error('Função modal não encontrada. Verificar se o Bootstrap está carregado corretamente.');
+                // Fallback: rolar até o formulário
+                scrollToForm();
+                return;
+            }
+            
+            // Mostrar o modal
+            ofertaModal.modal({
+                backdrop: 'static',
+                keyboard: false,
+                show: true
+            });
+            
+            // Verificar se o modal foi aberto após um curto intervalo
+            setTimeout(function() {
+                if (!$('#addOfertaModal').hasClass('show')) {
+                    console.warn('Modal não apareceu. Usando fallback de rolagem.');
+                    scrollToForm();
+                }
+            }, 500);
+        } catch (error) {
+            console.error('Erro ao abrir modal:', error);
+            // Fallback: rolar até o formulário
+            scrollToForm();
+        }
+    });
+
+    // Handler para botões de edição
+    document.querySelectorAll('.editar-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const tipoId = this.getAttribute('data-tipo');
+            
+            // Mostrar o overlay de edição - alternativa usando o modal padrão
+            carregarOfertaExistente(tipoId.replace(/_/g, ' '));
+        });
+    });
+    
+    // Handler para fechar o overlay de edição
+    document.querySelectorAll('.btn-fechar').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const tipoId = this.getAttribute('data-target');
+            const overlay = document.getElementById('editar-overlay-' + tipoId);
+            if (overlay) {
+                overlay.classList.remove('ativo');
+            }
+        });
+    });
+    
+    // Handler para marcar/desmarcar blocos como obrigatórios
+    document.querySelectorAll('.custom-control-input').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            const blocoItem = this.closest('.bloco-item');
+            if (this.checked) {
+                blocoItem.classList.add('bloco-obrigatorio');
+            } else {
+                blocoItem.classList.remove('bloco-obrigatorio');
+            }
+        });
+    });
+    
+    // Handler para botões de editar texto dos blocos
+    document.querySelectorAll('.editar-texto-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const oferta = this.getAttribute('data-oferta');
+            const bloco = this.getAttribute('data-bloco');
+            const formTexto = document.getElementById('form-texto-' + oferta + '-' + bloco);
+            
+            // Mostrar o formulário de edição de texto
+            if (formTexto) {
+                formTexto.style.display = 'block';
+                this.style.display = 'none';
+            }
+        });
+    });
+    
+    // Handler para cancelar edição de texto
+    document.querySelectorAll('.cancelar-edicao-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const oferta = this.getAttribute('data-oferta');
+            const bloco = this.getAttribute('data-bloco');
+            const formTexto = document.getElementById('form-texto-' + oferta + '-' + bloco);
+            
+            // Esconder o formulário
+            if (formTexto) {
+                formTexto.style.display = 'none';
+                // Mostrar novamente o botão de editar
+                const editarBtn = formTexto.previousElementSibling.querySelector('.editar-texto-btn');
+                if (editarBtn) {
+                    editarBtn.style.display = 'inline-block';
+                }
+            }
+        });
+    });
+    
+    // Handler para salvar alterações no texto
+    document.querySelectorAll('.salvar-texto-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const oferta = this.getAttribute('data-oferta');
+            const bloco = this.getAttribute('data-bloco');
+            const formTexto = document.getElementById('form-texto-' + oferta + '-' + bloco);
+            
+            if (formTexto) {
+                // Aqui você implementaria a lógica para salvar o texto editado
+                formTexto.style.display = 'none';
+                
+                // Exibir mensagem de sucesso
+                const mensagemSucesso = document.getElementById('mensagem-sucesso');
+                mensagemSucesso.style.display = 'block';
+                mensagemSucesso.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Texto do bloco atualizado com sucesso!';
+                
+                setTimeout(function() {
+                    mensagemSucesso.style.display = 'none';
+                }, 3000);
+                
+                // Mostrar novamente o botão de editar
+                const editarBtn = formTexto.previousElementSibling.querySelector('.editar-texto-btn');
+                if (editarBtn) {
+                    editarBtn.style.display = 'inline-block';
+                }
+            }
+        });
+    });
+    
+    // Handler para remover blocos
+    document.querySelectorAll('.remover-bloco-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const bloco = this.getAttribute('data-bloco');
+            
+            if (confirm('Tem certeza que deseja remover o bloco "' + bloco + '" desta oferta?')) {
+                // Aqui você implementaria a lógica para remover o bloco
+                const blocoItem = this.closest('.bloco-item');
+                const formTexto = blocoItem.nextElementSibling;
+                
+                if (blocoItem && blocoItem.classList.contains('bloco-item')) {
+                    blocoItem.remove();
+                }
+                
+                if (formTexto && formTexto.classList.contains('form-bloco-texto')) {
+                    formTexto.remove();
+                }
+                
+                // Exibir mensagem de sucesso
+                const mensagemSucesso = document.getElementById('mensagem-sucesso');
+                mensagemSucesso.style.display = 'block';
+                mensagemSucesso.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Bloco removido com sucesso!';
+                
+                setTimeout(function() {
+                    mensagemSucesso.style.display = 'none';
+                }, 3000);
+            }
+        });
+    });
+    
+    // Handler para adicionar blocos
+    document.querySelectorAll('.adicionar-bloco-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const oferta = this.getAttribute('data-oferta');
+            const selectBloco = document.getElementById('select-bloco-' + oferta);
+            const obrigatorioCheck = document.getElementById('novo-bloco-obrigatorio-' + oferta);
+            
+            if (selectBloco && selectBloco.value) {
+                const blocoNome = selectBloco.options[selectBloco.selectedIndex].text;
+                const obrigatorio = obrigatorioCheck && obrigatorioCheck.checked;
+                
+                // Aqui você implementaria a lógica para adicionar o bloco à oferta
+                // Por enquanto, vamos mostrar uma mensagem de sucesso
+                const mensagemSucesso = document.getElementById('mensagem-sucesso');
+                mensagemSucesso.style.display = 'block';
+                mensagemSucesso.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Bloco "' + blocoNome + '" adicionado com sucesso!';
+                
+                setTimeout(function() {
+                    mensagemSucesso.style.display = 'none';
+                }, 3000);
+                
+                // Resetar o formulário
+                selectBloco.value = '';
+                if (obrigatorioCheck) {
+                    obrigatorioCheck.checked = false;
+                }
+            } else {
+                alert('Por favor, selecione um bloco para adicionar.');
+            }
+        });
+    });
+    
+    // Handler para salvar todas as alterações da oferta
+    document.querySelectorAll('.salvar-oferta-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const oferta = this.getAttribute('data-oferta');
+            const overlay = document.getElementById('editar-overlay-' + oferta);
+            
+            // Aqui você implementaria a lógica para salvar todas as alterações da oferta
+            
+            // Exibir mensagem de sucesso
+            const mensagemSucesso = document.getElementById('mensagem-sucesso');
+            mensagemSucesso.style.display = 'block';
+            mensagemSucesso.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Oferta atualizada com sucesso!';
+            
+            setTimeout(function() {
+                mensagemSucesso.style.display = 'none';
+            }, 3000);
+            
+            // Fechar o overlay
+            if (overlay) {
+                overlay.classList.remove('ativo');
+            }
+        });
+    });
+
+    // Handler para botões de exclusão
+    document.querySelectorAll('.delete-oferta-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const tipo = this.getAttribute('data-tipo');
+            
+            // Preencher o campo hidden no modal de exclusão
+            document.getElementById('delete_tipo_oferta').value = tipo;
+            
+            // Mostrar o modal de confirmação
+            $('#deleteOfertaModal').modal('show');
+        });
+    });
+    
+    // Configurar submissão do formulário de exclusão
+    document.getElementById('deleteOfertaForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Obter o tipo da oferta a ser excluída
+        const tipoOferta = document.getElementById('delete_tipo_oferta').value;
+        
+        // Desabilitar botão de exclusão
+        const btnSubmit = this.querySelector('button[type="submit"]');
+        const btnText = btnSubmit.innerHTML;
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+        
+        // Mostrar toast de processamento
+        mostrarToast('Excluindo oferta...', 'info');
+        
+        // Enviar requisição de exclusão
+        fetch('/api/salvar_oferta', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                acao: 'excluir',
+                tipo_oferta: tipoOferta
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.erro) {
+                mostrarToast(data.erro, 'error');
+            } else {
+                mostrarToast(data.sucesso || 'Oferta excluída com sucesso!', 'success');
+                
+                // Fechar modal e recarregar a página
+                $('#deleteOfertaModal').modal('hide');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao excluir oferta:', error);
+            mostrarToast('Erro ao excluir oferta. Tente novamente.', 'error');
+        })
+        .finally(() => {
+            // Restaurar botão
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = btnText;
+        });
+    });
+});
+
+// Função para resetar o modal para estado inicial
+function resetModal() {
+    // Limpar formulário
+    document.getElementById('ofertaForm').reset();
+    document.getElementById('acao').value = 'adicionar';
+    document.getElementById('tipo_oferta').readOnly = false;
+    document.getElementById('addOfertaModalLabel').textContent = 'Nova Oferta';
+    
+    // Limpar a pesquisa
+    const pesquisarBlocos = document.getElementById('pesquisar-blocos');
+    if (pesquisarBlocos) {
+        pesquisarBlocos.value = '';
+    }
+    
+    // Carregar blocos disponíveis
+    carregarBlocosDisponiveis();
+    
+    // Atualizar lista de blocos obrigatórios
+    atualizarListaObrigatorios();
+}
+
+// Função para carregar blocos disponíveis
+function carregarBlocosDisponiveis() {
+    const container = document.getElementById('blocos-checkboxes-container');
+    
+    // Exibir loading
+    container.innerHTML = `
+        <div class="text-center text-muted py-4">
+            <div class="spinner-border text-primary mb-3" role="status" style="width: 2rem; height: 2rem;">
+                <span class="sr-only">Carregando...</span>
+            </div>
+            <p class="mb-0">Carregando blocos disponíveis...</p>
+        </div>
+    `;
+    
+    // Carregar blocos via API
+    fetch('/api/blocos')
+        .then(response => response.json())
+        .then(data => {
+            if (data.erro) {
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle mr-2"></i> ${data.erro}
+                    </div>
+                `;
+                return;
+            }
+            
+            // Se não houver blocos disponíveis
+            if (Object.keys(data).length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="fas fa-cube text-muted mb-3" style="font-size: 2.5rem;"></i>
+                        <p class="text-muted mb-3">Nenhum bloco disponível no sistema.</p>
+                        <a href="/gerenciar_blocos" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-plus mr-1"></i> Criar Novos Blocos
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Renderizar checkboxes para os blocos
+            let html = '';
+            for (const [nome, bloco] of Object.entries(data)) {
+                html += `
+                    <div class="bloco-checkbox-container card border-0 shadow-sm">
+                        <div class="card-body p-3">
+                            <div class="d-flex align-items-start mb-2">
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input bloco-checkbox" type="checkbox" 
+                                        id="bloco_${nome}" name="blocos_selecionados" value="${nome}">
+                                    <label class="custom-control-label font-weight-bold" for="bloco_${nome}">
+                                        ${bloco.titulo}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="custom-control custom-switch ml-4">
+                                    <input class="custom-control-input bloco-obrigatorio-checkbox" type="checkbox" 
+                                        id="obrigatorio_${nome}" name="blocos_obrigatorios" value="${nome}">
+                                    <label class="custom-control-label small" for="obrigatorio_${nome}">
+                                        Bloco obrigatório
+                                    </label>
+                                </div>
+                                <span class="badge badge-light small text-muted">ID: ${nome}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+            
+            // Adicionar event listeners para os checkboxes
+            document.querySelectorAll('.bloco-checkbox').forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    const nomeBloco = this.value;
+                    const obrigatorioCheck = document.getElementById(`obrigatorio_${nomeBloco}`);
+                    
+                    // Se desmarcar o bloco, também desmarcar o "obrigatório"
+                    if (!this.checked && obrigatorioCheck) {
+                        obrigatorioCheck.checked = false;
+                    }
+                    
+                    // Desabilitar checkbox de obrigatório se o bloco não estiver selecionado
+                    if (obrigatorioCheck) {
+                        obrigatorioCheck.disabled = !this.checked;
+                    }
+                    
+                    // Atualizar lista de blocos obrigatórios
+                    atualizarListaObrigatorios();
+                });
+            });
+            
+            // Adicionar event listeners para os checkboxes de obrigatório
+            document.querySelectorAll('.bloco-obrigatorio-checkbox').forEach(function(checkbox) {
+                // Inicialmente desabilitar se o bloco não estiver selecionado
+                const nomeBloco = checkbox.value;
+                const blocoCheck = document.getElementById(`bloco_${nomeBloco}`);
+                checkbox.disabled = !blocoCheck || !blocoCheck.checked;
+                
+                checkbox.addEventListener('change', atualizarListaObrigatorios);
+            });
+            
+            // Configurar botões de selecionar/deselecionar todos
+            configurarBotoesSelecao();
+        })
+        .catch(error => {
+            console.error('Erro ao carregar blocos:', error);
+            container.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle mr-2"></i> Erro ao carregar blocos: ${error.message}
+                </div>
+            `;
+        });
+}
+
+// Configurar botões de selecionar/deselecionar todos
+function configurarBotoesSelecao() {
+    // Botão de selecionar todos
+    document.getElementById('selecionar-todos-blocos')?.addEventListener('click', function() {
+        document.querySelectorAll('.bloco-checkbox').forEach(function(checkbox) {
+            checkbox.checked = true;
+            
+            // Habilitar os checkboxes de obrigatório
+            const nomeBloco = checkbox.value;
+            const obrigatorioCheck = document.getElementById(`obrigatorio_${nomeBloco}`);
+            if (obrigatorioCheck) {
+                obrigatorioCheck.disabled = false;
+            }
+        });
+        
+        atualizarListaObrigatorios();
+    });
+    
+    // Botão de deselecionar todos
+    document.getElementById('deselecionar-todos-blocos')?.addEventListener('click', function() {
+        document.querySelectorAll('.bloco-checkbox').forEach(function(checkbox) {
+            checkbox.checked = false;
+            
+            // Desmarcar e desabilitar os checkboxes de obrigatório
+            const nomeBloco = checkbox.value;
+            const obrigatorioCheck = document.getElementById(`obrigatorio_${nomeBloco}`);
+            if (obrigatorioCheck) {
+                obrigatorioCheck.checked = false;
+                obrigatorioCheck.disabled = true;
+            }
+        });
+        
+        atualizarListaObrigatorios();
+    });
+    
+    // Filtrar blocos ao digitar na pesquisa
+    document.getElementById('pesquisar-blocos')?.addEventListener('input', filtrarBlocos);
+}
+
+// Atualizar lista de blocos obrigatórios
+function atualizarListaObrigatorios() {
+    const container = document.getElementById('blocos-obrigatorios-container');
+    const obrigatorios = [];
+    
+    document.querySelectorAll('.bloco-obrigatorio-checkbox:checked').forEach(function(checkbox) {
+        const nomeBloco = checkbox.value;
+        const blocoContainer = checkbox.closest('.bloco-checkbox-container');
+        const titulo = blocoContainer.querySelector('.custom-control-label').textContent.trim();
+        
+        obrigatorios.push({
+            nome: nomeBloco,
+            titulo: titulo
+        });
+    });
+    
+    if (obrigatorios.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-3">
+                <span class="text-muted small">Nenhum bloco marcado como obrigatório</span>
+            </div>`;
+        return;
+    }
+    
+    let html = '<div class="d-flex flex-wrap gap-2">';
+    obrigatorios.forEach(function(bloco) {
+        html += `
+            <div class="badge badge-primary p-2 m-1" style="border-radius: 20px; font-weight: normal; font-size: 13px;">
+                <i class="fas fa-check-circle mr-1"></i>
+                ${bloco.titulo}
+            </div>`;
+    });
+    html += '</div>';
+    
+    container.innerHTML = html;
+}
+
+// Filtrar blocos com base no termo de pesquisa
+function filtrarBlocos() {
+    const termo = document.getElementById('pesquisar-blocos').value.toLowerCase();
+    const blocos = document.querySelectorAll('.bloco-checkbox-container');
+    
+    blocos.forEach(function(bloco) {
+        const titulo = bloco.querySelector('.form-check-label').textContent.toLowerCase();
+        
+        if (titulo.includes(termo)) {
+            bloco.style.display = 'block';
+        } else {
+            bloco.style.display = 'none';
+        }
+    });
+}
+
+// Função auxiliar para escapar expressões regulares
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Função para carregar dados de oferta existente
+function carregarOfertaExistente(tipoOferta) {
+    const btnEditar = document.querySelector(`.editar-btn[data-tipo="${tipoOferta.replace(/ /g, '_')}"]`);
+    
+    // Desabilitar botão temporariamente
+    if (btnEditar) {
+        btnEditar.disabled = true;
+        btnEditar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
+    }
+    
+    fetch(`/api/oferta/${encodeURIComponent(tipoOferta)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.erro) {
+                mostrarToast(data.erro, 'error');
+                return;
+            }
+            
+            // Preencher o modal com os dados da oferta
+            setupEditModal(data);
+            
+            // Abrir o modal
+            $('#addOfertaModal').modal('show');
+        })
+        .catch(error => {
+            console.error('Erro ao carregar oferta:', error);
+            mostrarToast('Erro ao carregar detalhes da oferta. Tente novamente.', 'error');
+        })
+        .finally(() => {
+            // Restaurar botão
+            if (btnEditar) {
+                btnEditar.disabled = false;
+                btnEditar.innerHTML = '<i class="fas fa-edit"></i> Editar';
+            }
+        });
+}
+
+// Configurar modal para edição de oferta existente
+function setupEditModal(data) {
+    // Alterar título do modal
+    document.getElementById('addOfertaModalLabel').textContent = 'Editar Oferta';
+    
+    // Preencher campos do formulário
+    document.getElementById('acao').value = 'editar';
+    document.getElementById('tipo_oferta').value = data.tipo_oferta;
+    document.getElementById('tipo_oferta').readOnly = true; // Impedir edição do tipo
+    document.getElementById('descricao').value = data.descricao || '';
+    
+    // Carregar blocos disponíveis primeiro
+    carregarBlocosDisponiveis();
+    
+    // Depois marcar os blocos da oferta e obrigatórios após um pequeno delay
+    // para garantir que os checkboxes foram renderizados
+    setTimeout(() => {
+        // Marcar blocos selecionados
+        const blocosSelecionados = data.blocos || [];
+        blocosSelecionados.forEach(nome => {
+            const checkbox = document.getElementById(`bloco_${nome}`);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        });
+        
+        // Habilitar checkboxes de obrigatório para blocos selecionados
+        document.querySelectorAll('.bloco-obrigatorio-checkbox').forEach(function(checkbox) {
+            const nomeBloco = checkbox.value;
+            const blocoCheck = document.getElementById(`bloco_${nomeBloco}`);
+            checkbox.disabled = !blocoCheck || !blocoCheck.checked;
+        });
+        
+        // Marcar blocos obrigatórios
+        const blocosObrigatorios = data.obrigatorios || [];
+        blocosObrigatorios.forEach(nome => {
+            const checkbox = document.getElementById(`obrigatorio_${nome}`);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        });
+        
+        // Atualizar lista de blocos obrigatórios
+        atualizarListaObrigatorios();
+    }, 500);
+}
+
+// Função para mostrar toast de feedback
+function mostrarToast(mensagem, tipo) {
+    const toast = document.createElement('div');
+    toast.className = `toast bg-${tipo === 'error' ? 'danger' : tipo === 'success' ? 'success' : 'info'}`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    toast.innerHTML = `
+        <div class="toast-header">
+            <strong class="mr-auto text-white">
+                ${tipo === 'error' ? 'Erro' : tipo === 'success' ? 'Sucesso' : 'Informação'}
+            </strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body text-white">
+            ${mensagem}
+        </div>
+    `;
+    
+    const toastContainer = document.querySelector('.toast-container');
+    toastContainer.appendChild(toast);
+    
+    // Configurar e mostrar o toast
+    $(toast).toast({
+        delay: 5000,
+        autohide: true
+    }).toast('show');
+    
+    // Remover o toast quando for fechado
+    $(toast).on('hidden.bs.toast', function() {
+        toast.remove();
+    });
+}
+
+// Configurar submissão do formulário
+document.getElementById('ofertaForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Validar formulário
+    if (!validarFormulario()) {
+        return;
+    }
+    
+    // Recolher dados do formulário
+    const formData = new FormData(this);
+    const dados = {
+        acao: formData.get('acao'),
+        tipo_oferta: formData.get('tipo_oferta'),
+        descricao: formData.get('descricao'),
+        blocos_selecionados: [...formData.getAll('blocos_selecionados')],
+        blocos_obrigatorios: [...formData.getAll('blocos_obrigatorios')]
+    };
+    
+    // Mostrar toast de processamento
+    mostrarToast('Enviando dados...', 'info');
+    
+    // Desabilitar botão de submit
+    const btnSubmit = this.querySelector('button[type="submit"]');
+    const btnText = btnSubmit.innerHTML;
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+    
+    // Enviar dados para o servidor
+    fetch('/api/salvar_oferta', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dados)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.erro) {
+            mostrarToast(data.erro, 'error');
+        } else {
+            mostrarToast(data.sucesso || 'Oferta salva com sucesso!', 'success');
+            
+            // Fechar modal e recarregar a página
+            $('#addOfertaModal').modal('hide');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao salvar oferta:', error);
+        mostrarToast('Erro ao enviar dados. Tente novamente.', 'error');
+    })
+    .finally(() => {
+        // Restaurar botão
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = btnText;
+    });
+});
+
+// Validar formulário antes de enviar
+function validarFormulario() {
+    // Verificar tipo de oferta
+    const tipoOferta = document.getElementById('tipo_oferta').value.trim();
+    if (!tipoOferta) {
+        mostrarToast('O tipo da oferta é obrigatório.', 'error');
+        document.getElementById('tipo_oferta').focus();
+        return false;
+    }
+    
+    // Verificar se há pelo menos um bloco selecionado
+    const blocosSelecionados = document.querySelectorAll('.bloco-checkbox:checked');
+    if (blocosSelecionados.length === 0) {
+        mostrarToast('Selecione pelo menos um bloco para a oferta.', 'error');
+        return false;
+    }
+    
+    return true;
+}
+
+// Função para rolar até o formulário (fallback)
+function scrollToForm() {
+    const formElement = document.getElementById('ofertaForm');
+    if (formElement) {
+        // Garantir que o formulário está visível
+        formElement.style.display = 'block';
+        
+        // Calcular a posição
+        const offset = formElement.getBoundingClientRect().top + window.pageYOffset - 100;
+        
+        // Rolar suavemente
+        window.scrollTo({
+            top: offset,
+            behavior: 'smooth'
+        });
+        
+        // Destacar o formulário brevemente
+        formElement.classList.add('highlight-form');
+        setTimeout(() => {
+            formElement.classList.remove('highlight-form');
+        }, 1500);
+    }
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,295 @@
+/* Estilos para a página de gerenciamento de usuários */
+
+.user-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.user-card {
+    background-color: var(--background-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 100%;
+}
+
+.user-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.user-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: white;
+    font-weight: 600;
+    font-size: 20px;
+    box-shadow: 0 4px 10px rgba(230, 0, 0, 0.2);
+}
+
+.user-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.user-subtitle {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 3px;
+}
+
+.user-status {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.status-active {
+    background-color: #2ecc71;
+    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+}
+
+.status-inactive {
+    background-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+}
+
+.user-body {
+    padding: 20px;
+}
+
+.user-info {
+    margin-bottom: 20px;
+}
+
+.info-label {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 3px;
+}
+
+.info-value {
+    font-size: 15px;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.user-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.user-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    color: var(--text-dark);
+    background-color: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn i {
+    margin-right: 6px;
+}
+
+.action-btn-primary {
+    background-color: rgba(230, 0, 0, 0.05);
+    color: var(--primary);
+    border-color: rgba(230, 0, 0, 0.1);
+}
+
+.action-btn-primary:hover {
+    background-color: rgba(230, 0, 0, 0.1);
+}
+
+.action-btn-danger {
+    background-color: rgba(231, 76, 60, 0.05);
+    color: var(--danger);
+    border-color: rgba(231, 76, 60, 0.1);
+}
+
+.action-btn-danger:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Form de criação de usuário */
+.form-container {
+    background-color: var(--background-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 30px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.form-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+}
+
+.form-title i {
+    margin-right: 10px;
+    color: var(--primary);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Switches */
+.switch-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.switch-label {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--primary);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Seletor de permissões */
+.permission-section {
+    margin-top: 30px;
+}
+
+.permission-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+}
+
+.permission-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.permission-item {
+    background-color: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius);
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.permission-item:hover {
+    background-color: rgba(230, 0, 0, 0.05);
+    border-color: rgba(230, 0, 0, 0.1);
+}
+
+.permission-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.permission-item label {
+    font-size: 14px;
+    color: var(--text-dark);
+    cursor: pointer;
+} 

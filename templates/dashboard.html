@@ -2,841 +2,165 @@
 
 {% block page_title %}Dashboard{% endblock %}
 
-{% block styles %}
-<style>
-    /* Cards de estatísticas */
-    .stats-container {
-        display: flex;
-        justify-content: center;
-        gap: 25px;
-        margin-bottom: 40px;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-        flex-wrap: wrap;
-    }
-    
-    .stat-card {
-        border-radius: var(--border-radius);
-        padding: 25px;
-        position: relative;
-        overflow: hidden;
-        min-height: 120px;
-        min-width: 250px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        background-color: var(--dark-lighter);
-        text-align: center;
-        max-width: 300px;
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
-    
-    .stat-icon {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: 28px;
-        color: var(--primary);
-        opacity: 0.7;
-    }
-    
-    .stat-value {
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 5px;
-        color: var(--text-light);
-        position: relative;
-        z-index: 1;
-        text-align: center;
-    }
-    
-    .stat-label {
-        font-size: 14px;
-        color: var(--text-muted);
-        font-weight: 500;
-        position: relative;
-        z-index: 1;
-        text-align: center;
-    }
-    
-    /* Seções do dashboard */
-    .dashboard-container {
-        margin: 0 auto;
-        max-width: 1200px;
-    }
-    
-    .dashboard-section {
-        margin-bottom: 50px;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .section-header {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 20px;
-        margin-bottom: 25px;
-        text-align: center;
-    }
-    
-    .section-title {
-        display: flex;
-        align-items: center;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 20px;
-        color: var(--text-light);
-        font-weight: 600;
-    }
-    
-    .section-title i {
-        margin-right: 12px;
-        color: var(--primary);
-        font-size: 22px;
-    }
-    
-    /* Tabs */
-    .tab-container {
-        display: flex;
-        gap: 10px;
-    }
-    
-    .tab-button {
-        background-color: rgba(15, 52, 96, 0.3);
-        color: var(--text-muted);
-        border: none;
-        padding: 10px 20px;
-        border-radius: var(--border-radius);
-        cursor: pointer;
-        font-family: 'Roboto', sans-serif;
-        font-weight: 500;
-        font-size: 14px;
-        transition: var(--transition);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .tab-button.active {
-        background-color: var(--primary);
-        color: white;
-        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
-    }
-    
-    .tab-button:hover:not(.active) {
-        background-color: rgba(15, 52, 96, 0.5);
-        transform: translateY(-2px);
-    }
-    
-    /* Tabelas */
-    .table-container {
-        background-color: var(--dark-lighter);
-        border-radius: var(--border-radius);
-        box-shadow: var(--card-shadow);
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .custom-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    
-    .custom-table th {
-        background-color: rgba(15, 52, 96, 0.3);
-        color: var(--text-light);
-        font-weight: 600;
-        text-align: center;
-        padding: 16px 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        font-size: 14px;
-    }
-    
-    .custom-table td {
-        padding: 16px 20px;
-        color: var(--text-light);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        font-size: 14px;
-        text-align: center;
-    }
-    
-    .custom-table tr:last-child td {
-        border-bottom: none;
-    }
-    
-    .custom-table tr:hover td {
-        background-color: rgba(255, 255, 255, 0.03);
-    }
-    
-    /* Badges */
-    .badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
-    }
-    
-    .badge i {
-        margin-right: 6px;
-        font-size: 10px;
-    }
-    
-    .badge-success {
-        background-color: rgba(46, 204, 113, 0.15);
-        color: #2ecc71;
-        border: 1px solid rgba(46, 204, 113, 0.2);
-    }
-    
-    .badge-info {
-        background-color: rgba(52, 152, 219, 0.15);
-        color: #3498db;
-        border: 1px solid rgba(52, 152, 219, 0.2);
-    }
-    
-    .badge-warning {
-        background-color: rgba(243, 156, 18, 0.15);
-        color: #f39c12;
-        border: 1px solid rgba(243, 156, 18, 0.2);
-    }
-    
-    .badge-secondary {
-        background-color: rgba(178, 190, 195, 0.15);
-        color: #b2bec3;
-        border: 1px solid rgba(178, 190, 195, 0.2);
-    }
-    
-    /* Botões de ação */
-    .action-buttons {
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-    }
-    
-    .btn-sm {
-        padding: 8px 12px;
-        font-size: 12px;
-    }
-    
-    /* Estado vazio */
-    .empty-state {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 60px 20px;
-        text-align: center;
-        background-color: rgba(15, 52, 96, 0.1);
-        border-radius: var(--border-radius);
-        border: 1px dashed rgba(255, 255, 255, 0.1);
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .empty-state i {
-        font-size: 40px;
-        color: rgba(255, 255, 255, 0.1);
-        margin-bottom: 20px;
-    }
-    
-    .empty-state p {
-        color: var(--text-muted);
-        margin-bottom: 25px;
-        font-size: 16px;
-    }
-    
-    /* Paginação */
-    .pagination-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 15px 20px;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .pagination {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .pagination-btn {
-        background-color: rgba(15, 52, 96, 0.3);
-        color: var(--text-light);
-        border: none;
-        padding: 8px 15px;
-        border-radius: var(--border-radius);
-        cursor: pointer;
-        font-family: 'Roboto', sans-serif;
-        font-weight: 500;
-        font-size: 14px;
-        transition: var(--transition);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .pagination-btn:hover:not(:disabled) {
-        background-color: rgba(15, 52, 96, 0.5);
-        transform: translateY(-2px);
-    }
-    
-    .pagination-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-    
-    .page-numbers {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .page-number {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background-color: rgba(15, 52, 96, 0.3);
-        color: var(--text-light);
-        cursor: pointer;
-        transition: var(--transition);
-    }
-    
-    .page-number:hover:not(.active) {
-        background-color: rgba(15, 52, 96, 0.5);
-    }
-    
-    .page-number.active {
-        background-color: var(--primary);
-        color: white;
-    }
-    
-    .page-info {
-        color: var(--text-muted);
-        font-size: 14px;
-    }
-    
-    .page-ellipsis {
-        color: var(--text-muted);
-        margin: 0 2px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    @media (max-width: 768px) {
-        .section-header {
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            text-align: center;
-        }
-        
-        .section-title {
-            margin-right: 0 !important;
-            margin: 0 auto !important;
-            text-align: center;
-        }
-        
-        .tab-container {
-            width: 100%;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            justify-content: center;
-        }
-        
-        .pagination-container {
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .card-header {
-            flex-direction: column;
-            gap: 15px;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-        
-        .stats-container {
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .stat-card {
-            width: 100%;
-            max-width: 100%;
-        }
-    }
-    
-    .card {
-        background-color: var(--dark-lighter);
-        border-radius: var(--border-radius);
-        box-shadow: var(--card-shadow);
-        margin-bottom: 30px;
-        overflow: hidden;
-        transition: var(--transition);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .card-header {
-        padding: 20px 25px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: rgba(15, 52, 96, 0.3);
-        text-align: center;
-    }
-</style>
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 {% endblock %}
 
 {% block content %}
-<!-- Container principal centralizado -->
-<div class="dashboard-container" style="max-width: 1200px; margin: 0 auto;">
-    <!-- Stats Overview -->
+<div class="dashboard-container">
+    <!-- Estatísticas -->
     <div class="stats-container">
         <div class="stat-card">
-            <i class="fas fa-file-alt stat-icon"></i>
-            <div class="stat-value">{{ propostas|length }}</div>
-            <div class="stat-label">Propostas Geradas</div>
-        </div>
-        <div class="stat-card">
-            <i class="fas fa-save stat-icon"></i>
-            <div class="stat-value">{{ rascunhos_usuario|length }}</div>
-            <div class="stat-label">Rascunhos</div>
-        </div>
-        <div class="stat-card">
-            <i class="fas fa-calendar-day stat-icon"></i>
-            <div class="stat-value">{{ propostas_hoje }}</div>
-            <div class="stat-label">Hoje</div>
-        </div>
-    </div>
-
-    <!-- Propostas Section -->
-    <div class="dashboard-section">
-        <div class="section-header" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 20px;">
-            <h2 class="section-title" style="margin-right: auto;">
-                <i class="fas fa-file-contract"></i> Propostas
-            </h2>
-            
-            <div class="header-actions">
-                <div class="tab-container">
-                    <button class="tab-button active" id="tab-minhas">Minhas Propostas</button>
-                    <button class="tab-button" id="tab-todas">Todas as Propostas</button>
-                </div>
+            <div class="stat-icon">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <div class="stat-details">
+                <div class="stat-value">{{ propostas|length }}</div>
+                <div class="stat-label">Propostas Geradas</div>
             </div>
         </div>
         
-        <div class="card">
-            <div class="card-header" style="justify-content: space-between;">
-                <h3 class="card-title">
-                    <i class="fas fa-list"></i> Lista de Propostas
-                </h3>
-                <a href="{{ url_for('exibir_criar_proposta', nova=1) }}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Nova Proposta
-                </a>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-day"></i>
             </div>
-            
-            <div class="card-body">
-                {% if propostas %}
-                <div class="table-container">
-                    <table class="custom-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 5%">#</th>
-                                <th style="width: 25%">Cliente</th>
-                                <th style="width: 15%">Data</th>
-                                <th style="width: 15%">Autor</th>
-                                <th style="width: 15%">Oferta</th>
-                                <th style="width: 10%">Status</th>
-                                <th style="width: 15%; text-align: center;">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="propostas-tbody">
-                            {% for proposta_id, proposta in propostas.items() %}
-                            <tr class="proposta-row {% if proposta.gerado_por != session.usuario_logado %}todas-propostas{% endif %}" data-page="1">
-                                <td>{{ loop.index }}</td>
-                                <td>{{ proposta.nome_cliente }}</td>
-                                <td>{{ proposta.data_geracao }}</td>
-                                <td>{{ proposta.gerado_por }}</td>
-                                <td>
-                                    {% if proposta.oferta_selecionada %}
-                                        <span class="badge badge-info"><i class="fas fa-tag"></i> {{ proposta.oferta_selecionada }}</span>
-                                    {% else %}
-                                        <span class="badge badge-secondary"><i class="fas fa-tag"></i> Padrão</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if proposta.gerado_por == session.usuario_logado %}
-                                        <span class="badge badge-success"><i class="fas fa-user-check"></i> Proprietário</span>
-                                    {% elif tipo_usuario == 'admin' %}
-                                        <span class="badge badge-info"><i class="fas fa-unlock"></i> Acesso Total</span>
-                                    {% else %}
-                                        <span class="badge badge-warning"><i class="fas fa-eye"></i> Visualização</span>
-                                    {% endif %}
-                                </td>
-                                <td class="action-buttons" style="text-align: center;">
-                                    <a href="{{ url_for('visualizar_proposta', proposta_id=proposta_id) }}" class="btn btn-primary btn-sm" title="Visualizar">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ url_for('baixar_proposta', proposta_id=proposta_id) }}" class="btn btn-success btn-sm" title="Baixar">
-                                        <i class="fas fa-download"></i>
-                                    </a>
-                                    {% if tipo_usuario == 'admin' or proposta.gerado_por == session.usuario_logado %}
-                                    <a href="{{ url_for('excluir_proposta', proposta_id=proposta_id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta proposta?')" title="Excluir">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    
-                    <!-- Paginação -->
-                    <div class="pagination-container">
-                        <div class="pagination">
-                            <button id="prev-page" class="pagination-btn" disabled>
-                                <i class="fas fa-chevron-left"></i> Anterior
-                            </button>
-                            <div id="page-numbers" class="page-numbers">
-                                <span class="page-number active" data-page="1">1</span>
-                            </div>
-                            <button id="next-page" class="pagination-btn">
-                                Próximo <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                        <div class="page-info">
-                            Página <span id="current-page">1</span> de <span id="total-pages">1</span>
-                        </div>
-                    </div>
-                </div>
-                {% else %}
-                <div class="empty-state">
-                    <i class="fas fa-file-alt"></i>
-                    <p>Nenhuma proposta encontrada. Clique em "Nova Proposta" para criar uma.</p>
-                    <a href="{{ url_for('criar_proposta') }}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Nova Proposta
-                    </a>
-                </div>
-                {% endif %}
+            <div class="stat-details">
+                <div class="stat-value">{{ propostas_hoje }}</div>
+                <div class="stat-label">Propostas Hoje</div>
             </div>
-        </div>
-    </div>
-
-    <!-- Rascunhos Section -->
-    <div class="dashboard-section">
-        <div class="section-header" style="justify-content: center;">
-            <h2 class="section-title" style="margin: 0 auto;">
-                <i class="fas fa-edit"></i> Meus Rascunhos
-            </h2>
         </div>
         
-        <div class="card">
-            <div class="card-header" style="justify-content: center;">
-                <h3 class="card-title">
-                    <i class="fas fa-save"></i> Propostas Salvas como Rascunho
-                </h3>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-edit"></i>
             </div>
-            
-            <div class="card-body">
-                {% if rascunhos_usuario %}
-                <div class="table-container">
-                    <table class="custom-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 5%">#</th>
-                                <th style="width: 30%">Cliente</th>
-                                <th style="width: 20%">Última Atualização</th>
-                                <th style="width: 20%">Oferta</th>
-                                <th style="width: 25%; text-align: center;">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rascunhos-tbody">
-                            {% for rascunho_id, rascunho in rascunhos_usuario.items() %}
-                            <tr class="rascunho-row" data-page="1">
-                                <td>{{ loop.index }}</td>
-                                <td>{{ rascunho.nome_cliente }}</td>
-                                <td>{{ rascunho.data_atualizacao }}</td>
-                                <td>
-                                    {% if rascunho.oferta_selecionada %}
-                                        <span class="badge badge-info"><i class="fas fa-tag"></i> {{ rascunho.oferta_selecionada }}</span>
-                                    {% else %}
-                                        <span class="badge badge-secondary"><i class="fas fa-tag"></i> Padrão</span>
-                                    {% endif %}
-                                </td>
-                                <td class="action-buttons" style="text-align: center;">
-                                    <a href="{{ url_for('exibir_criar_proposta', rascunho_id=rascunho_id) }}" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-edit"></i> Continuar
-                                    </a>
-                                    <a href="#" class="btn btn-danger btn-sm" onclick="if(confirm('Tem certeza que deseja excluir este rascunho?')) { window.location.href='{{ url_for('excluir_rascunho', rascunho_id=rascunho_id) }}'; } return false;">
-                                        <i class="fas fa-trash-alt"></i> Excluir
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    
-                    <!-- Paginação para Rascunhos -->
-                    <div class="pagination-container">
-                        <div class="pagination">
-                            <button id="prev-page-rascunhos" class="pagination-btn" disabled>
-                                <i class="fas fa-chevron-left"></i> Anterior
-                            </button>
-                            <div id="page-numbers-rascunhos" class="page-numbers">
-                                <span class="page-number active" data-page="1">1</span>
-                            </div>
-                            <button id="next-page-rascunhos" class="pagination-btn">
-                                Próximo <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                        <div class="page-info">
-                            Página <span id="current-page-rascunhos">1</span> de <span id="total-pages-rascunhos">1</span>
-                        </div>
-                    </div>
-                </div>
-                {% else %}
-                <div class="empty-state">
-                    <i class="fas fa-edit"></i>
-                    <p>Nenhum rascunho encontrado. Você pode salvar seu progresso ao criar uma proposta.</p>
-                </div>
-                {% endif %}
+            <div class="stat-details">
+                <div class="stat-value">{{ rascunhos_usuario|length }}</div>
+                <div class="stat-label">Rascunhos</div>
             </div>
         </div>
     </div>
+    
+    <!-- Propostas recentes -->
+    <section class="recent-proposals">
+        <div class="card-header">
+            <h2 class="card-title"><i class="fas fa-file-alt"></i> Propostas Recentes</h2>
+            <a href="{{ url_for('exibir_criar_proposta') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nova Proposta
+            </a>
+        </div>
+        
+        {% if propostas|length > 0 %}
+        <div class="proposal-grid">
+            {% for proposta_id, proposta in propostas.items() %}
+            <div class="proposal-card">
+                <div class="proposal-header">
+                    <h3 class="proposal-title">Proposta #{{ proposta_id[:6] }}</h3>
+                    <div class="proposal-date">
+                        <i class="far fa-calendar-alt"></i>
+                        {{ proposta.data_geracao }}
+                    </div>
+                </div>
+                <div class="proposal-body">
+                    <div class="client-name">
+                        <div class="client-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div>
+                            <div class="client-label">Cliente</div>
+                            <div class="client-value">{{ proposta.nome_cliente }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="proposal-tags">
+                        <span class="tag tag-primary">{{ proposta.gerado_por }}</span>
+                        {% if proposta.tags is defined %}
+                            {% for tag in proposta.tags %}
+                            <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="proposal-footer">
+                    <div class="proposal-actions">
+                        <a href="{{ url_for('visualizar_proposta', proposta_id=proposta_id) }}" class="action-btn action-btn-primary" title="Visualizar">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ url_for('baixar_proposta', proposta_id=proposta_id) }}" class="action-btn" title="Baixar">
+                            <i class="fas fa-download"></i>
+                        </a>
+                        <a href="{{ url_for('excluir_proposta', proposta_id=proposta_id) }}" class="action-btn" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir esta proposta?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <h3 class="empty-title">Nenhuma proposta encontrada</h3>
+            <p class="empty-message">Comece criando sua primeira proposta.</p>
+            <a href="{{ url_for('exibir_criar_proposta') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Criar Nova Proposta
+            </a>
+        </div>
+        {% endif %}
+    </section>
+    
+    <!-- Rascunhos -->
+    <section class="draft-container">
+        <div class="card-header">
+            <h2 class="card-title"><i class="fas fa-edit"></i> Seus Rascunhos</h2>
+        </div>
+        
+        {% if rascunhos_usuario|length > 0 %}
+        <div class="proposal-grid">
+            {% for rascunho_id, rascunho in rascunhos_usuario.items() %}
+            <div class="proposal-card">
+                <div class="proposal-header">
+                    <h3 class="proposal-title">Rascunho</h3>
+                    <div class="proposal-date">
+                        <i class="far fa-calendar-alt"></i>
+                        {{ rascunho.data_atualizacao|default('') }}
+                    </div>
+                </div>
+                <div class="proposal-body">
+                    <div class="client-name">
+                        <div class="client-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div>
+                            <div class="client-label">Cliente</div>
+                            <div class="client-value">{{ rascunho.nome_cliente }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="proposal-footer">
+                    <div class="proposal-actions">
+                        <a href="{{ url_for('exibir_criar_proposta') }}?cliente={{ rascunho.nome_cliente }}" class="action-btn action-btn-primary" title="Continuar Editando">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{{ url_for('excluir_rascunho', rascunho_id=rascunho_id) }}" class="action-btn" title="Excluir Rascunho" onclick="return confirm('Tem certeza que deseja excluir este rascunho?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-edit"></i>
+            </div>
+            <h3 class="empty-title">Nenhum rascunho encontrado</h3>
+            <p class="empty-message">Rascunhos são automaticamente salvos ao criar propostas.</p>
+        </div>
+        {% endif %}
+    </section>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Funcionalidade de abas
-        const tabMinhas = document.getElementById('tab-minhas');
-        const tabTodas = document.getElementById('tab-todas');
-        const todasPropostas = document.querySelectorAll('.todas-propostas');
-        
-        // Inicialmente esconder propostas que não são do usuário
-        todasPropostas.forEach(row => {
-            row.style.display = 'none';
-        });
-        
-        tabMinhas.addEventListener('click', function() {
-            tabMinhas.classList.add('active');
-            tabTodas.classList.remove('active');
-            
-            // Mostrar apenas propostas do usuário
-            todasPropostas.forEach(row => {
-                row.style.display = 'none';
-            });
-            
-            // Reiniciar paginação
-            currentPagePropostas = 1;
-            setupPagination('propostas');
-        });
-        
-        tabTodas.addEventListener('click', function() {
-            tabTodas.classList.add('active');
-            tabMinhas.classList.remove('active');
-            
-            // Mostrar todas as propostas
-            todasPropostas.forEach(row => {
-                row.style.display = '';
-            });
-            
-            // Reiniciar paginação
-            currentPagePropostas = 1;
-            setupPagination('propostas');
-        });
-        
-        // Configuração da paginação
-        const itemsPerPage = 10;
-        let currentPagePropostas = 1;
-        let currentPageRascunhos = 1;
-        
-        // Função simplificada para paginação
-        function setupPagination(type) {
-            const isPropostas = type === 'propostas';
-            
-            // Selecionar elementos relevantes
-            const tbody = document.getElementById(isPropostas ? 'propostas-tbody' : 'rascunhos-tbody');
-            if (!tbody) return;
-            
-            const rows = tbody.querySelectorAll(isPropostas ? '.proposta-row' : '.rascunho-row');
-            if (!rows.length) return;
-            
-            // Filtrar apenas linhas visíveis (para propostas)
-            let visibleRows = Array.from(rows);
-            if (isPropostas) {
-                visibleRows = visibleRows.filter(row => !row.classList.contains('todas-propostas') || 
-                                                      document.getElementById('tab-todas').classList.contains('active'));
-            }
-            
-            // Calcular total de páginas
-            const totalPages = Math.max(1, Math.ceil(visibleRows.length / itemsPerPage));
-            
-            // Referências aos elementos de paginação
-            const currentPageEl = document.getElementById(isPropostas ? 'current-page' : 'current-page-rascunhos');
-            const totalPagesEl = document.getElementById(isPropostas ? 'total-pages' : 'total-pages-rascunhos');
-            const prevBtn = document.getElementById(isPropostas ? 'prev-page' : 'prev-page-rascunhos');
-            const nextBtn = document.getElementById(isPropostas ? 'next-page' : 'next-page-rascunhos');
-            const pageNumbers = document.getElementById(isPropostas ? 'page-numbers' : 'page-numbers-rascunhos');
-            
-            // Ajustar página atual se necessário
-            let currentPage = isPropostas ? currentPagePropostas : currentPageRascunhos;
-            if (currentPage > totalPages) {
-                currentPage = 1;
-                if (isPropostas) {
-                    currentPagePropostas = 1;
-                } else {
-                    currentPageRascunhos = 1;
-                }
-            }
-            
-            // Atualizar informações de página
-            currentPageEl.textContent = currentPage;
-            totalPagesEl.textContent = totalPages;
-            
-            // Atualizar estado dos botões
-            prevBtn.disabled = currentPage <= 1;
-            nextBtn.disabled = currentPage >= totalPages;
-            
-            // Gerar números de página
-            pageNumbers.innerHTML = '';
-            
-            // Lógica simplificada para mostrar números de página
-            if (totalPages <= 7) {
-                // Mostrar todos os números se houver 7 ou menos páginas
-                for (let i = 1; i <= totalPages; i++) {
-                    addPageNumber(i, type, currentPage);
-                }
-            } else {
-                // Lógica para mostrar números com elipses
-                if (currentPage <= 4) {
-                    // Próximo ao início
-                    for (let i = 1; i <= 5; i++) {
-                        addPageNumber(i, type, currentPage);
-                    }
-                    addEllipsis(pageNumbers);
-                    addPageNumber(totalPages, type, currentPage);
-                } else if (currentPage >= totalPages - 3) {
-                    // Próximo ao fim
-                    addPageNumber(1, type, currentPage);
-                    addEllipsis(pageNumbers);
-                    for (let i = totalPages - 4; i <= totalPages; i++) {
-                        addPageNumber(i, type, currentPage);
-                    }
-                } else {
-                    // No meio
-                    addPageNumber(1, type, currentPage);
-                    addEllipsis(pageNumbers);
-                    for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-                        addPageNumber(i, type, currentPage);
-                    }
-                    addEllipsis(pageNumbers);
-                    addPageNumber(totalPages, type, currentPage);
-                }
-            }
-            
-            // Mostrar/esconder linhas com base na página atual
-            visibleRows.forEach((row, index) => {
-                const shouldShow = Math.floor(index / itemsPerPage) + 1 === currentPage;
-                row.style.display = shouldShow ? '' : 'none';
-            });
-        }
-        
-        function addPageNumber(pageNum, type, currentPage) {
-            const isPropostas = type === 'propostas';
-            const pageNumbers = document.getElementById(isPropostas ? 'page-numbers' : 'page-numbers-rascunhos');
-            
-            const pageNumber = document.createElement('span');
-            pageNumber.className = 'page-number' + (pageNum === currentPage ? ' active' : '');
-            pageNumber.textContent = pageNum;
-            pageNumber.dataset.page = pageNum;
-            
-            // Usar função anônima para evitar problemas de escopo
-            pageNumber.addEventListener('click', function() {
-                if (isPropostas) {
-                    currentPagePropostas = parseInt(pageNum);
-                } else {
-                    currentPageRascunhos = parseInt(pageNum);
-                }
-                setupPagination(type);
-            });
-            
-            pageNumbers.appendChild(pageNumber);
-        }
-        
-        function addEllipsis(container) {
-            const ellipsis = document.createElement('span');
-            ellipsis.className = 'page-ellipsis';
-            ellipsis.textContent = '...';
-            container.appendChild(ellipsis);
-        }
-        
-        // Configurar botões de navegação para propostas
-        document.getElementById('prev-page').addEventListener('click', function() {
-            if (currentPagePropostas > 1) {
-                currentPagePropostas--;
-                setupPagination('propostas');
-            }
-        });
-        
-        document.getElementById('next-page').addEventListener('click', function() {
-            const tbody = document.getElementById('propostas-tbody');
-            const rows = tbody.querySelectorAll('.proposta-row');
-            let visibleRows = Array.from(rows);
-            
-            // Filtrar apenas linhas visíveis
-            visibleRows = visibleRows.filter(row => !row.classList.contains('todas-propostas') || 
-                                                  document.getElementById('tab-todas').classList.contains('active'));
-            
-            const totalPages = Math.ceil(visibleRows.length / itemsPerPage);
-            
-            if (currentPagePropostas < totalPages) {
-                currentPagePropostas++;
-                setupPagination('propostas');
-            }
-        });
-        
-        // Configurar botões de navegação para rascunhos
-        document.getElementById('prev-page-rascunhos').addEventListener('click', function() {
-            if (currentPageRascunhos > 1) {
-                currentPageRascunhos--;
-                setupPagination('rascunhos');
-            }
-        });
-        
-        document.getElementById('next-page-rascunhos').addEventListener('click', function() {
-            const tbody = document.getElementById('rascunhos-tbody');
-            const rows = tbody.querySelectorAll('.rascunho-row');
-            const totalPages = Math.ceil(rows.length / itemsPerPage);
-            
-            if (currentPageRascunhos < totalPages) {
-                currentPageRascunhos++;
-                setupPagination('rascunhos');
-            }
-        });
-        
-        // Inicializar paginação
-        setupPagination('propostas');
-        setupPagination('rascunhos');
-    });
-</script>
 {% endblock %} 

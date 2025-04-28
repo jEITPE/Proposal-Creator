@@ -1,244 +1,346 @@
 {
-    "9d1f6e73-7982-44ab-9dae-5909482457fb": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 10:24:32",
+    "2e2f2042-cc2c-409e-93d0-28da9782660a": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "20/03/2025 20:45:54",
         "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_102432.docx",
-        "blocos_utilizados": [
-            "Cloud_Observabilidade",
-            "Cloud_Administracao",
-            "Cloud_Suporte"
-        ],
-        "oferta_selecionada": "Cloud"
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250320_204550.docx",
+        "blocos_utilizados": [],
+        "oferta_selecionada": null
     },
-    "bfe91732-9bef-4b9b-bd52-3f089cfdc027": {
+    "b8fe94cc-307b-4b69-b334-fdbf5aba9af5": {
         "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 10:31:30",
-        "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_103130.docx",
-        "blocos_utilizados": [
-            "Cloud_Administracao",
-            "Cloud_Suporte"
-        ],
-        "oferta_selecionada": "Cloud"
+        "data_geracao": "20/03/2025 21:38:50",
+        "gerado_por": "joao.almeida",
+        "arquivo": "static\\uploads\\proposta_UNIMED_20250320_213849.docx",
+        "blocos_utilizados": [],
+        "oferta_selecionada": null
     },
-    "e06980e4-a67f-4ff4-b3bd-856bd6f90eff": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 10:50:44",
+    "d01a3f3c-07f2-4238-8574-c1bffb70bd4c": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "21/03/2025 09:35:34",
         "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_105044.docx",
-        "blocos_utilizados": [
-            "Workplace_Service_Desk",
-            "Cloud_Administracao",
-            "Cloud_Suporte"
-        ],
-        "oferta_selecionada": "Cloud"
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250321_093525.docx",
+        "blocos_utilizados": [],
+        "oferta_selecionada": null
     },
-    "771629b6-0b86-4f7c-b51a-4d8b6788da80": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 10:57:03",
-        "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_105703.docx",
-        "blocos_utilizados": [
-            "Cloud_Observabilidade",
-            "Cloud_Administracao",
-            "Cloud_Suporte"
-        ],
-        "oferta_selecionada": "Cloud"
+    "1a2c71d9-fa68-4fd8-b785-05c1657e876d": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "31/03/2025 11:55:24",
+        "gerado_por": "joao.almeida",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250331_115520.docx",
+        "blocos_utilizados": [],
+        "oferta_selecionada": null
     },
-    "8c8c7c5d-01b2-4b2a-a1d0-cd47a873b554": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 11:12:13",
+    "41ce5554-efc6-4f85-885d-f2c88d05beb2": {
+        "nome_cliente": "LEGO Brasil",
+        "data_geracao": "03/04/2025 10:42:34",
         "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_111213.docx",
-        "blocos_utilizados": [
-            "Cloud_Observabilidade",
-            "Cloud_Broker"
-        ],
-        "oferta_selecionada": "Cloud"
+        "arquivo": "static\\uploads\\proposta_LEGO_Brasil_20250403_104231.docx",
+        "blocos_utilizados": [],
+        "oferta_selecionada": null
     },
-    "8c9b0c5b-957a-4318-975c-abfdc109a86a": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 11:17:02",
+    "c479e460-b9e4-4713-b59c-1783c6bb57c3": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "03/04/2025 11:22:46",
         "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_111701.docx",
-        "blocos_utilizados": [
-            "Seguranca_Gestao_de_Ativos",
-            "Seguranca_Governanca"
-        ],
-        "oferta_selecionada": "Seguranca"
+        "arquivo": "proposta_UNIMED_NACIONAL_20250403_112245.docx",
+        "blocos_utilizados": [],
+        "oferta_selecionada": null
     },
-    "8fa15c1b-9c57-4ada-9966-75f60de9c619": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 11:23:32",
+    "4eb8a031-3e5c-4e90-9529-4ae65852d271": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "03/04/2025 12:23:04",
         "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_112331.docx",
-        "blocos_utilizados": [
-            "Infraestrutura_Suporte_Torres",
-            "Infraestrutura_Command_Center"
-        ],
-        "oferta_selecionada": "Infraestrutura"
+        "arquivo": "proposta_UNIMED_NACIONAL_20250403_122303.docx",
+        "blocos_utilizados": [],
+        "oferta_selecionada": null
     },
-    "f000efa4-179d-441b-a09b-ae7a67e63750": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 11:31:34",
+    "1f6f6041-9e69-48eb-ab76-a441682a7368": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "03/04/2025 15:05:19",
         "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_113133.docx",
-        "blocos_utilizados": [
-            "Workplace_Service_Desk",
-            "Workplace_Gestao_de_ativos"
-        ],
-        "oferta_selecionada": "Workplace"
+        "arquivo": "proposta_UNIMED_NACIONAL_20250403_150518.docx",
+        "blocos_utilizados": [],
+        "oferta_selecionada": null
     },
-    "580fcf11-33c0-4226-a8f1-aaede31fa377": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 11:47:34",
+    "33eef088-76f9-4f0e-9a90-478c937d4047": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "03/04/2025 15:11:16",
         "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_114733.docx",
-        "blocos_utilizados": [
-            "Termo_de_Confidencialidade",
-            "Folha_de_Rosto",
-            "Controle_de_Versao",
-            "Sumario_Executivo",
-            "Sobre_a_Service_IT",
-            "Visao_Geral_dos_Servicos",
-            "Solucao_Proposta",
-            "Exclusoes",
-            "Transicao",
-            "Termo_de_Aceite_da_Proposta"
-        ],
-        "oferta_selecionada": "Workplace"
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250403_151114.docx",
+        "blocos_utilizados": [],
+        "oferta_selecionada": null
     },
-    "b3f4a63f-c51f-45b6-b692-b41335b7b50d": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 11:47:35",
+    "67041413-b35d-4c68-b96a-d0a54d3195ca": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "04/04/2025 08:41:03",
         "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_114734.docx",
-        "blocos_utilizados": [
-            "Termo_de_Confidencialidade",
-            "Folha_de_Rosto",
-            "Controle_de_Versao",
-            "Sumario_Executivo",
-            "Sobre_a_Service_IT",
-            "Visao_Geral_dos_Servicos",
-            "Solucao_Proposta",
-            "Exclusoes",
-            "Transicao",
-            "Termo_de_Aceite_da_Proposta"
-        ],
-        "oferta_selecionada": "Workplace"
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250404_084100.docx",
+        "blocos_utilizados": [],
+        "oferta_selecionada": null
     },
-    "14e7a39d-8cd3-43d2-856e-64a0a8182fe7": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "10/03/2025 11:53:24",
-        "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250310_115323.docx",
+    "d52d5702-0773-4677-a54b-e5c8cce757a7": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "11/04/2025 08:47:27",
+        "gerado_por": "joao.almeida",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250411_084727.docx",
         "blocos_utilizados": [
-            "Workplace_Service_Desk",
-            "Workplace_Gestao_de_ativos",
-            "Termo_de_Confidencialidade",
-            "Folha_de_Rosto",
-            "Controle_de_Versao",
-            "Sumario_Executivo",
-            "Sobre_a_Service_IT",
-            "Visao_Geral_dos_Servicos",
-            "Solucao_Proposta",
-            "Exclusoes",
-            "Transicao",
-            "Termo_de_Aceite_da_Proposta"
+            "Conhecendo_a_Service_IT"
         ],
-        "oferta_selecionada": "Workplace"
+        "oferta_selecionada": null
     },
-    "3640aebb-3a7d-4154-b8f1-eb1c8144a258": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "12/03/2025 10:12:20",
-        "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250312_101219.docx",
+    "ba2b359f-5006-40f6-99f2-bd35a5118a52": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "11/04/2025 09:02:47",
+        "gerado_por": "joao.almeida",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250411_090246.docx",
         "blocos_utilizados": [
-            "Infraestrutura_Administracao",
-            "Infraestrutura_Administracao_Torres",
-            "Infraestrutura_Command_Center",
-            "Termo_de_Confidencialidade",
-            "Folha_de_Rosto",
-            "Controle_de_Versao",
-            "Sumario_Executivo",
-            "Sobre_a_Service_IT",
-            "Visao_Geral_dos_Servicos",
-            "Solucao_Proposta",
-            "Exclusoes",
-            "Transicao",
-            "Termo_de_Aceite_da_Proposta"
+            "Conhecendo_a_Service_IT"
         ],
-        "oferta_selecionada": "Infraestrutura"
+        "oferta_selecionada": null
     },
-    "673ced8f-141e-4620-a974-2471559e5a5e": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "14/03/2025 09:34:25",
+    "515a86cb-7a44-4641-88bc-188d7ba74a02": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "11/04/2025 09:23:38",
+        "gerado_por": "joao.almeida",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250411_092336.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "f8e8b68d-ec2a-4a80-9a84-bfdbcbdb49ba": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "11/04/2025 10:15:20",
         "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_093424.docx",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250411_101519.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "1d0c7344-8782-4ff6-97e4-de630f316189": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "11/04/2025 10:42:03",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250411_104202.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "738a5f24-9855-4092-9e38-8a923133ea2f": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "11/04/2025 10:47:51",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250411_104750.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "78974b41-161a-451e-8808-0c35744d0e68": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "11/04/2025 10:54:59",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250411_105458.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "74eacb0c-18cc-4343-80c4-17a5ac7c74a2": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "11/04/2025 11:17:15",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250411_111711.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "f7d46aef-0f4b-482c-a209-f1003117d48b": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "17/04/2025 08:56:12",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250417_085611.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "f99ff0be-5898-452b-8612-c7c315d9c2a1": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "17/04/2025 10:25:22",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250417_102521.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "331b8b37-11e1-4e0d-8b3b-55da3fd21ada": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "17/04/2025 10:49:06",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250417_104906.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "57df25d9-daee-4530-a4fa-6aeb64959701": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "23/04/2025 09:48:47",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250423_094846.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "1acfd62e-48c0-4e71-8fd1-7d86a8648770": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "23/04/2025 10:00:35",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250423_100033.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "be17534a-e1c7-48d1-a661-cd45b08762bb": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "23/04/2025 10:54:21",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250423_105420.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "71a4396f-a7f1-4c9f-9bf3-043f008e7dec": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "23/04/2025 11:08:53",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250423_110851.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "53407177-3fc4-48b6-bb08-3dcbf204af6b": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "24/04/2025 10:53:39",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250424_105337.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "4840fed4-43eb-41d5-a065-2f313dc5c958": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "24/04/2025 11:33:43",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250424_113342.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "7b300c0e-60b0-454c-a720-a85d2d2b3174": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "24/04/2025 21:12:14",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250424_211213.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "379c5e24-ae6c-4da3-91b4-8e4a11197055": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "24/04/2025 23:25:51",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250424_232550.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "ce1de685-2d44-4f86-9591-9d080b3e0544": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "25/04/2025 00:47:44",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250425_004742.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "496b7e16-cf46-42f3-8746-82f5cf776797": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "25/04/2025 08:39:31",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250425_083929.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "596acc64-beec-4582-9bd2-2e3ddd819fdc": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "25/04/2025 09:11:03",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250425_091102.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "a3c18c1c-122b-47da-a16b-648f89db6754": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "25/04/2025 09:23:59",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250425_092359.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "565a4f37-e6d0-44d9-b8ec-6a2a7df17458": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "25/04/2025 21:36:34",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250425_213633.docx",
+        "blocos_utilizados": [
+            "Conhecendo_a_Service_IT"
+        ],
+        "oferta_selecionada": null
+    },
+    "a4ee7b2d-ae01-4c14-901f-7a1c2b77fc8e": {
+        "nome_cliente": "UNIMED NACIONAL",
+        "data_geracao": "28/04/2025 11:26:31",
+        "gerado_por": "admin",
+        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250428_112630.docx",
         "blocos_utilizados": [
             "Workplace_Service_Desk",
             "Workplace_Field_Services",
-            "Workplace_Gestao_de_Processos",
-            "Workplace_Desktop_Mgm"
-        ],
-        "oferta_selecionada": ""
-    },
-    "351714a4-f212-4e6d-895c-69eebda82c6b": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "14/03/2025 09:51:20",
-        "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_095119.docx",
-        "blocos_utilizados": [
-            "Workplace_Service_Desk",
-            "Workplace_Gestao_de_ativos"
-        ],
-        "oferta_selecionada": ""
-    },
-    "8cee04b0-7474-4d42-bc08-d81fc449f331": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "14/03/2025 10:31:18",
-        "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_103117.docx",
-        "blocos_utilizados": [
-            "Workplace_Service_Desk",
-            "Workplace_Field_Services"
-        ],
-        "oferta_selecionada": null
-    },
-    "5d769c8a-967b-4a01-9193-354df90ca6bc": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "14/03/2025 10:39:19",
-        "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_103918.docx",
-        "blocos_utilizados": [
-            "Workplace_Service_Desk",
-            "Workplace_Field_Services"
-        ],
-        "oferta_selecionada": null
-    },
-    "df9185ec-7311-4470-97d7-8791194046b0": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "14/03/2025 10:50:04",
-        "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_105004.docx",
-        "blocos_utilizados": [
-            "Workplace_Field_Services",
             "Workplace_Gestao_de_ativos",
-            "Workplace_Desktop_Mgm"
+            "Workplace_Desktop_Mgm",
+            "Sobre_a_Service_IT",
+            "Conhecendo_a_Service_IT",
+            "Visao_Geral_dos_Servicos",
+            "Solucao_Proposta",
+            "Transicao",
+            "Termo_de_Confidencialidade",
+            "Exclusoes",
+            "Termo_de_Aceite_da_Proposta",
+            "Folha_de_Rosto",
+            "Controle_de_Versao",
+            "Sumario_Executivo"
         ],
-        "oferta_selecionada": null
-    },
-    "e9c5e168-a9cd-4d1e-80f6-8fdca00bf4f6": {
-        "nome_cliente": "UNIMED",
-        "data_geracao": "14/03/2025 11:03:12",
-        "gerado_por": "admin",
-        "arquivo": "static\\uploads\\proposta_UNIMED_20250314_110311.docx",
-        "blocos_utilizados": [
-            "Cloud_Observabilidade",
-            "Cloud_Administracao",
-            "Cloud_Suporte"
-        ],
-        "oferta_selecionada": null
+        "oferta_selecionada": "Workplace"
     }
 }

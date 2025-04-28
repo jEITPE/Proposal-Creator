@@ -1,0 +1,241 @@
+/* Ajustes para telas ultrawide e muito grandes - Proposal Creator */
+
+@media (min-width: 1600px) {
+    body {
+        font-size: 16px;
+    }
+
+    .sidebar {
+        width: 320px;
+    }
+    
+    .main-content {
+        margin-left: 320px;
+        padding: 40px 50px;
+        width: calc(100% - 320px);
+        max-width: 100%;
+    }
+    
+    .container {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    
+    /* Dashboard específico - ajustes para utilizar todo espaço disponível */
+    .dashboard-container {
+        max-width: 100%;
+    }
+    
+    .stats-container {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+    
+    .proposal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        width: 100%;
+    }
+    
+    /* Ajustes para o fluxo de trabalho em telas muito grandes */
+    .workspace-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 30px;
+    }
+    
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+    }
+    
+    .card-header {
+        padding: 22px 30px;
+    }
+    
+    .card-body {
+        padding: 30px;
+    }
+    
+    .page-title {
+        font-size: 32px;
+        margin-bottom: 35px;
+    }
+    
+    /* Melhorar visualização de formulários */
+    .form-control {
+        padding: 14px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+    }
+    
+    .btn {
+        padding: 14px 26px;
+        font-size: 16px;
+        border-radius: 8px;
+    }
+    
+    /* Ajustar o editor de blocos */
+    .block-editor {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+    
+    /* Ajustar a visualização de propostas */
+    .proposal-preview {
+        max-width: 960px;
+        margin: 0 auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        border-radius: 12px;
+        background-color: var(--background-light);
+    }
+}
+
+/* Para telas extremamente grandes (monitores 4K, etc) */
+@media (min-width: 2560px) {
+    body {
+        font-size: 18px;
+    }
+    
+    .container {
+        max-width: 100%;
+    }
+    
+    .main-content {
+        padding: 50px 60px;
+        max-width: 100%;
+        width: calc(100% - 320px);
+    }
+    
+    /* Dashboard ajustes para telas muito grandes */
+    .stats-container {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+    }
+    
+    .recent-proposals, .draft-container {
+        width: 100%;
+    }
+    
+    .proposal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 30px;
+    }
+    
+    /* Melhorar espaçamento e layout */
+    .workspace-container {
+        gap: 40px;
+    }
+    
+    /* Evitar linhas muito longas de texto */
+    .card-body p, 
+    .form-group label,
+    .form-control,
+    .proposal-preview p {
+        max-width: 80ch;
+    }
+    
+    /* Assegurar que as tabelas sejam legíveis */
+    table {
+        font-size: 16px;
+    }
+    
+    /* Ajuste para dashboard em telas muito grandes */
+    .dashboard-cards {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+    }
+    
+    /* Manter contraste e legibilidade */
+    .text-dark {
+        color: var(--text-dark) !important;
+    }
+    
+    /* Garantir que o fundo permaneça claro mesmo em telas muito grandes */
+    .main-content,
+    .sidebar,
+    body {
+        background-color: var(--background);
+    }
+    
+    .card,
+    .form-control,
+    .btn-outline,
+    .dropdown-menu {
+        background-color: var(--background-light);
+    }
+}
+
+/* Regras adicionais para telas menores mas ainda grandes (1200-1600px) */
+@media (min-width: 1200px) and (max-width: 1599px) {
+    .main-content {
+        width: calc(100% - 280px);
+        max-width: 100%;
+    }
+    
+    .dashboard-container {
+        max-width: 100%;
+    }
+    
+    .stats-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .proposal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        width: 100%;
+    }
+}
+
+/* Melhorias para visualização dividida (split-screen) */
+.split-view {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+@media (max-width: 992px) {
+    .split-view {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Garantir que as imagens e vídeos sejam responsivos, mas não fiquem excessivamente grandes */
+.responsive-media {
+    max-width: 100%;
+    height: auto;
+    max-height: 80vh;
+}
+
+/* Melhorar a aparência de botões em telas grandes */
+@media (min-width: 1600px) {
+    .btn-group {
+        gap: 15px;
+    }
+    
+    .btn-lg {
+        padding: 16px 30px;
+        font-size: 18px;
+    }
+    
+    .btn-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn-icon i {
+        font-size: 20px;
+    }
+} 
+
+/* Corrigir layout de conteúdo para todas as resoluções */
+.main-content {
+    box-sizing: border-box;
+    width: calc(100% - 280px);
+    max-width: 100%;
+} 

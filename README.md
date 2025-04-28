@@ -67,4 +67,45 @@ http://localhost:5000
 
 ## Licença
 
-Este projeto é licenciado sob a licença MIT - veja o arquivo LICENSE para mais detalhes. 
+Este projeto é licenciado sob a licença MIT - veja o arquivo LICENSE para mais detalhes.
+
+# Sistema de Permissionamento
+
+## Novos recursos
+
+Foram adicionados novos recursos ao sistema de permissionamento:
+
+1. **Novos grupos de usuários**:
+   - Marketing
+   - RH
+   - Temporário (com acesso por 24 horas)
+
+2. **Permissionamento por blocos**:
+   - Administradores podem definir quais blocos cada usuário pode editar
+   - Interface para gerenciar blocos e suas permissões
+   - Superusuários têm acesso a todos os blocos
+
+3. **Acesso temporário**:
+   - O sistema verifica automaticamente se o acesso temporário expirou
+   - Após 24 horas, o acesso é revogado automaticamente
+
+## Como utilizar
+
+### Gerenciamento de Usuários
+
+Agora é possível definir se um usuário é superusuário e quais blocos ele pode editar. O sistema de gerenciamento de usuários permite:
+
+- Criar usuários com diferentes perfis (Marketing, RH, Temporário, etc.)
+- Definir usuários como superusuários (acesso a todos os blocos)
+- Atribuir permissões específicas para blocos
+
+### Gerenciamento de Blocos
+
+A nova interface de gerenciamento de blocos permite:
+
+- Criar novos blocos com título e conteúdo
+- Definir quais usuários podem editar cada bloco
+- Marcar blocos como obrigatórios
+- Remover blocos não utilizados
+
+Acesse estas funcionalidades através do menu de Administração no painel lateral. 

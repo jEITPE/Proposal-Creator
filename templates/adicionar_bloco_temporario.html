@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Bloco Temporário</title>
+    <!-- Incluir Quill -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .header-container {
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 30px 0;
+            margin-bottom: 40px;
+        }
+        header {
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header img {
+            width: 120px;
+            margin-bottom: 15px;
+        }
+        header h1 {
+            font-size: 32px;
+            color: #333;
+            margin: 0;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .nav-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .nav-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 0 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,123,255,0.2);
+        }
+        .nav-link:hover {
+            background-color: #0069d9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            padding: 40px;
+        }
+        .form-group {
+            margin-bottom: 30px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #333;
+            font-size: 18px;
+        }
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        .form-group input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        .editor {
+            height: 350px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .dicas {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #666;
+            border-left: 4px solid #007bff;
+        }
+        .submit-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .btn-adicionar {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(40,167,69,0.2);
+        }
+        .btn-adicionar:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(40,167,69,0.3);
+        }
+        /* Estilo personalizado para o Quill */
+        .ql-toolbar {
+            border-radius: 6px 6px 0 0;
+            border-color: #ddd;
+            background-color: #f8f9fa;
+        }
+        .ql-container {
+            border-radius: 0 0 6px 6px;
+            border-color: #ddd;
+            font-size: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .ql-editor {
+            min-height: 350px;
+        }
+        /* Estilo para o scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        .section-title {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .option-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        .option-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+        .option-description {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        .option-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .option-checkbox input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        .option-checkbox label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <header>
+            <img src="/static/img/logo_service_it.png" alt="Logo da Service IT">
+            <h1>Adicionar Bloco Temporário</h1>
+        </header>
+    </div>
+
+    <div class="nav-container">
+        <a href="/" class="nav-link">Página Inicial</a>
+        <a href="/criar_proposta?cliente={{ cliente }}" class="nav-link">Voltar para a Proposta</a>
+    </div>
+
+    <div class="container">
+        <div class="form-container">
+            <form action="/adicionar_bloco_temporario?cliente={{ cliente }}&rascunho_id={{ rascunho_id }}" method="post" id="form-adicionar">
+                <h2 class="section-title">Informações do Bloco Temporário</h2>
+                
+                <div class="form-group">
+                    <label for="nome_bloco">Nome do Bloco:</label>
+                    <input type="text" id="nome_bloco" name="nome_bloco" required placeholder="Ex: Visão Geral dos Serviços">
+                    <div class="dicas">
+                        <p>O nome do bloco será usado como título na proposta.</p>
+                    </div>
+                </div>
+
+                <div class="option-container">
+                    <div class="option-title">Opções de Salvamento</div>
+                    <div class="option-description">
+                        Escolha como deseja salvar este bloco:
+                    </div>
+                    
+                    <div class="option-checkbox">
+                        <input type="checkbox" id="salvar_temporario" name="salvar_temporario" checked>
+                        <label for="salvar_temporario">Salvar apenas para esta proposta (temporário)</label>
+                    </div>
+                    
+                    <div class="option-checkbox">
+                        <input type="checkbox" id="salvar_permanente" name="salvar_permanente">
+                        <label for="salvar_permanente">Salvar permanentemente para uso futuro</label>
+                    </div>
+                    
+                    <div class="dicas">
+                        <p><strong>Nota:</strong> Blocos temporários estarão disponíveis apenas para esta proposta específica.</p>
+                        <p>Blocos permanentes ficarão disponíveis para uso em propostas futuras.</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editor-conteudo">Conteúdo do Bloco:</label>
+                    <!-- Div para o editor Quill -->
+                    <div id="editor-conteudo" class="editor"></div>
+                    
+                    <!-- Campo oculto para armazenar o HTML -->
+                    <textarea id="texto_bloco" name="texto_bloco" style="display:none;"></textarea>
+                    
+                    <div class="dicas">
+                        <p>Dica: Use {{NOME_CLIENTE}} para inserir o nome do cliente automaticamente no documento.</p>
+                        <p>Você pode adicionar imagens, tabelas e formatação usando as ferramentas do editor.</p>
+                    </div>
+                </div>
+
+                <div class="submit-container">
+                    <button type="submit" class="btn-adicionar">Adicionar Bloco</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar o editor Quill
+        var quill = new Quill('#editor-conteudo', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'align': [] }],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Escreva o conteúdo do bloco aqui...'
+        });
+        
+        // Atualizar o campo oculto com o HTML do editor antes do envio
+        document.getElementById('form-adicionar').onsubmit = function() {
+            var html = quill.root.innerHTML;
+            document.getElementById('texto_bloco').value = html;
+            return true;
+        };
+        
+        // Lógica para os checkboxes de opções
+        document.getElementById('salvar_temporario').addEventListener('change', function() {
+            if (this.checked) {
+                document.getElementById('salvar_permanente').checked = false;
+            } else {
+                document.getElementById('salvar_permanente').checked = true;
+            }
+        });
+        
+        document.getElementById('salvar_permanente').addEventListener('change', function() {
+            if (this.checked) {
+                document.getElementById('salvar_temporario').checked = false;
+            } else {
+                document.getElementById('salvar_temporario').checked = true;
+            }
+        });
+    </script>
+</body>
+</html> 

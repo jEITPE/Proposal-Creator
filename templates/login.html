@@ -4,256 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Gerador de Propostas Service IT</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon e ícones para diversos dispositivos -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon_round.png') }}" type="image/png">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon_round.png') }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon_round.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    <meta name="msapplication-TileColor" content="#e60000">
+    <meta name="theme-color" content="#e60000">
+    
+    <!-- Fontes e estilos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #3498db;
-            --primary-dark: #2980b9;
-            --secondary: #2ecc71;
-            --secondary-dark: #27ae60;
-            --accent: #9b59b6;
-            --accent-dark: #8e44ad;
-            --dark: #1a1a2e;
-            --dark-lighter: #16213e;
-            --dark-medium: #0f3460;
-            --text-light: #f1f1f1;
-            --text-muted: #b2bec3;
-            --danger: #e74c3c;
-            --border-radius: 8px;
-            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: var(--dark);
-            background-image: linear-gradient(135deg, rgba(26, 26, 46, 0.97) 0%, rgba(22, 33, 62, 0.97) 100%), 
-                              url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="1.5" fill="%233498db" opacity="0.2"/></svg>');
-            background-size: cover, 30px 30px;
-            background-attachment: fixed;
-        }
-        
-        .login-container {
-            width: 100%;
-            max-width: 420px;
-            padding: 0;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .login-card {
-            background-color: var(--dark-lighter);
-            border-radius: 12px;
-            box-shadow: var(--card-shadow);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transform: translateY(0);
-            transition: transform 0.3s ease;
-        }
-        
-        .login-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .login-header {
-            padding: 30px 20px;
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .logo {
-            width: 160px;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 2px 5px rgba(52, 152, 219, 0.3));
-        }
-        
-        .login-title {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--text-light);
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .login-subtitle {
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-        
-        .login-body {
-            padding: 30px 40px;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-            text-align: left;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-light);
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        .input-group {
-            position: relative;
-        }
-        
-        .input-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 16px;
-        }
-        
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 14px 15px 14px 45px;
-            background-color: rgba(15, 52, 96, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--border-radius);
-            color: var(--text-light);
-            font-family: 'Roboto', sans-serif;
-            font-size: 15px;
-            transition: var(--transition);
-        }
-        
-        input[type="text"]:focus, input[type="password"]:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-        }
-        
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
-            letter-spacing: 0.5px;
-        }
-        
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
-        }
-        
-        .forgot-password {
-            display: inline-block;
-            margin-top: 20px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 14px;
-            transition: var(--transition);
-        }
-        
-        .forgot-password:hover {
-            color: var(--primary);
-        }
-        
-        .error-message {
-            background-color: rgba(231, 76, 60, 0.1);
-            border-left: 4px solid var(--danger);
-            color: var(--text-light);
-            padding: 12px 15px;
-            margin-bottom: 25px;
-            font-size: 14px;
-            border-radius: var(--border-radius);
-            text-align: left;
-            display: flex;
-            align-items: center;
-        }
-        
-        .error-message i {
-            margin-right: 10px;
-            color: var(--danger);
-        }
-        
-        .login-footer {
-            padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        
-        @media (max-width: 480px) {
-            .login-container {
-                max-width: 100%;
-                padding: 0 20px;
-            }
-            
-            .login-body {
-                padding: 25px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 </head>
 <body>
     <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <img src="/static/img/logo_service_it.png" alt="Logo Service IT" class="logo">
-                <h1 class="login-title">Gerador de Propostas</h1>
-                <p class="login-subtitle">Faça login para acessar o sistema</p>
+        <div class="login-header">
+            <img src="{{ url_for('static', filename='favicon_round.png') }}" alt="Service IT" class="logo">
+            <h1 class="login-title">Gerador de Propostas</h1>
+            <p class="login-subtitle">Faça login para acessar o sistema</p>
+        </div>
+        
+        <div class="login-form">
+            {% if error %}
+            <div class="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ error }}
             </div>
+            {% endif %}
             
-            <div class="login-body">
-                {% if error %}
-                <div class="error-message">
-                    <i class="fas fa-exclamation-circle"></i>
-                    {{ error }}
+            <form action="/login" method="post">
+                <div class="form-group">
+                    <label for="username" class="form-label">Nome de Usuário</label>
+                    <div class="input-group">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Digite seu usuário" required>
+                    </div>
                 </div>
-                {% endif %}
                 
-                <form action="/login" method="post">
-                    <div class="form-group">
-                        <label for="username" class="form-label">Nome de Usuário</label>
-                        <div class="input-group">
-                            <div class="input-icon">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
-                        </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Senha</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Digite sua senha" required>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="password" class="form-label">Senha</label>
-                        <div class="input-group">
-                            <div class="input-icon">
-                                <i class="fas fa-lock"></i>
-                            </div>
-                            <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn-login">ENTRAR</button>
-                    <a href="#" class="forgot-password">Esqueceu sua senha?</a>
-                </form>
+                </div>
+                
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Lembrar de mim</label>
+                </div>
+                
+                <button type="submit" class="btn">ENTRAR NO SISTEMA</button>
+            </form>
+            
+            <div class="forgot-password">
+                <a href="#">Esqueceu sua senha?</a>
             </div>
             
             <div class="login-footer">

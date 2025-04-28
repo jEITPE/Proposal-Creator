@@ -1,0 +1,567 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerenciar Blocos{% endblock %}
+{% block page_title %}Gerenciar Blocos de Conteúdo{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/blocks.css') }}">
+<style>
+    /* Estilos melhorados para cards e modais */
+    .bloco-card {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .bloco-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+        border-color: rgba(230, 0, 0, 0.2);
+    }
+    
+    .bloco-info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    
+    .bloco-info-item i {
+        margin-right: 8px;
+        color: #777;
+    }
+    
+    .preview-content {
+        max-height: 100px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .preview-content:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 30px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    }
+    
+    /* Estilos para modais */
+    .modal {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-dialog {
+        max-width: 850px;
+        margin: 2rem auto;
+    }
+    
+    .modal-content {
+        border: none;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+        border-radius: 12px;
+    }
+    
+    .modal-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eaeaea;
+        border-radius: 12px 12px 0 0;
+        padding: 1.2rem 1.5rem;
+    }
+    
+    .modal-title {
+        font-weight: 600;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .modal-footer {
+        border-top: 1px solid #eaeaea;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+    
+    .close {
+        font-size: 1.5rem;
+        color: #aaa;
+        opacity: 0.8;
+        transition: all 0.2s ease;
+    }
+    
+    .close:hover {
+        color: #e60000;
+        opacity: 1;
+    }
+    
+    /* Fix para z-index das modais */
+    .modal-backdrop {
+        z-index: 1040;
+    }
+    
+    .modal {
+        z-index: 1050;
+    }
+    
+    /* Classes para prevenir múltiplas modais abertas simultaneamente */
+    body.modal-open {
+        overflow: hidden;
+        padding-right: 0 !important;
+    }
+    
+    /* Estilos para o conteúdo de prévia */
+    .preview-container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #eaeaea;
+        min-height: 200px;
+    }
+    
+    /* Layout para blocos */
+    .bloco-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+    }
+    
+    @media (max-width: 767px) {
+        .bloco-list {
+            grid-template-columns: 1fr;
+        }
+        
+        .modal-dialog {
+            margin: 1rem;
+            max-width: calc(100% - 2rem);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="blocks-container">
+    <div class="intro-section">
+        <p class="intro-text">
+            Gerencie os blocos de conteúdo que podem ser utilizados nas propostas. 
+            Blocos são seções pré-definidas de texto que podem ser reutilizadas em múltiplas propostas, economizando tempo.
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="tab-container">
+                <div class="tab-nav">
+                    <div class="tab-link active" data-tab="lista">
+                        <i class="fas fa-th-large"></i> Lista de Blocos
+                    </div>
+                    {% if is_admin %}
+                    <div class="tab-link" data-tab="adicionar">
+                        <i class="fas fa-plus-circle"></i> Adicionar Novo Bloco
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Tab de Lista de Blocos -->
+                <div class="tab-content active" id="lista-tab">
+                    <div class="filters-container">
+                        <div class="search-container">
+                            <input type="text" id="pesquisar-bloco" class="search-input" placeholder="Pesquisar blocos pelo nome ou título...">
+                        </div>
+                        <div class="filter-buttons">
+                            <button class="btn filter-btn active" data-filter="todos">Todos</button>
+                            <button class="btn filter-btn" data-filter="obrigatorios">Obrigatórios</button>
+                            <button class="btn filter-btn" data-filter="opcionais">Opcionais</button>
+                            <button class="btn filter-btn" data-filter="meus">Meus Blocos</button>
+                            {% if is_admin %}
+                            <button class="btn filter-btn" data-filter="sistema">Blocos do Sistema</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="actions-bar">
+                        <div class="bloco-stats">
+                            <span class="stats-total"><i class="fas fa-cube"></i> <span id="total-blocos">{{ blocos|length }}</span> blocos encontrados</span>
+                            <span class="stats-filtered" style="display: none;"><i class="fas fa-filter"></i> Mostrando <span id="filtered-count">0</span> de {{ blocos|length }}</span>
+                        </div>
+                        {% if is_admin %}
+                        <div class="buttons-group">
+                            <button class="btn btn-primary" onclick="document.querySelector('.tab-link[data-tab=\'adicionar\']').click()">
+                                <i class="fas fa-plus"></i> Novo Bloco
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="bloco-list">
+                        {% for nome_bloco, bloco in blocos.items() %}
+                        <div class="bloco-card">
+                            <div class="bloco-header">
+                                <h3 class="bloco-title">{{ bloco.titulo }}</h3>
+                                <div class="badges-container">
+                                    {% if bloco.obrigatorio %}
+                                    <span class="bloco-badge obrigatorio">Obrigatório</span>
+                                    {% else %}
+                                    <span class="bloco-badge opcional">Opcional</span>
+                                    {% endif %}
+                                    
+                                    {% set blocos_sistema = ["Termo_de_Confidencialidade", "Folha_de_Rosto", "Controle_de_Versao", "Sumario_Executivo", "Sobre_a_Service_IT", "Conhecendo_a_Service_IT", "Visao_Geral_dos_Servicos", "Solucao_Proposta", "Exclusoes", "Transicao", "Termo_de_Aceite_da_Proposta"] %}
+                                    {% if nome_bloco in blocos_sistema %}
+                                    <span class="bloco-badge sistema">Sistema</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="bloco-body">
+                                <div class="block-info">
+                                    <div class="info-group">
+                                        <div class="bloco-info-item">
+                                            <i class="fas fa-tag"></i>
+                                            <span title="Identificador único do bloco">{{ nome_bloco }}</span>
+                                        </div>
+                                        <div class="bloco-info-item">
+                                            <i class="fas fa-user"></i>
+                                            <span title="Criado por">{{ bloco.criado_por }}</span>
+                                        </div>
+                                        <div class="bloco-info-item">
+                                            <i class="fas fa-calendar"></i>
+                                            <span title="Data de criação">{{ bloco.data_criacao }}</span>
+                                        </div>
+                                    </div>
+                                
+                                    {% if is_admin and bloco.usuarios_permitidos|length > 0 %}
+                                    <div class="users-permission">
+                                        <div class="permission-label">
+                                            <i class="fas fa-users"></i> Usuários com permissão:
+                                        </div>
+                                        <div class="permission-badges">
+                                            {% for login in bloco.usuarios_permitidos %}
+                                            <span class="bloco-badge usuario">{{ login }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="block-preview">
+                                    <div class="preview-header">
+                                        <div class="preview-label">
+                                            <i class="fas fa-eye"></i> Prévia do Conteúdo
+                                        </div>
+                                    </div>
+                                    <div class="preview-content">
+                                        {{ bloco.texto|safe|truncate(200) }}
+                                    </div>
+                                </div>
+                                
+                                <div class="bloco-actions">
+                                    <button class="btn btn-info btn-sm" onclick="visualizarBloco('{{ nome_bloco }}')">
+                                        <i class="fas fa-eye"></i> Visualizar
+                                    </button>
+                                    
+                                    <!-- Apenas o criador do bloco ou admin pode editar -->
+                                    {% if is_admin or session.usuario_logado == bloco.criado_por %}
+                                    <button class="btn btn-primary btn-sm" 
+                                        data-nome="{{ nome_bloco }}" 
+                                        data-titulo="{{ bloco.titulo|safe }}" 
+                                        data-obrigatorio="{{ 'true' if bloco.obrigatorio else 'false' }}" 
+                                        data-usuarios="{{ bloco.usuarios_permitidos|tojson }}"
+                                        onclick="editarBlocoFromButton(this)">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    {% endif %}
+                                    
+                                    <!-- Apenas admin pode remover -->
+                                    {% if is_admin %}
+                                    {% set blocos_reservados = ["Termo_de_Confidencialidade", "Folha_de_Rosto", "Controle_de_Versao", "Sumario_Executivo", "Sobre_a_Service_IT", "Conhecendo_a_Service_IT", "Visao_Geral_dos_Servicos", "Solucao_Proposta", "Exclusoes", "Transicao", "Termo_de_Aceite_da_Proposta"] %}
+                                    {% if nome_bloco not in blocos_reservados %}
+                                    <button class="btn btn-danger btn-sm" onclick="confirmarRemocao('{{ nome_bloco }}')">
+                                        <i class="fas fa-trash"></i> Remover
+                                    </button>
+                                    {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        {% if blocos|length == 0 %}
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-cubes"></i>
+                            </div>
+                            <h3 class="empty-state-title">Nenhum bloco encontrado</h3>
+                            <p class="empty-state-text">Não há blocos cadastrados no sistema.</p>
+                            {% if is_admin %}
+                            <button class="btn btn-primary" onclick="document.querySelector('.tab-link[data-tab=\'adicionar\']').click()">
+                                <i class="fas fa-plus"></i> Adicionar Novo Bloco
+                            </button>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Tab de Adicionar Bloco (somente para admin) -->
+                {% if is_admin %}
+                <div class="tab-content" id="adicionar-tab">
+                    <form action="{{ url_for('gerenciar_blocos') }}" method="post">
+                        <input type="hidden" name="acao" value="adicionar">
+                        
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h3 class="form-section-title">
+                                    <i class="fas fa-info-circle"></i> Informações Básicas
+                                </h3>
+                            </div>
+                            <div class="form-section-body">
+                                <div class="form-group">
+                                    <label for="nome_bloco" class="form-label">Nome do Bloco</label>
+                                    <input type="text" class="form-control" id="nome_bloco" name="nome_bloco" required>
+                                    <small class="form-text">Use apenas letras, números e underscore. Ex: Introducao_Cliente</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="titulo_bloco" class="form-label">Título do Bloco</label>
+                                    <input type="text" class="form-control" id="titulo_bloco" name="titulo_bloco" required>
+                                    <small class="form-text">Este título será exibido nas listas e no cabeçalho do bloco</small>
+                                </div>
+                                
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input" id="obrigatorio" name="obrigatorio">
+                                    <label class="form-check-label" for="obrigatorio">Bloco obrigatório</label>
+                                    <small class="form-text">Se marcado, este bloco será incluído automaticamente em todas as propostas.</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h3 class="form-section-title">
+                                    <i class="fas fa-file-alt"></i> Conteúdo do Bloco
+                                </h3>
+                            </div>
+                            <div class="form-section-body">
+                                <div class="form-group">
+                                    <textarea class="form-control" id="conteudo_bloco" name="conteudo_bloco" rows="12"></textarea>
+                                    <small class="form-text">Você pode usar HTML para formatar o conteúdo. O editor enriquecido será carregado automaticamente se disponível.</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h3 class="form-section-title">
+                                    <i class="fas fa-users"></i> Permissões de Usuários
+                                </h3>
+                            </div>
+                            <div class="form-section-body">
+                                <p>Selecione os usuários que poderão editar este bloco. Administradores e superusuários sempre terão permissão.</p>
+                                
+                                <div class="selection-controls">
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="selecionarTodosUsuarios(true)">
+                                        <i class="fas fa-check-square"></i> Selecionar Todos
+                                    </button>
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="selecionarTodosUsuarios(false)">
+                                        <i class="fas fa-square"></i> Desmarcar Todos
+                                    </button>
+                                </div>
+                                
+                                <div class="user-check-container">
+                                    {% for login, usuario in usuarios.items() %}
+                                    <div class="user-check-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="user_{{ login }}" name="usuarios_permitidos" value="{{ login }}" {{ 'checked' if usuario.superusuario else '' }}>
+                                            <label class="form-check-label" for="user_{{ login }}">
+                                                {{ usuario.nome }} ({{ login }})
+                                                <div><small>{{ usuario.tipo }}</small></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="actions-bar">
+                            <button type="button" class="btn btn-outline" onclick="document.querySelector('.tab-link[data-tab=\'lista\']').click()">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Salvar Bloco
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Ativação das tabs
+document.querySelectorAll('.tab-link').forEach(tab => {
+    tab.addEventListener('click', () => {
+        // Remover classe active de todas as tabs
+        document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Adicionar classe active na tab clicada
+        tab.classList.add('active');
+        document.getElementById(tab.getAttribute('data-tab') + '-tab').classList.add('active');
+    });
+});
+
+// Função para filtrar blocos
+document.getElementById('pesquisar-bloco').addEventListener('input', filtrarBlocos);
+
+// Adicionar eventos para os botões de filtro
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remover classe active de todos os botões
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        
+        // Adicionar classe active no botão clicado
+        this.classList.add('active');
+        
+        // Aplicar filtro
+        filtrarBlocos();
+    });
+});
+
+// Função unificada para filtrar blocos
+function filtrarBlocos() {
+    const termo = document.getElementById('pesquisar-bloco').value.toLowerCase();
+    const filtroAtivo = document.querySelector('.filter-btn.active').dataset.filter;
+    const blocos = document.querySelectorAll('.bloco-card');
+    
+    let blocosVisiveis = 0;
+    
+    blocos.forEach(bloco => {
+        const titulo = bloco.querySelector('.bloco-title').textContent.toLowerCase();
+        const nomeBloco = bloco.querySelector('.bloco-info-item:first-child span').textContent.toLowerCase();
+        const criadorBloco = bloco.querySelector('.bloco-info-item:nth-child(2) span').textContent.toLowerCase();
+        const isObrigatorio = bloco.querySelector('.bloco-badge.obrigatorio') !== null;
+        const blocoSistema = ["Termo_de_Confidencialidade", "Folha_de_Rosto", "Controle_de_Versao", "Sumario_Executivo", "Sobre_a_Service_IT", "Conhecendo_a_Service_IT", "Visao_Geral_dos_Servicos", "Solucao_Proposta", "Exclusoes", "Transicao", "Termo_de_Aceite_da_Proposta"].includes(nomeBloco);
+        const usuarioAtual = "{{ session.usuario_logado }}".toLowerCase();
+        
+        // Verificar filtro de texto
+        const matchesTexto = titulo.includes(termo) || nomeBloco.includes(termo);
+        
+        // Verificar filtros de categoria
+        let matchesFiltro = false;
+        
+        switch(filtroAtivo) {
+            case 'todos':
+                matchesFiltro = true;
+                break;
+            case 'obrigatorios':
+                matchesFiltro = isObrigatorio;
+                break;
+            case 'opcionais':
+                matchesFiltro = !isObrigatorio;
+                break;
+            case 'meus':
+                matchesFiltro = criadorBloco === usuarioAtual;
+                break;
+            case 'sistema':
+                matchesFiltro = blocoSistema;
+                break;
+        }
+        
+        // Aplicar visibilidade baseada nos dois critérios
+        if (matchesTexto && matchesFiltro) {
+            bloco.style.display = '';
+            bloco.classList.add('filtrado-in');
+            blocosVisiveis++;
+        } else {
+            bloco.style.display = 'none';
+        }
+    });
+    
+    // Atualizar contador de blocos
+    document.getElementById('filtered-count').textContent = blocosVisiveis;
+    document.getElementById('total-blocos').textContent = blocos.length;
+    
+    // Mostrar ou esconder estatísticas filtradas
+    const statsTotal = document.querySelector('.stats-total');
+    const statsFiltered = document.querySelector('.stats-filtered');
+    
+    if (blocosVisiveis < blocos.length) {
+        statsTotal.style.display = 'none';
+        statsFiltered.style.display = 'flex';
+    } else {
+        statsTotal.style.display = 'flex';
+        statsFiltered.style.display = 'none';
+    }
+    
+    // Mostrar estado vazio se nenhum bloco visível
+    const existingEmptyState = document.querySelector('.filtro-vazio');
+    if (existingEmptyState) {
+        existingEmptyState.remove();
+    }
+    
+    if (blocosVisiveis === 0) {
+        const emptyState = document.createElement('div');
+        emptyState.className = 'empty-state filtro-vazio';
+        emptyState.innerHTML = `
+            <div class="empty-state-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3 class="empty-state-title">Nenhum bloco encontrado</h3>
+            <p class="empty-state-text">Sua pesquisa não retornou resultados. Tente outros termos ou filtros diferentes.</p>
+            <button class="btn btn-outline" onclick="resetarFiltros()">
+                <i class="fas fa-sync"></i> Limpar Filtros
+            </button>
+        `;
+        document.querySelector('.bloco-list').appendChild(emptyState);
+    }
+}
+
+// Função para resetar todos os filtros
+function resetarFiltros() {
+    document.getElementById('pesquisar-bloco').value = '';
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn[data-filter="todos"]').classList.add('active');
+    filtrarBlocos();
+}
+
+// Funções para seleção de usuários
+function selecionarTodosUsuarios(selecionar) {
+    document.querySelectorAll('input[name="usuarios_permitidos"]').forEach(check => {
+        check.checked = selecionar;
+    });
+}
+
+function selecionarTodosUsuariosEdit(selecionar) {
+    document.querySelectorAll('.edit-user-check').forEach(check => {
+        check.checked = selecionar;
+    });
+}
+
+// Funções para modais que serão implementadas nas integrações JS
+function visualizarBloco(nomeBloco) {
+    // Esta função será implementada no script externo
+    console.log("Visualizar bloco:", nomeBloco);
+}
+
+function confirmarRemocao(nomeBloco) {
+    // Esta função será implementada no script externo
+    console.log("Confirmar remoção:", nomeBloco);
+}
+
+function editarBlocoFromButton(button) {
+    // Esta função será implementada no script externo
+    console.log("Editar bloco:", button.getAttribute('data-nome'));
+}
+</script>
+
+{% endblock %} 

@@ -1,0 +1,217 @@
+/* Melhorias de acessibilidade - Proposal Creator */
+
+/* Melhorar contrastes e legibilidade */
+body {
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Melhorar foco para navegação por teclado */
+:focus {
+    outline: 3px solid rgba(230, 0, 0, 0.5) !important;
+    outline-offset: 2px !important;
+}
+
+a:focus, button:focus, input:focus, 
+select:focus, textarea:focus, [tabindex]:focus {
+    box-shadow: 0 0 0 3px rgba(230, 0, 0, 0.3);
+}
+
+/* Ignorar animações para usuários que preferem movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Melhorar navegação por teclado */
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--primary);
+    color: white;
+    padding: 8px 16px;
+    z-index: 1000;
+    transition: top 0.3s;
+    border-bottom-right-radius: var(--border-radius);
+}
+
+.skip-to-content:focus {
+    top: 0;
+}
+
+/* Melhorar legibilidade de textos */
+@media (max-width: 768px) {
+    body {
+        font-size: 16px; /* Garantir tamanho mínimo em dispositivos móveis */
+    }
+    
+    h1 {
+        font-size: 24px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+    
+    h3 {
+        font-size: 18px;
+    }
+}
+
+/* Melhorar alinhamento para leitores de tela */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Tabela acessível para screen readers */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Aumentar alvos de toque para dispositivos móveis */
+@media (hover: none) and (pointer: coarse) {
+    .btn, input[type="checkbox"], input[type="radio"],
+    .menu-link, .card-header, select, .form-control {
+        min-height: 44px;
+    }
+    
+    input[type="checkbox"], input[type="radio"] {
+        min-width: 22px;
+        min-height: 22px;
+    }
+    
+    /* Aumentar espaçamento em listas e menus para facilitar a interação */
+    li, .dropdown-item {
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+}
+
+/* Garantir legibilidade em diferentes fundos */
+.text-on-dark {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.text-on-light {
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Suporte a Leitores de Tela - Sr-only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Melhorias para formulários acessíveis */
+label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+/* Adicionando botão de zoom para melhorar acessibilidade em texto */
+.zoom-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.zoom-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--background-light);
+    border: 1px solid var(--secondary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Feedback visual para interações */
+.btn:active,
+.menu-link:active,
+.card:active {
+    transform: scale(0.98);
+}
+
+/* Escala de texto para dispositivos grandes */
+@media (min-width: 1400px) {
+    html {
+        font-size: 18px;
+    }
+}
+
+/* Estado de carregamento acessível */
+.loading {
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.loading::before {
+    content: '';
+    position: absolute;
+    top: calc(50% - 20px);
+    left: calc(50% - 20px);
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(230, 0, 0, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s linear infinite;
+    z-index: 11;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Acessibilidade de texto - permite o tamanho do texto ser controlado */
+.font-size-control body {
+    zoom: var(--user-zoom, 1);
+}
+
+/* Classes utilitárias para acessibilidade */
+.text-center-xs {
+    text-align: center;
+} 

@@ -1,296 +1,569 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block title %}Gerenciar Usuários{% endblock %}
+{% block page_title %}Gerenciar Usuários do Sistema{% endblock %}
+
+{% block head %}
 <style>
-    .container-white {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        padding: 30px;
+    /* Estilos para o layout da página de gerenciamento de usuários */
+    .tab-container {
         margin-bottom: 30px;
     }
-    .section-header {
+    
+    .tab-nav {
+        display: flex;
+        border-bottom: 1px solid #e9ecef;
+        margin-bottom: 20px;
+    }
+    
+    .tab-link {
+        padding: 12px 20px;
+        font-weight: 500;
+        color: var(--text-medium);
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .tab-link.active {
+        color: var(--primary);
+        border-bottom-color: var(--primary);
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    /* Campo de pesquisa de usuários */
+    .search-container {
+        margin-bottom: 20px;
+        position: relative;
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border-radius: var(--border-radius);
+        border: 1px solid #e9ecef;
+        background-color: var(--background-light);
+        color: var(--text-dark);
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        transition: var(--transition);
+    }
+    
+    .search-input:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(230, 0, 0, 0.1);
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        font-size: 18px;
+    }
+    
+    /* Cards de usuários */
+    .user-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    
+    .user-card {
+        background-color: var(--background-light);
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        transition: var(--transition);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .user-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .user-header {
+        padding: 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        background-color: rgba(0, 0, 0, 0.01);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #eee;
     }
-    .section-title {
-        font-size: 24px;
-        color: #333;
+    
+    .user-title {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        font-weight: 600;
         margin: 0;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        color: white;
         font-weight: 600;
+        box-shadow: 0 2px 5px rgba(230, 0, 0, 0.3);
     }
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        cursor: pointer;
+    
+    .user-badge {
         display: inline-block;
+        padding: 3px 8px;
+        font-size: 11px;
+        border-radius: 12px;
+        margin-left: 5px;
     }
-    .btn-primary:hover {
-        background-color: #0069d9;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+    
+    .user-badge.admin {
+        background-color: rgba(230, 0, 0, 0.1);
+        color: var(--primary);
+        border: 1px solid rgba(230, 0, 0, 0.2);
     }
-    .btn-danger {
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 4px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        display: inline-block;
+    
+    .user-badge.active {
+        background-color: rgba(46, 204, 113, 0.1);
+        color: #2ecc71;
+        border: 1px solid rgba(46, 204, 113, 0.2);
     }
-    .btn-danger:hover {
-        background-color: #c82333;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    
+    .user-badge.inactive {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: #e74c3c;
+        border: 1px solid rgba(231, 76, 60, 0.2);
     }
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        border-radius: 8px;
-        overflow: hidden;
+    
+    .user-badge.temp {
+        background-color: rgba(243, 156, 18, 0.1);
+        color: #f39c12;
+        border: 1px solid rgba(243, 156, 18, 0.2);
     }
-    .table th, .table td {
-        padding: 15px;
-        text-align: left;
-        border-bottom: 1px solid #eee;
+    
+    .user-body {
+        padding: 20px;
     }
-    .table th {
-        background-color: #f8f9fa;
-        font-weight: 600;
-        color: #495057;
-        border-top: none;
-    }
-    .table tr:last-child td {
-        border-bottom: none;
-    }
-    .table tr:hover {
-        background-color: #f8f9fa;
-    }
-    .badge {
-        display: inline-block;
-        padding: 5px 10px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: 500;
-    }
-    .badge-admin {
-        background-color: #dc3545;
-        color: white;
-    }
-    .badge-am {
-        background-color: #28a745;
-        color: white;
-    }
-    .badge-vp {
-        background-color: #6f42c1;
-        color: white;
-    }
-    .badge-diretor {
-        background-color: #fd7e14;
-        color: white;
-    }
-    .badge-gerente {
-        background-color: #17a2b8;
-        color: white;
-    }
-    .badge-head {
-        background-color: #007bff;
-        color: white;
-    }
-    .badge-sales {
-        background-color: #20c997;
-        color: white;
-    }
-    .form-group {
-        margin-bottom: 15px;
-    }
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 500;
-        color: #495057;
-    }
-    .form-control {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 16px;
-        transition: border-color 0.3s;
-    }
-    .form-control:focus {
-        border-color: #80bdff;
-        outline: none;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    }
-    .form-select {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 16px;
-        background-color: white;
-        transition: border-color 0.3s;
-    }
-    .form-select:focus {
-        border-color: #80bdff;
-        outline: none;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    }
-    .alert {
-        padding: 15px;
+    
+    .user-info {
         margin-bottom: 20px;
-        border-radius: 4px;
     }
-    .alert-success {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
+    
+    .user-info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: var(--text-medium);
     }
-    .alert-danger {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
+    
+    .user-info-item i {
+        width: 20px;
+        margin-right: 10px;
+        color: var(--primary);
     }
-    .form-row {
+    
+    .user-actions {
         display: flex;
         flex-wrap: wrap;
-        margin-right: -10px;
-        margin-left: -10px;
+        gap: 10px;
     }
-    .form-col {
-        flex: 0 0 50%;
-        max-width: 50%;
-        padding: 0 10px;
+    
+    .user-actions .btn {
+        flex: 1 0 calc(50% - 5px);
+        text-align: center;
+        white-space: nowrap;
+        padding: 8px 12px;
+        font-size: 12px;
     }
+    
+    .user-actions .btn i {
+        margin-right: 5px;
+    }
+    
+    /* Formulário de cadastro de usuário */
+    .form-section {
+        background-color: var(--background-light);
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        padding: 25px;
+        margin-bottom: 25px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        align-items: center;
+    }
+    
+    .form-section-title i {
+        margin-right: 10px;
+        color: var(--primary);
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    /* Ocultar área de debug */
+    .debug-info {
+        display: none !important;
+    }
+    
+    /* Melhorias para telas menores */
     @media (max-width: 768px) {
-        .form-col {
-            flex: 0 0 100%;
-            max-width: 100%;
+        .user-list {
+            grid-template-columns: 1fr;
         }
-        .section-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 15px;
+        
+        .user-actions .btn {
+            flex: 1 0 100%;
         }
-        .table {
-            display: block;
+        
+        .tab-nav {
             overflow-x: auto;
             white-space: nowrap;
+            padding-bottom: 5px;
         }
-        .btn-primary, .btn-danger {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-            text-align: center;
+        
+        .tab-link {
+            padding: 10px 15px;
         }
     }
 </style>
+<script src="{{ url_for('static', filename='js/users.js') }}"></script>
+{% endblock %}
 
-{% if get_flashed_messages() %}
-    <div class="alert alert-info">
-        {% for message in get_flashed_messages() %}
-            {{ message }}
-        {% endfor %}
-    </div>
-{% endif %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="tab-container">
+            <div class="tab-nav">
+                <div class="tab-link active" data-tab="lista">
+                    <i class="fas fa-users"></i> Lista de Usuários
+                </div>
+                <div class="tab-link" data-tab="adicionar">
+                    <i class="fas fa-user-plus"></i> Adicionar Novo Usuário
+                </div>
+            </div>
+            
+            <!-- Tab de Lista de Usuários -->
+            <div class="tab-content active" id="lista-tab">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="pesquisar-usuario" class="search-input" placeholder="Pesquisar usuários...">
+                </div>
+                
+                <div class="user-list">
+                    {% for login, usuario in usuarios.items() %}
+                    <div class="user-card">
+                        <div class="user-header">
+                            <h3 class="user-title">
+                                <div class="user-avatar">{{ login[0]|upper }}</div>
+                                {{ usuario.nome if usuario.nome else login }}
+                            </h3>
+                            <div>
+                                {% if usuario.tipo == "admin" %}
+                                <span class="user-badge admin">Administrador</span>
+                                {% elif "Temporário" in usuario.perfil %}
+                                <span class="user-badge temp">Temporário</span>
+                                {% endif %}
+                                
+                                {% if usuario.status == 1 %}
+                                <span class="user-badge active">Ativo</span>
+                                {% else %}
+                                <span class="user-badge inactive">Inativo</span>
+                                {% endif %}
 
-<div class="container-white">
-    <div class="section-header">
-        <h2 class="section-title">Gerenciar Usuários</h2>
-        <a href="{{ url_for('dashboard') }}" class="btn-primary">Voltar ao Dashboard</a>
-    </div>
-
-    <div class="form-row">
-        <div class="form-col">
-            <h3 style="margin-bottom: 20px; color: #333; font-weight: 500;">Adicionar Novo Usuário</h3>
-            <form method="post" action="{{ url_for('gerenciar_usuarios') }}">
-                <input type="hidden" name="acao" value="adicionar">
-                <div class="form-group">
-                    <label for="novo_usuario">Nome de Usuário:</label>
-                    <input type="text" id="novo_usuario" name="novo_usuario" class="form-control" required>
+                                {% if usuario.superusuario %}
+                                <span class="user-badge admin">Superusuário</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="user-body">
+                            <div class="user-info">
+                                <div class="user-info-item">
+                                    <i class="fas fa-user-tag"></i>
+                                    <span>{{ login }}</span>
+                                </div>
+                                <div class="user-info-item">
+                                    <i class="fas fa-id-badge"></i>
+                                    <span>{{ usuario.perfil if usuario.perfil else usuario.tipo|title }}</span>
+                                </div>
+                                <div class="user-info-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>{{ usuario.status_texto if usuario.status_texto else ('Ativo' if usuario.status == 1 else 'Inativo') }}</span>
+                                </div>
+                            </div>
+                
+                            <div class="user-actions">
+                                <form action="{{ url_for('gerenciar_usuarios') }}" method="post" style="flex: 1 0 calc(50% - 5px);">
+                                    <input type="hidden" name="acao" value="alterar_status">
+                                    <input type="hidden" name="usuario" value="{{ login }}">
+                                    
+                                    {% if usuario.status == 1 %}
+                                    <button type="submit" class="btn btn-outline">
+                                        <i class="fas fa-user-slash"></i> Desativar
+                                    </button>
+                                    {% else %}
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-user-check"></i> Ativar
+                                    </button>
+                                    {% endif %}
+                                </form>
+                                
+                                <form action="{{ url_for('gerenciar_usuarios') }}" method="post" style="flex: 1 0 calc(50% - 5px);">
+                                    <input type="hidden" name="acao" value="alterar_tipo">
+                                    <input type="hidden" name="usuario" value="{{ login }}">
+                                    
+                                    {% if usuario.tipo == "admin" %}
+                                    <button type="submit" class="btn btn-outline">
+                                        <i class="fas fa-user"></i> Tornar Usuário
+                                    </button>
+                                    {% else %}
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-user-shield"></i> Tornar Admin
+                                    </button>
+                                    {% endif %}
+                                </form>
+                                
+                                <form action="{{ url_for('gerenciar_usuarios') }}" method="post" style="flex: 1 0 calc(50% - 5px);">
+                                    <input type="hidden" name="acao" value="alterar_superusuario">
+                                    <input type="hidden" name="usuario" value="{{ login }}">
+                                    
+                                    {% if usuario.superusuario %}
+                                    <button type="submit" class="btn btn-outline">
+                                        <i class="fas fa-user-minus"></i> Remover Super
+                                    </button>
+                                    {% else %}
+                                    <button type="submit" class="btn btn-secondary">
+                                        <i class="fas fa-user-plus"></i> Tornar Super
+                                    </button>
+                                    {% endif %}
+                                </form>
+                                
+                                <button type="button" class="btn btn-danger" onclick="confirmarRemocao('{{ login }}')" style="flex: 1 0 calc(50% - 5px);">
+                                    <i class="fas fa-trash"></i> Remover
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
-                <div class="form-group">
-                    <label for="nova_senha">Senha:</label>
-                    <input type="password" id="nova_senha" name="nova_senha" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="tipo_usuario">Tipo de Usuário:</label>
-                    <select id="tipo_usuario" name="tipo_usuario" class="form-select" required>
-                        <option value="am">AM</option>
-                        <option value="admin">Administrador</option>
-                        <option value="comercialpr">Comercial Paraná</option>
-                        <option value="comercialrj">Comercial Rio de Janeiro</option>
-                        <option value="comercialrs">Comercial Rio Grande do Sul</option>
-                        <option value="comercialsp">Comercial São Paulo</option>
-                        <option value="se">Sales Engineer (Arquitetos)</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-primary">Adicionar Usuário</button>
-            </form>
+            </div>
+            
+            <!-- Tab de Adicionar Usuário -->
+            <div class="tab-content" id="adicionar-tab">
+                <form action="{{ url_for('adicionar_usuario') }}" method="post">
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-user-plus"></i>
+                            Informações do Usuário
+                        </h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nome" class="form-label">Nome Completo</label>
+                                <input type="text" class="form-control" id="nome" name="nome" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="login" class="form-label">Login</label>
+                                <input type="text" class="form-control" id="login" name="login" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="senha" class="form-label">Senha</label>
+                                <input type="password" class="form-control" id="senha" name="senha" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmar_senha" class="form-label">Confirmar Senha</label>
+                                <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-user-tag"></i>
+                            Perfil de Acesso
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label for="tipo" class="form-label">Tipo de Perfil</label>
+                            <select class="form-control" id="tipo" name="tipo" onchange="verificarPerfilSelecionado()">
+                                <option value="usuario">Usuário Padrão</option>
+                                <option value="admin">Administrador</option>
+                                {% for perfil_nome in perfis %}
+                                <option value="{{ perfil_nome }}">{{ perfil_nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-row" id="opcoes-acesso-temporario" style="display: none;">
+                            <div class="form-group">
+                                <label for="data_expiracao" class="form-label">Data de Expiração</label>
+                                <input type="date" class="form-control" id="data_expiracao" name="data_expiracao">
+                                <small class="form-text text-muted">Deixe em branco para acesso permanente</small>
+                            </div>
+                        </div>
+                        
+                        <div id="blocos-selecao" style="display: none;">
+                            <p>Selecione os blocos que o usuário poderá editar:</p>
+                            
+                            <!-- Guias de categorias de blocos -->
+                            <div class="blocos-tabs">
+                                <div class="blocos-tab active" data-categoria="todos" onclick="mostrarCategoria('todos')">Todos</div>
+                                <div class="blocos-tab" data-categoria="geral" onclick="mostrarCategoria('geral')">Blocos Gerais</div>
+                                {% for oferta_nome in ofertas.keys() %}
+                                <div class="blocos-tab" data-categoria="oferta_{{ oferta_nome }}" onclick="mostrarCategoria('oferta_{{ oferta_nome }}')">{{ oferta_nome }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="categoria-selecao-container">
+                                <div class="categoria-selecao" data-categoria="todos">
+                                    <div class="form-group mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="selecionarTodosBlocos(true)">
+                                                <i class="fas fa-check-square"></i> Selecionar Todos
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="selecionarTodosBlocos(false)">
+                                                <i class="fas fa-square"></i> Desmarcar Todos
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="user-check-container">
+                                        {% for bloco_nome, bloco in blocos.items() %}
+                                        <div class="user-check-item {% if bloco.obrigatorio %}obrigatorio{% endif %}" data-categoria="{{ bloco.categoria|default('geral') }}" data-categoria-oferta="{% if bloco.categoria and bloco.categoria.startswith('oferta_') %}{{ bloco.categoria }}{% endif %}">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="blocos_permitidos" value="{{ bloco_nome }}" id="bloco_{{ bloco_nome }}" onchange="sincronizarCheckboxes('{{ bloco_nome }}', this.checked)">
+                                                <label class="form-check-label" for="bloco_{{ bloco_nome }}">
+                                                    {{ bloco.titulo|default(bloco_nome.replace('_', ' ')) }}
+                                                    {% if bloco.obrigatorio %}
+                                                    <span class="bloco-badge">Obrigatório</span>
+                                                    {% endif %}
+                                                    {% if bloco.categoria and bloco.categoria != 'geral' and not bloco.categoria.startswith('oferta_') %}
+                                                    <span class="bloco-categoria-badge">{{ bloco.categoria }}</span>
+                                                    {% endif %}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <div class="categoria-selecao" data-categoria="geral">
+                                    <div class="user-check-container">
+                                        {% for bloco_nome, bloco in blocos.items() %}
+                                        {% if not bloco.categoria or bloco.categoria == 'geral' %}
+                                        <div class="user-check-item {% if bloco.obrigatorio %}obrigatorio{% endif %}">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="blocos_permitidos" value="{{ bloco_nome }}" id="bloco_geral_{{ bloco_nome }}" onchange="sincronizarCheckboxes('{{ bloco_nome }}', this.checked)">
+                                                <label class="form-check-label" for="bloco_geral_{{ bloco_nome }}">
+                                                    {{ bloco.titulo|default(bloco_nome.replace('_', ' ')) }}
+                                                    {% if bloco.obrigatorio %}
+                                                    <span class="bloco-badge">Obrigatório</span>
+                                                    {% endif %}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                {% for oferta_nome in ofertas.keys() %}
+                                <div class="categoria-selecao" data-categoria="oferta_{{ oferta_nome }}">
+                                    <div class="user-check-container">
+                                        {% for bloco_nome, bloco in blocos.items() %}
+                                        {% if bloco.categoria == 'oferta_' ~ oferta_nome %}
+                                        <div class="user-check-item {% if bloco.obrigatorio %}obrigatorio{% endif %}">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="blocos_permitidos" value="{{ bloco_nome }}" id="bloco_oferta_{{ oferta_nome }}_{{ bloco_nome }}" onchange="sincronizarCheckboxes('{{ bloco_nome }}', this.checked)">
+                                                <label class="form-check-label" for="bloco_oferta_{{ oferta_nome }}_{{ bloco_nome }}">
+                                                    {{ bloco.titulo|default(bloco_nome.replace('_', ' ')) }}
+                                                    {% if bloco.obrigatorio %}
+                                                    <span class="bloco-badge">Obrigatório</span>
+                                                    {% endif %}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Adicionar Usuário
+                        </button>
+                        <button type="reset" class="btn btn-outline">
+                            <i class="fas fa-undo"></i> Limpar Formulário
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-
-    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #333; font-weight: 500;">Usuários Existentes</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nome de Usuário</th>
-                <th>Tipo</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for usuario, dados in usuarios.items() %}
-            <tr>
-                <td>{{ usuario }}</td>
-                <td>
-                    {% if dados.tipo == 'admin' %}
-                    <span class="badge badge-admin">Administrador</span>
-                    {% elif dados.tipo == 'comercialpr' %}
-                    <span class="badge badge-diretor">Comercial Paraná</span>
-                    {% elif dados.tipo == 'comercialrj' %}
-                    <span class="badge badge-diretor">Comercial Rio de Janeiro</span>
-                    {% elif dados.tipo == 'comercialrs' %}
-                    <span class="badge badge-diretor">Comercial Rio Grande do Sul</span>
-                    {% elif dados.tipo == 'comercialsp' %}
-                    <span class="badge badge-diretor">Comercial São Paulo</span>
-                    {% elif dados.tipo == 'se' %}
-                    <span class="badge badge-sales">Sales Engineer</span>
-                    {% else %}
-                    <span class="badge badge-am">AM</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if usuario != 'admin' %}
-                    <form method="post" action="{{ url_for('gerenciar_usuarios') }}" style="display: inline;">
-                        <input type="hidden" name="acao" value="remover">
-                        <input type="hidden" name="usuario_remover" value="{{ usuario }}">
-                        <button type="submit" class="btn-danger" onclick="return confirm('Tem certeza que deseja remover o usuário {{ usuario }}?')">Remover</button>
-                    </form>
-                    {% else %}
-                    <em>Usuário principal</em>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </div>
+
+<!-- Modal de Confirmação de Remoção -->
+<div class="modal" id="confirmacaoModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Remoção</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja remover este usuário? Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <form action="{{ url_for('gerenciar_usuarios') }}" method="post" id="formRemover">
+                    <input type="hidden" name="acao" value="remover">
+                    <input type="hidden" name="usuario" id="removerUsuario" value="">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Confirmar Remoção</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Scripts específicos do bloco foram movidos para o arquivo users.js -->
 {% endblock %} 

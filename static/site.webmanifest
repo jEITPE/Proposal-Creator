@@ -1,0 +1,16 @@
+{
+    "name": "Gerador de Propostas Service IT",
+    "short_name": "Propostas IT",
+    "icons": [
+        {
+            "src": "/static/favicon_round.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "theme_color": "#e60000",
+    "background_color": "#1a1a1a",
+    "display": "standalone",
+    "start_url": "/"
+} 

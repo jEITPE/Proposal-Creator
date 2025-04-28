@@ -2,572 +2,242 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
     <title>Gerador de Propostas de Serviços Gerenciados Service IT</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon e ícones para diversos dispositivos -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon_round.png') }}" type="image/png">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon_round.png') }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon_round.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    <meta name="msapplication-TileColor" content="#e60000">
+    <meta name="msapplication-config" content="{{ url_for('static', filename='favicon_round.png') }}">
+    <meta name="theme-color" content="#e60000">
+    
+    <!-- Fontes e estilos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-new.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/accessibility.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table-responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-widescreen.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/light-theme.css') }}">
+    
+    <!-- Estilos específicos que não estão no CSS principal -->
     <style>
-        :root {
-            --primary: #3498db;
-            --primary-dark: #2980b9;
-            --secondary: #2ecc71;
-            --secondary-dark: #27ae60;
-            --accent: #9b59b6;
-            --accent-dark: #8e44ad;
-            --dark: #1a1a2e;
-            --dark-lighter: #16213e;
-            --dark-medium: #0f3460;
-            --text-light: #f1f1f1;
-            --text-muted: #b2bec3;
-            --danger: #e74c3c;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --info: #3498db;
-            --border-radius: 8px;
-            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-image: linear-gradient(135deg, rgba(26, 26, 46, 0.97) 0%, rgba(22, 33, 62, 0.97) 100%), 
-                              url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="1.5" fill="%233498db" opacity="0.2"/></svg>');
-            background-size: cover, 30px 30px;
-            background-attachment: fixed;
-        }
-        
-        /* Sidebar */
-        .layout-container {
-            display: flex;
-            flex: 1;
-        }
-        .sidebar {
-            width: 280px;
-            background-color: var(--dark-lighter);
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 100;
-            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease;
-        }
-        .sidebar-header {
-            padding: 25px 20px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .logo {
-            height: 40px;
-            margin-right: 15px;
-            filter: drop-shadow(0 2px 5px rgba(52, 152, 219, 0.3));
-        }
-        .logo-link {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        .logo-link:hover {
-            transform: translateY(-2px);
-        }
-        .site-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-light);
-            letter-spacing: 0.5px;
-        }
-        
-        .sidebar-menu {
-            padding: 20px 0;
-            flex: 1;
-        }
-        .menu-category {
-            font-size: 12px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            padding: 15px 25px 10px;
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-        .menu-list {
-            list-style: none;
-        }
-        .menu-item {
-            margin: 5px 0;
-        }
-        .menu-link {
-            display: flex;
-            align-items: center;
-            padding: 12px 25px;
-            text-decoration: none;
-            color: var(--text-light);
-            font-weight: 400;
-            transition: var(--transition);
-            border-left: 3px solid transparent;
-            position: relative;
-        }
-        .menu-link i {
-            margin-right: 12px;
-            font-size: 18px;
-            width: 20px;
-            text-align: center;
-            color: var(--text-muted);
-            transition: var(--transition);
-        }
-        .menu-link:hover {
-            background-color: rgba(52, 152, 219, 0.1);
-            color: var(--primary);
-        }
-        .menu-link:hover i {
-            color: var(--primary);
-        }
-        .menu-link.active {
-            background-color: rgba(52, 152, 219, 0.15);
-            color: var(--primary);
-            border-left-color: var(--primary);
-        }
-        .menu-link.active i {
-            color: var(--primary);
-        }
-        
-        .sidebar-footer {
-            padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background-color: rgba(15, 52, 96, 0.5);
-            border-radius: var(--border-radius);
-            margin-bottom: 15px;
-        }
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            color: white;
-            font-weight: 600;
-            box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
-        }
-        .user-details {
-            flex: 1;
-        }
-        .user-name {
-            font-weight: 500;
-            color: var(--text-light);
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
-        .user-role {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .logout-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-            background-color: rgba(231, 76, 60, 0.1);
-            color: var(--danger);
-            border-radius: var(--border-radius);
-            text-decoration: none;
-            transition: var(--transition);
-            font-weight: 500;
-            font-size: 14px;
-        }
-        .logout-link i {
-            margin-right: 8px;
-        }
-        .logout-link:hover {
-            background-color: rgba(231, 76, 60, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 30px;
-            min-height: 100vh;
-            transition: margin-left 0.3s ease;
-        }
-        
-        .content-header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        .page-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-light);
-            position: relative;
-            padding-bottom: 10px;
-            text-align: center;
-        }
-        .page-title:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
-            border-radius: 2px;
-        }
-        
-        .mobile-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-light);
-            font-size: 24px;
-            cursor: pointer;
-            padding: 10px;
-        }
-        
-        /* Botões globais */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 20px;
-            border-radius: var(--border-radius);
-            font-weight: 500;
-            text-decoration: none;
-            transition: var(--transition);
-            border: none;
-            cursor: pointer;
-            font-family: 'Roboto', sans-serif;
-            font-size: 14px;
-        }
-        .btn i {
-            margin-right: 8px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
-        }
-        .btn-secondary {
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
-            color: white;
-            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
-        }
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
-        }
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger) 0%, #c0392b 100%);
-            color: white;
-            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-        }
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
-        }
-        .btn-success {
-            background: linear-gradient(135deg, var(--success) 0%, var(--secondary-dark) 100%);
-            color: white;
-            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
-        }
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
-        }
-        
-        /* Cartões */
-        .card {
-            background-color: var(--dark-lighter);
-            border-radius: var(--border-radius);
-            box-shadow: var(--card-shadow);
-            margin-bottom: 30px;
+        /* Estilos para o favicon redondo */
+        .favicon-icon {
+            border-radius: 50% !important;
+            -webkit-border-radius: 50% !important;
+            -moz-border-radius: 50% !important;
             overflow: hidden;
-            transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        }
-        .card-header {
-            padding: 20px 25px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: rgba(15, 52, 96, 0.3);
-        }
-        .card-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-light);
-            margin: 0;
-            display: flex;
-            align-items: center;
-        }
-        .card-title i {
-            margin-right: 10px;
-            color: var(--primary);
-        }
-        .card-body {
-            padding: 25px;
         }
         
-        /* Formulários */
-        .form-group {
-            margin-bottom: 25px;
-        }
-        .form-label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 500;
-            color: var(--text-light);
-            font-size: 14px;
-        }
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            background-color: rgba(15, 52, 96, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--border-radius);
-            color: var(--text-light);
-            font-family: 'Roboto', sans-serif;
-            font-size: 14px;
-            transition: var(--transition);
-        }
-        .form-control:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-        }
-        
-        /* Utilitários */
-        .alert {
-            padding: 15px 20px;
-            border-radius: var(--border-radius);
-            margin-bottom: 25px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-        }
-        .alert i {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-        .alert-info {
-            background-color: rgba(52, 152, 219, 0.1);
-            border-left: 4px solid var(--info);
-            color: var(--text-light);
-        }
-        .alert-success {
-            background-color: rgba(46, 204, 113, 0.1);
-            border-left: 4px solid var(--success);
-            color: var(--text-light);
-        }
-        .alert-warning {
-            background-color: rgba(243, 156, 18, 0.1);
-            border-left: 4px solid var(--warning);
-            color: var(--text-light);
-        }
-        .alert-danger {
-            background-color: rgba(231, 76, 60, 0.1);
-            border-left: 4px solid var(--danger);
-            color: var(--text-light);
-        }
-        
-        /* Footer */
-        .footer {
-            background-color: var(--dark-lighter);
-            color: var(--text-muted);
-            padding: 20px 0;
-            text-align: center;
-            font-size: 13px;
-            margin-top: auto;
-            margin-left: 280px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            transition: margin-left 0.3s ease;
-        }
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 25px;
-        }
-        
-        /* Responsividade */
-        @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            .main-content, .footer {
-                margin-left: 0;
-            }
-            .mobile-toggle {
-                display: block;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 20px 15px;
-            }
-            .content-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            .card-header {
-                flex-direction: column;
-                gap: 15px;
-                align-items: flex-start;
+        /* Máscaras CSS para ícones redondos no sistema operacional */
+        @supports (-webkit-mask: url('')) or (mask: url('')) {
+            .favicon-icon {
+                -webkit-mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='50'/%3E%3C/svg%3E");
+                mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='50'/%3E%3C/svg%3E");
+                -webkit-mask-size: contain;
+                mask-size: contain;
             }
         }
     </style>
-    {% block styles %}{% endblock %}
+    
+    <!-- Conteúdo específico para cada página -->
+    {% block head %}{% endblock %}
 </head>
 <body>
+    <!-- Link para pular para o conteúdo principal (acessibilidade) -->
+    <a href="#main-content" class="skip-to-content">Pular para o conteúdo</a>
+    
     <div class="layout-container">
-        <aside class="sidebar" id="sidebar">
+        <!-- Sidebar -->
+        <aside class="sidebar">
             <div class="sidebar-header">
                 <a href="{{ url_for('dashboard') }}" class="logo-link">
-                    <img src="{{ url_for('static', filename='img/logo_service_it.png') }}" alt="Logo Service IT" class="logo">
-                    <h1 class="site-title">Gerador de Propostas</h1>
+                    <div class="logo-container">
+                        <img src="{{ url_for('static', filename='favicon_round.png') }}" alt="Service IT" class="logo">
+                    </div>
+                    <span class="site-title">Service IT</span>
                 </a>
             </div>
-            
             <div class="sidebar-menu">
                 <div class="menu-category">Menu Principal</div>
                 <ul class="menu-list">
                     <li class="menu-item">
                         <a href="{{ url_for('dashboard') }}" class="menu-link {% if request.path == url_for('dashboard') %}active{% endif %}">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
+                            <i class="fas fa-home"></i>
+                            Dashboard
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="{{ url_for('criar_proposta') }}" class="menu-link {% if request.path == url_for('criar_proposta') %}active{% endif %}">
+                        <a href="{{ url_for('exibir_criar_proposta') }}" class="menu-link {% if request.path == url_for('exibir_criar_proposta') %}active{% endif %}">
                             <i class="fas fa-file-alt"></i>
-                            <span>Nova Proposta</span>
+                            Nova Proposta
                         </a>
                     </li>
-                    {% if session.tipo_usuario == 'admin' %}
+                </ul>
+                
+                {% if session.get('tipo_usuario') == 'admin' %}
+                <div class="menu-category">Administração</div>
+                <ul class="menu-list">
                     <li class="menu-item">
                         <a href="{{ url_for('gerenciar_usuarios') }}" class="menu-link {% if request.path == url_for('gerenciar_usuarios') %}active{% endif %}">
-                            <i class="fas fa-users-cog"></i>
-                            <span>Gerenciar Usuários</span>
+                            <i class="fas fa-users"></i>
+                            Usuários
                         </a>
                     </li>
-                    {% endif %}
+                    <li class="menu-item">
+                        <a href="{{ url_for('gerenciar_blocos') }}" class="menu-link {% if request.path == url_for('gerenciar_blocos') %}active{% endif %}">
+                            <i class="fas fa-cubes"></i>
+                            Blocos de Conteúdo
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ url_for('exibir_gerenciar_ofertas') }}" class="menu-link {% if request.path == url_for('exibir_gerenciar_ofertas') %}active{% endif %}">
+                            <i class="fas fa-tags"></i>
+                            Ofertas
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ url_for('visualizar_logs') }}" class="menu-link {% if request.path == url_for('visualizar_logs') %}active{% endif %}">
+                            <i class="fas fa-list"></i>
+                            Logs do Sistema
+                        </a>
+                    </li>
+                </ul>
+                {% endif %}
+                
+                <div class="menu-category">Sua Conta</div>
+                <ul class="menu-list">
+                    <li class="menu-item">
+                        <a href="{{ url_for('alterar_senha') }}" class="menu-link {% if request.path == url_for('alterar_senha') %}active{% endif %}">
+                            <i class="fas fa-key"></i>
+                            Alterar Senha
+                        </a>
+                    </li>
                 </ul>
             </div>
-            
-            {% if session.usuario_logado %}
             <div class="sidebar-footer">
                 <div class="user-info">
                     <div class="user-avatar">
-                        {{ session.usuario_logado[0]|upper }}
+                        {{ session.get('usuario_logado', '?')[0].upper() }}
                     </div>
                     <div class="user-details">
-                        <div class="user-name">{{ session.usuario_logado }}</div>
-                        <div class="user-role">{{ session.tipo_usuario|title }}</div>
+                        <div class="user-name">{{ session.get('usuario_logado', 'Usuário') }}</div>
+                        <div class="user-role">{{ 'Administrador' if session.get('tipo_usuario') == 'admin' else 'Usuário' }}</div>
                     </div>
                 </div>
                 <a href="{{ url_for('logout') }}" class="logout-link">
-                    <i class="fas fa-sign-out-alt"></i> Encerrar Sessão
+                    <i class="fas fa-sign-out-alt"></i>
+                    Sair do Sistema
                 </a>
             </div>
-            {% endif %}
         </aside>
-
-        <main class="main-content">
+        
+        <!-- Conteúdo principal -->
+        <main class="main-content" id="main-content">
+            <button class="mobile-toggle" aria-label="Alternar menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- Mensagens de alerta -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% set alert_class = 'alert-info' %}
+                        {% set icon_class = 'fas fa-info-circle' %}
+                        
+                        {% if category == 'error' or category == 'danger' %}
+                            {% set alert_class = 'alert-danger' %}
+                            {% set icon_class = 'fas fa-exclamation-triangle' %}
+                        {% elif category == 'success' %}
+                            {% set alert_class = 'alert-success' %}
+                            {% set icon_class = 'fas fa-check-circle' %}
+                        {% elif category == 'warning' %}
+                            {% set alert_class = 'alert-warning' %}
+                            {% set icon_class = 'fas fa-exclamation-circle' %}
+                        {% endif %}
+                        
+                        <div class="alert {{ alert_class }}" role="alert">
+                            <i class="{{ icon_class }}" aria-hidden="true"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <!-- Título da página -->
             <div class="content-header">
-                <button class="mobile-toggle" id="sidebarToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
             </div>
             
-            {% if get_flashed_messages() %}
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i>
-                {% for message in get_flashed_messages() %}
-                    {{ message }}
-                {% endfor %}
-            </div>
-            {% endif %}
-            
+            <!-- Conteúdo específico da página -->
             {% block content %}{% endblock %}
+            
+            <!-- Controles de zoom para melhorar acessibilidade -->
+            <div class="zoom-controls">
+                <button class="zoom-btn" id="zoom-in" aria-label="Aumentar texto">
+                    <i class="fas fa-search-plus" aria-hidden="true"></i>
+                </button>
+                <button class="zoom-btn" id="zoom-out" aria-label="Diminuir texto">
+                    <i class="fas fa-search-minus" aria-hidden="true"></i>
+                </button>
+                <button class="zoom-btn" id="zoom-reset" aria-label="Restaurar tamanho do texto">
+                    <i class="fas fa-redo" aria-hidden="true"></i>
+                </button>
+            </div>
         </main>
     </div>
-
-    <footer class="footer">
-        <div class="footer-content">
-            &copy; 2025 Service IT - Todos os direitos reservados
-        </div>
-    </footer>
-
+    
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Toggle sidebar on mobile
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const sidebar = document.getElementById('sidebar');
+        $(document).ready(function() {
+            // Mobile menu toggle
+            $('.mobile-toggle').click(function(e) {
+                e.stopPropagation();
+                $('.sidebar').toggleClass('active');
+            });
             
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('active');
-                });
-            }
-            
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth <= 992 && 
-                    !sidebar.contains(event.target) && 
-                    !sidebarToggle.contains(event.target) &&
-                    sidebar.classList.contains('active')) {
-                    sidebar.classList.remove('active');
+            // Fechar menu ao clicar em um link do menu (apenas em dispositivos móveis)
+            $('.menu-link').click(function() {
+                if (window.innerWidth <= 992) {
+                    $('.sidebar').removeClass('active');
                 }
             });
+            
+            // Fechar menu ao clicar fora da sidebar (apenas em dispositivos móveis)
+            $(document).click(function(e) {
+                if (window.innerWidth <= 992) {
+                    if (!$(e.target).closest('.sidebar').length && $('.sidebar').hasClass('active')) {
+                        $('.sidebar').removeClass('active');
+                    }
+                }
+            });
+            
+            // Fechar alertas após 5 segundos
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 5000);
         });
     </script>
+    
+    <!-- Script de responsividade aprimorada -->
+    <script src="{{ url_for('static', filename='js/responsive.js') }}"></script>
+    
+    <!-- Script de acessibilidade -->
+    <script src="{{ url_for('static', filename='js/accessibility.js') }}"></script>
+    
+    <!-- Script para tabelas responsivas -->
+    <script src="{{ url_for('static', filename='js/table-responsive.js') }}"></script>
+    
+    <!-- Blocos de script específicos para cada página -->
+    {% block scripts %}{% endblock %}
 </body>
 </html>

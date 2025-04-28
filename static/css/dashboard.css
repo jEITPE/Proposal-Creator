@@ -1,0 +1,348 @@
+/* Estilos específicos para a página de dashboard */
+
+.dashboard-container {
+    width: 100%;
+    max-width: 100%;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.stat-card {
+    background-color: var(--background-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    background: rgba(230, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    color: var(--primary);
+    font-size: 28px;
+}
+
+.stat-details {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+.recent-proposals {
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.proposal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    width: 100%;
+}
+
+.proposal-card {
+    background-color: var(--background-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.proposal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.proposal-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.proposal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.proposal-date {
+    font-size: 12px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+}
+
+.proposal-date i {
+    margin-right: 5px;
+}
+
+.proposal-body {
+    padding: 20px;
+    flex: 1;
+}
+
+.client-name {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.client-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    color: var(--primary);
+}
+
+.client-label {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 3px;
+}
+
+.client-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.proposal-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.tag {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 100px;
+    padding: 5px 12px;
+    font-size: 12px;
+    color: var(--text-medium);
+}
+
+.tag-primary {
+    background-color: rgba(230, 0, 0, 0.08);
+    color: var(--primary);
+}
+
+.proposal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+}
+
+.proposal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.03);
+    color: var(--text-medium);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.action-btn:hover {
+    background-color: rgba(230, 0, 0, 0.1);
+    color: var(--primary);
+}
+
+.action-btn-primary {
+    background-color: rgba(230, 0, 0, 0.1);
+    color: var(--primary);
+}
+
+.action-btn-primary:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.draft-container {
+    margin-top: 40px;
+    width: 100%;
+}
+
+.empty-state {
+    background-color: var(--background-light);
+    border-radius: var(--border-radius);
+    padding: 50px 30px;
+    text-align: center;
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.empty-icon {
+    font-size: 50px;
+    color: rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.empty-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.empty-message {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 25px;
+}
+
+/* Paginação */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    gap: 8px;
+}
+
+.page-item {
+    margin: 0;
+}
+
+.page-link {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-light);
+    border-radius: 50%;
+    color: var(--text-medium);
+    transition: var(--transition);
+    border: none;
+    text-decoration: none;
+}
+
+.page-link:hover {
+    background-color: rgba(230, 0, 0, 0.1);
+    color: var(--primary);
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .proposal-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+    }
+}
+
+/* Ajustes para telas maiores */
+@media (min-width: 992px) {
+    .stats-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .proposal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+/* Ajustes para telas muito grandes */
+@media (min-width: 1400px) {
+    .stats-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .proposal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+}
+
+/* Ajustes para telas extra grandes */
+@media (min-width: 1920px) {
+    .stats-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .proposal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
+} 
