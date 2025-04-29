@@ -233,6 +233,45 @@
         display: none !important;
     }
     
+    /* Estilos para botões de categoria de blocos */
+    .blocos-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 15px;
+    }
+    
+    .blocos-tab {
+        padding: 8px 16px;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #495057;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .blocos-tab:hover {
+        background-color: #e9ecef;
+        color: #212529;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .blocos-tab.active {
+        background-color: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        box-shadow: 0 2px 5px rgba(230, 0, 0, 0.3);
+    }
+    
     /* Melhorias para telas menores */
     @media (max-width: 768px) {
         .user-list {
@@ -251,6 +290,17 @@
         
         .tab-link {
             padding: 10px 15px;
+        }
+        
+        .blocos-tabs {
+            overflow-x: auto;
+            padding-bottom: 10px;
+            flex-wrap: nowrap;
+        }
+        
+        .blocos-tab {
+            white-space: nowrap;
+            flex: 0 0 auto;
         }
     }
 </style>
@@ -538,25 +588,46 @@
     </div>
 </div>
 
+<!-- Adicionando estilo para ocultar o header problemático -->
+<style>
+    /* Ocultar elementos indesejados de confirmação */
+    h2:contains("Confirmar Remoção"), 
+    div.confirm-box, 
+    div#confirm-header,
+    div.x-confirmation {
+        display: none !important;
+    }
+</style>
+
 <!-- Modal de Confirmação de Remoção -->
-<div class="modal" id="confirmacaoModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="confirmacaoModal" tabindex="-1" role="dialog" aria-labelledby="confirmacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Confirmar Remoção</h5>
+                <h5 class="modal-title" id="confirmacaoModalLabel">
+                    <i class="fas fa-exclamation-triangle text-danger mr-2"></i>
+                    Confirmar Remoção
+                </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>Tem certeza que deseja remover este usuário? Esta ação não pode ser desfeita.</p>
+                <div class="alert alert-warning">
+                    <p class="mb-0">Tem certeza que deseja remover este usuário? Esta ação não pode ser desfeita.</p>
+                </div>
             </div>
             <div class="modal-footer">
-                <form action="{{ url_for('gerenciar_usuarios') }}" method="post" id="formRemover">
+                <form action="{{ url_for('gerenciar_usuarios') }}" method="post" id="formRemover" class="d-flex w-100 justify-content-between">
                     <input type="hidden" name="acao" value="remover">
                     <input type="hidden" name="usuario" id="removerUsuario" value="">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Confirmar Remoção</button>
+                    
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-1"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash mr-1"></i> Confirmar Remoção
+                    </button>
                 </form>
             </div>
         </div>
@@ -566,4 +637,25 @@
 
 {% block scripts %}
 <!-- Scripts específicos do bloco foram movidos para o arquivo users.js -->
+<script>
+    // Remover qualquer elemento não desejado de confirmação que possa estar sendo injetado
+    document.addEventListener('DOMContentLoaded', function() {
+        // Remover qualquer header ou elemento de confirmação não desejado
+        const elementsToRemove = [
+            document.querySelectorAll('div[id*="confirm"]'),
+            document.querySelectorAll('div[class*="confirm"]'),
+            document.querySelectorAll('h2:contains("Confirmar Remoção")'),
+            document.querySelectorAll('.x-confirmation')
+        ];
+        
+        elementsToRemove.forEach(elements => {
+            elements.forEach(el => {
+                // Verificar se não é nosso modal antes de remover
+                if (el && !el.closest('#confirmacaoModal')) {
+                    el.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
 {% endblock %} 

@@ -36,7 +36,7 @@ from docxcompose.composer import Composer
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 import atexit
-from migrate_data import migrar_blocos, migrar_ofertas, migrar_propostas, migrar_rascunhos
+from migrate_data import migrar_blocos, migrar_ofertas, migrar_propostas, migrar_rascunhos, sincronizar_banco_para_json
 from migrate_users import migrar_usuarios_do_json
 
 # Configurações de logging
@@ -998,6 +998,7 @@ def baixar_proposta(proposta_id):
 @app.route('/excluir_proposta/<proposta_id>')
 @login_required
 def excluir_proposta(proposta_id):
+    # Carregar propostas existentes
     propostas = carregar_propostas()
     if proposta_id in propostas:
         # Verificar se o usuário é admin ou o criador da proposta
@@ -1009,10 +1010,23 @@ def excluir_proposta(proposta_id):
                     os.remove(arquivo)
                 except:
                     pass
-            # Remover a proposta do dicionário
+            
+            # Remover a proposta do banco de dados
+            try:
+                proposta_db = Proposta.query.get(proposta_id)
+                if proposta_db:
+                    db.session.delete(proposta_db)
+                    db.session.commit()
+                    app.logger.info(f"Proposta {proposta_id} removida do banco de dados")
+            except Exception as e:
+                db.session.rollback()
+                app.logger.error(f"Erro ao remover proposta do banco de dados: {str(e)}")
+            
+            # Remover a proposta do dicionário JSON
             del propostas[proposta_id]
-            # Salvar as alterações
+            # Salvar as alterações no JSON
             salvar_propostas(propostas)
+            
             flash('Proposta excluída com sucesso.')
         else:
             flash('Você não tem permissão para excluir esta proposta.')
@@ -2666,24 +2680,43 @@ def salvar_como_rascunho(nome_cliente, logo_cliente, modelo_proposta, blocos_sel
 def excluir_rascunho(rascunho_id):
     # Carregar rascunhos existentes
     rascunhos = carregar_rascunhos()
-    
-    # Verificar se o rascunho existe
-    if rascunho_id not in rascunhos:
+    if rascunho_id in rascunhos:
+        # Verificar se o usuário é admin ou o criador do rascunho
+        if session.get('tipo_usuario') == 'admin' or rascunhos[rascunho_id].get('usuario') == session.get('usuario_logado'):
+            # Remover o rascunho do banco de dados
+            try:
+                rascunho_db = Rascunho.query.get(rascunho_id)
+                if rascunho_db:
+                    db.session.delete(rascunho_db)
+                    db.session.commit()
+                    app.logger.info(f"Rascunho {rascunho_id} removido do banco de dados")
+            except Exception as e:
+                db.session.rollback()
+                app.logger.error(f"Erro ao remover rascunho do banco de dados: {str(e)}")
+            
+            # Remover o logo do rascunho se existir
+            logo_path = rascunhos[rascunho_id].get('logo_cliente', '')
+            if logo_path and os.path.exists(logo_path) and 'placeholder-logo' not in logo_path:
+                try:
+                    os.remove(logo_path)
+                except Exception as e:
+                    app.logger.error(f"Erro ao remover logo do rascunho: {str(e)}")
+            
+            # Remover o rascunho do dicionário
+            del rascunhos[rascunho_id]
+            # Salvar as alterações
+            salvar_rascunhos(rascunhos)
+            
+            flash('Rascunho excluído com sucesso.')
+        else:
+            flash('Você não tem permissão para excluir este rascunho.')
+    else:
         flash('Rascunho não encontrado.')
-        return redirect(url_for('dashboard'))
     
-    # Verificar se o usuário tem permissão para excluir o rascunho
-    if rascunhos[rascunho_id]['usuario'] != session.get('usuario_logado') and session.get('tipo_usuario') != 'admin':
-        flash('Você não tem permissão para excluir este rascunho.')
-        return redirect(url_for('dashboard'))
-    
-    # Excluir o rascunho
-    del rascunhos[rascunho_id]
-    
-    # Salvar os rascunhos atualizados
-    salvar_rascunhos(rascunhos)
-    
-    flash('Rascunho excluído com sucesso!')
+    # Redirecionar para a página anterior
+    previous_page = request.referrer
+    if previous_page and url_for('exibir_criar_proposta') in previous_page:
+        return redirect(previous_page)
     return redirect(url_for('dashboard'))
 
 @app.route('/static/img/placeholder-logo.png')
@@ -3822,18 +3855,25 @@ def api_status():
 # Adicionar antes da definição da primeira rota (por volta da linha ~150)
 # Função para sincronizar dados do JSON para o banco de dados
 def sincronizar_json_para_banco():
+    """Função para sincronizar dados dos arquivos JSON para o banco de dados PostgreSQL"""
     with app.app_context():
         try:
-            app.logger.info("Iniciando sincronização periódica de dados JSON para o banco de dados...")
+            app.logger.info("Iniciando sincronização periódica de dados...")
+            # Sincronização do banco para o JSON primeiro para remover itens excluídos
+            from migrate_data import sincronizar_banco_para_json
+            sincronizar_banco_para_json()
             
-            # Executar as migrações
+            # Depois sincronizamos do JSON para o banco
+            from migrate_data import migrar_blocos, migrar_ofertas, migrar_propostas, migrar_rascunhos
             migrar_blocos()
             migrar_ofertas()
             migrar_propostas()
             migrar_rascunhos()
+            
+            from migrate_users import migrar_usuarios_do_json
             migrar_usuarios_do_json()
             
-            app.logger.info("Sincronização periódica concluída com sucesso.")
+            app.logger.info("Sincronização periódica de dados concluída.")
         except Exception as e:
             app.logger.error(f"Erro na sincronização periódica: {str(e)}")
 

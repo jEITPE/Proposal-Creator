@@ -89,16 +89,6 @@
         ],
         "oferta_selecionada": null
     },
-    "ba2b359f-5006-40f6-99f2-bd35a5118a52": {
-        "nome_cliente": "UNIMED NACIONAL",
-        "data_geracao": "11/04/2025 09:02:47",
-        "gerado_por": "joao.almeida",
-        "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250411_090246.docx",
-        "blocos_utilizados": [
-            "Conhecendo_a_Service_IT"
-        ],
-        "oferta_selecionada": null
-    },
     "515a86cb-7a44-4641-88bc-188d7ba74a02": {
         "nome_cliente": "UNIMED NACIONAL",
         "data_geracao": "11/04/2025 09:23:38",
@@ -325,10 +315,6 @@
         "gerado_por": "admin",
         "arquivo": "static\\uploads\\proposta_UNIMED_NACIONAL_20250428_112630.docx",
         "blocos_utilizados": [
-            "Workplace_Service_Desk",
-            "Workplace_Field_Services",
-            "Workplace_Gestao_de_ativos",
-            "Workplace_Desktop_Mgm",
             "Sobre_a_Service_IT",
             "Conhecendo_a_Service_IT",
             "Visao_Geral_dos_Servicos",

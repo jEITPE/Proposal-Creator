@@ -1,16 +1,4 @@
 {
-    "ac7a6862-59fe-4b53-bd1b-6f85e45d9126": {
-        "nome_cliente": "UNIMED",
-        "logo_cliente": "static\\uploads\\UNIMED_cc412646-db28-45e0-815a-cea077c6a3ea.png",
-        "modelo_proposta": "capa.docx",
-        "blocos_selecionados": [
-            "Termo_de_Confidencialidade",
-            "Sumario_Executivo",
-            "Visao_Geral_dos_Servicos"
-        ],
-        "usuario": "admin",
-        "data_atualizacao": "05/03/2025 21:45:48"
-    },
     "9abb849c-9112-4f93-aa39-429a188aa76e": {
         "nome_cliente": "UNIMED",
         "logo_cliente": "static\\uploads\\UNIMED_c54fe73e-dd41-492f-83f3-3365f8f76d06.png",
@@ -20,14 +8,17 @@
             "Sumario_Executivo",
             "Visao_Geral_dos_Servicos"
         ],
+        "blocos_temporarios": {},
         "usuario": "admin",
         "data_atualizacao": "05/03/2025 21:46:19"
     },
     "c8885125-28be-4bf7-8c54-48903a71eaf6": {
         "nome_cliente": "UNIMED",
-        "data_criacao": "14/03/2025 19:43:12",
-        "criado_por": "admin",
+        "logo_cliente": "",
+        "modelo_proposta": "",
         "blocos_selecionados": [],
-        "blocos_temporarios": {}
+        "blocos_temporarios": {},
+        "usuario": "",
+        "data_atualizacao": "28/04/2025 02:19:49"
     }
 }

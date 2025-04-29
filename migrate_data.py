@@ -216,10 +216,28 @@ def migrar_propostas():
         
         print(f"Iniciando migração periódica de {len(propostas_json)} propostas...")
         contador_novos = 0
+        contador_ignorados = 0
+        
+        # Primeiro, obter todas as propostas existentes no banco de dados
+        propostas_existentes = {p.id: p for p in Proposta.query.all()}
+        
+        # Obtém os IDs das propostas no JSON
+        ids_json = set(propostas_json.keys())
+        # Obtém os IDs das propostas no banco
+        ids_banco = set(propostas_existentes.keys())
+        
+        # IDs que existem no JSON mas foram excluídos do banco
+        # (não devem ser restaurados)
+        ids_excluidos = ids_json - ids_banco
         
         for id_proposta, dados in propostas_json.items():
+            # Pular as propostas que foram excluídas do banco
+            if id_proposta in ids_excluidos:
+                contador_ignorados += 1
+                continue
+                
             # Verificar se a proposta já existe
-            proposta_existente = Proposta.query.get(id_proposta)
+            proposta_existente = propostas_existentes.get(id_proposta)
             if not proposta_existente:
                 # Converter formato de data
                 data_geracao = None
@@ -256,7 +274,7 @@ def migrar_propostas():
                 contador_novos += 1
         
         db.session.commit()
-        print(f"Migração de propostas concluída: {contador_novos} novas propostas adicionadas")
+        print(f"Migração de propostas concluída: {contador_novos} novas propostas adicionadas, {contador_ignorados} ignoradas (excluídas do banco)")
         return True
     except Exception as e:
         print(f"Erro ao migrar propostas: {e}")
@@ -273,10 +291,28 @@ def migrar_rascunhos():
         
         print(f"Iniciando migração periódica de {len(rascunhos_json)} rascunhos...")
         contador_novos = 0
+        contador_ignorados = 0
+        
+        # Primeiro, obter todos os rascunhos existentes no banco de dados
+        rascunhos_existentes = {r.id: r for r in Rascunho.query.all()}
+        
+        # Obtém os IDs dos rascunhos no JSON
+        ids_json = set(rascunhos_json.keys())
+        # Obtém os IDs dos rascunhos no banco
+        ids_banco = set(rascunhos_existentes.keys())
+        
+        # IDs que existem no JSON mas foram excluídos do banco
+        # (não devem ser restaurados)
+        ids_excluidos = ids_json - ids_banco
         
         for id_rascunho, dados in rascunhos_json.items():
+            # Pular os rascunhos que foram excluídos do banco
+            if id_rascunho in ids_excluidos:
+                contador_ignorados += 1
+                continue
+                
             # Verificar se o rascunho já existe
-            rascunho_existente = Rascunho.query.get(id_rascunho)
+            rascunho_existente = rascunhos_existentes.get(id_rascunho)
             if not rascunho_existente:
                 # Converter formato de data
                 data_atualizacao = None
@@ -305,11 +341,62 @@ def migrar_rascunhos():
                 contador_novos += 1
         
         db.session.commit()
-        print(f"Migração de rascunhos concluída: {contador_novos} novos rascunhos adicionados")
+        print(f"Migração de rascunhos concluída: {contador_novos} novos rascunhos adicionados, {contador_ignorados} ignorados (excluídos do banco)")
         return True
     except Exception as e:
         print(f"Erro ao migrar rascunhos: {e}")
         db.session.rollback()
+        return False
+
+def sincronizar_banco_para_json():
+    """
+    Sincroniza o banco de dados com os arquivos JSON, removendo dos JSONs
+    os itens que foram excluídos do banco de dados.
+    Esta função pode ser chamada pelo agendador para manter a consistência.
+    """
+    try:
+        # Sincronizar propostas
+        propostas_json = carregar_json(os.path.join('data', 'propostas.json'))
+        propostas_banco = {str(p.id): p for p in Proposta.query.all()}
+        
+        propostas_para_remover = set(propostas_json.keys()) - set(propostas_banco.keys())
+        if propostas_para_remover:
+            for id_proposta in propostas_para_remover:
+                if id_proposta in propostas_json:
+                    del propostas_json[id_proposta]
+            
+            salvar_json(os.path.join('data', 'propostas.json'), propostas_json)
+            print(f"Removidas {len(propostas_para_remover)} propostas do JSON que não existem no banco")
+        
+        # Sincronizar rascunhos
+        rascunhos_json = carregar_json(os.path.join('data', 'rascunhos.json'))
+        rascunhos_banco = {str(r.id): r for r in Rascunho.query.all()}
+        
+        rascunhos_para_remover = set(rascunhos_json.keys()) - set(rascunhos_banco.keys())
+        if rascunhos_para_remover:
+            for id_rascunho in rascunhos_para_remover:
+                if id_rascunho in rascunhos_json:
+                    del rascunhos_json[id_rascunho]
+            
+            salvar_json(os.path.join('data', 'rascunhos.json'), rascunhos_json)
+            print(f"Removidos {len(rascunhos_para_remover)} rascunhos do JSON que não existem no banco")
+        
+        return True
+    except Exception as e:
+        print(f"Erro ao sincronizar banco para JSON: {e}")
+        return False
+
+def salvar_json(arquivo, dados):
+    """
+    Salva dados em um arquivo JSON com formatação adequada.
+    """
+    try:
+        os.makedirs(os.path.dirname(arquivo), exist_ok=True)
+        with open(arquivo, 'w', encoding='utf-8') as f:
+            json.dump(dados, f, ensure_ascii=False, indent=4)
+        return True
+    except Exception as e:
+        print(f"Erro ao salvar arquivo JSON {arquivo}: {e}")
         return False
 
 def main():
