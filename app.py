@@ -22,11 +22,9 @@ import html
 import logging
 from dotenv import load_dotenv
 from models import db, Usuario, Perfil, BlocoProposta, Oferta, BlocoPropostaOferta, Proposta, Rascunho, UsuarioBloco
-from docxtpl import DocxTemplate, InlineImage  # Reimportar DocxTemplate e InlineImage
+from docxtpl import DocxTemplate, InlineImage
 from datetime import timedelta
 import requests
-import zipfile
-import tempfile
 import sys
 import time
 import random
@@ -38,6 +36,13 @@ from apscheduler.triggers.interval import IntervalTrigger
 import atexit
 from migrate_data import migrar_blocos, migrar_ofertas, migrar_propostas, migrar_rascunhos, sincronizar_banco_para_json
 from migrate_users import migrar_usuarios_do_json
+from db_operations import (
+    obter_usuarios_db, salvar_usuario_db,
+    obter_blocos_db, salvar_bloco_db,
+    obter_ofertas_db, salvar_oferta_db,
+    obter_propostas_db, salvar_proposta_db, criar_proposta_db,
+    obter_rascunhos_db, salvar_rascunho_db
+)
 
 # Configurações de logging
 LOGS_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
@@ -276,426 +281,108 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Função para carregar usuários
+# Função para carregar usuários - Modificada para banco de dados
 def carregar_usuarios():
+    """
+    Carrega os usuários diretamente do banco de dados.
+    Retorna um dicionário de usuários.
+    """
     try:
-        if os.path.exists(USUARIOS_FILE):
-            with open(USUARIOS_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        else:
-            return {"admin": {"senha": "admin123", "tipo": "admin", "nome": "Administrador", "status": 1}}
+        return obter_usuarios_db()
     except Exception as e:
-        app.logger.error(f"Erro ao carregar usuários: {e}")
-        return {"admin": {"senha": "admin123", "tipo": "admin", "nome": "Administrador", "status": 1}}
+        logger.error(f"Erro ao carregar usuários do banco: {e}")
+        return {}
 
-# Função para salvar usuários
+# Função para salvar usuários - Modificada para banco de dados
 def salvar_usuarios(usuarios):
+    """
+    Salva usuários diretamente no banco de dados.
+    """
     try:
-        # Salvar no banco de dados
-        with app.app_context():
-            # Verificar ou criar perfis necessários
-            perfil_admin = Perfil.query.filter_by(nome="Governança").first()
-            if not perfil_admin:
-                perfil_admin = Perfil(nome="Governança")
-                db.session.add(perfil_admin)
-                db.session.commit()
-                
-            perfil_usuario = Perfil.query.filter_by(nome="SE").first()
-            if not perfil_usuario:
-                perfil_usuario = Perfil(nome="SE")
-                db.session.add(perfil_usuario)
-                db.session.commit()
-            
-            # Para cada usuário no dicionário
-            for login, dados in usuarios.items():
-                # Verificar se já existe
-                usuario = Usuario.query.filter_by(login=login).first()
-                
-                # Verificar se a senha precisa de hash
-                senha_atual = dados.get("senha", "")
-                if not senha_atual.startswith('pbkdf2:sha256:'):
-                    senha_hash = generate_password_hash(senha_atual)
-                else:
-                    senha_hash = senha_atual
-                
-                if usuario:
-                    # Atualizar usuário existente
-                    usuario.senha = senha_hash
-                    usuario.nome = dados.get("nome", login)
-                    usuario.status = dados.get("status", 1)
-                    usuario.id_perfil = perfil_admin.id if dados.get("tipo") == "admin" else perfil_usuario.id
-                else:
-                    # Criar novo usuário
-                    novo_usuario = Usuario(
-                        nome=dados.get("nome", login),
-                        login=login,
-                        senha=senha_hash,
-                        status=dados.get("status", 1),
-                        id_perfil=perfil_admin.id if dados.get("tipo") == "admin" else perfil_usuario.id
-                    )
-                    db.session.add(novo_usuario)
-            
-            # Verificar se há algum usuário para remover (que está no banco mas não no dicionário)
-            usuarios_db = Usuario.query.all()
-            for usuario_db in usuarios_db:
-                if usuario_db.login not in usuarios:
-                    # Não remover o admin padrão
-                    if usuario_db.login != "admin":
-                        db.session.delete(usuario_db)
-            
-            db.session.commit()
-        
-        # Backup em JSON - Nota: no JSON as senhas ficam em texto puro para compatibilidade
-        os.makedirs(os.path.dirname(USUARIOS_FILE), exist_ok=True)
-        with open(USUARIOS_FILE, 'w', encoding='utf-8') as f:
-            json.dump(usuarios, f, ensure_ascii=False, indent=4)
-        
-        return usuarios
+        for login, dados in usuarios.items():
+            salvar_usuario_db(login, dados)
+        return True
     except Exception as e:
-        app.logger.error(f"Erro ao salvar usuários no banco: {e}")
-        # Fallback para JSON em caso de erro
-        try:
-            os.makedirs(os.path.dirname(USUARIOS_FILE), exist_ok=True)
-            with open(USUARIOS_FILE, 'w', encoding='utf-8') as f:
-                json.dump(usuarios, f, ensure_ascii=False, indent=4)
-            return usuarios
-        except Exception as e_json:
-            app.logger.error(f"Erro ao salvar usuários no JSON: {e_json}")
-            return usuarios
+        logger.error(f"Erro ao salvar usuários no banco: {e}")
+        return False
 
 # Arquivo para armazenar propostas
 PROPOSTAS_FILE = os.path.join('data', 'propostas.json')
 
-# Função para carregar propostas
+# Função para carregar propostas - Modificada para banco de dados
 def carregar_propostas():
+    """
+    Carrega propostas diretamente do banco de dados.
+    """
     try:
-        # Carregar do banco de dados
-        propostas = {}
-        for proposta in Proposta.query.all():
-            # Converter data para string no formato usado anteriormente
-            data_str = proposta.data_geracao.strftime('%d/%m/%Y %H:%M:%S') if proposta.data_geracao else ""
-            
-            # Obter blocos utilizados
-            blocos_utilizados = []
-            for bloco in proposta.blocos_utilizados:
-                blocos_utilizados.append(bloco.nome)
-            
-            # Obter oferta selecionada
-            oferta_selecionada = None
-            if proposta.ofertas_selecionadas and len(proposta.ofertas_selecionadas) > 0:
-                oferta_selecionada = proposta.ofertas_selecionadas[0].tipo_oferta
-            
-            # Montar estrutura do JSON
-            propostas[proposta.id] = {
-                "nome_cliente": proposta.nome_cliente,
-                "data_geracao": data_str,
-                "gerado_por": proposta.gerado_por,
-                "arquivo": proposta.arquivo,
-                "blocos_utilizados": blocos_utilizados,
-                "oferta_selecionada": oferta_selecionada
-            }
-        
-        return propostas
+        return obter_propostas_db()
     except Exception as e:
-        app.logger.error(f"Erro ao carregar propostas do banco: {e}")
-        # Fallback para JSON
-        if os.path.exists(PROPOSTAS_FILE):
-            try:
-                with open(PROPOSTAS_FILE, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except:
-                return {}
-        else:
-            return {}
+        logger.error(f"Erro ao carregar propostas do banco: {e}")
+        return {}
 
-# Função para salvar propostas
+# Função para salvar propostas - Modificada para banco de dados
 def salvar_propostas(propostas):
+    """
+    Salva propostas diretamente no banco de dados.
+    """
     try:
-        # Salvar no banco de dados
         for id_proposta, dados in propostas.items():
-            # Verificar se proposta já existe
-            proposta = Proposta.query.get(id_proposta)
-            
-            # Converter string de data para objeto datetime
-            data_geracao = None
-            if "data_geracao" in dados:
-                try:
-                    data_geracao = datetime.datetime.strptime(dados["data_geracao"], '%d/%m/%Y %H:%M:%S')
-                except:
-                    data_geracao = datetime.datetime.utcnow()
-            
-            if proposta:
-                # Atualizar proposta existente
-                proposta.nome_cliente = dados.get("nome_cliente", "")
-                proposta.data_geracao = data_geracao or datetime.datetime.utcnow()
-                proposta.gerado_por = dados.get("gerado_por", "")
-                proposta.arquivo = dados.get("arquivo", "")
-                
-                # Atualizar blocos utilizados
-                proposta.blocos_utilizados.clear()
-                for nome_bloco in dados.get("blocos_utilizados", []):
-                    bloco = BlocoProposta.query.filter_by(nome=nome_bloco).first()
-                    if bloco:
-                        proposta.blocos_utilizados.append(bloco)
-                
-                # Atualizar oferta selecionada
-                proposta.ofertas_selecionadas.clear()
-                oferta_nome = dados.get("oferta_selecionada")
-                if oferta_nome:
-                    oferta = Oferta.query.filter_by(tipo_oferta=oferta_nome).first()
-                    if oferta:
-                        proposta.ofertas_selecionadas.append(oferta)
-            else:
-                # Criar nova proposta
-                nova_proposta = Proposta(
-                    id=id_proposta,
-                    nome_cliente=dados.get("nome_cliente", ""),
-                    data_geracao=data_geracao or datetime.datetime.utcnow(),
-                    gerado_por=dados.get("gerado_por", ""),
-                    arquivo=dados.get("arquivo", "")
-                )
-                
-                # Adicionar blocos utilizados
-                for nome_bloco in dados.get("blocos_utilizados", []):
-                    bloco = BlocoProposta.query.filter_by(nome=nome_bloco).first()
-                    if bloco:
-                        nova_proposta.blocos_utilizados.append(bloco)
-                
-                # Adicionar oferta selecionada
-                oferta_nome = dados.get("oferta_selecionada")
-                if oferta_nome:
-                    oferta = Oferta.query.filter_by(tipo_oferta=oferta_nome).first()
-                    if oferta:
-                        nova_proposta.ofertas_selecionadas.append(oferta)
-                
-                db.session.add(nova_proposta)
-        
-        db.session.commit()
-    
-        # Backup em JSON
-        os.makedirs(os.path.dirname(PROPOSTAS_FILE), exist_ok=True)
-        with open(PROPOSTAS_FILE, 'w', encoding='utf-8') as f:
-            json.dump(propostas, f, ensure_ascii=False, indent=4)
-            
+            salvar_proposta_db(id_proposta, dados)
+        return True
     except Exception as e:
-        app.logger.error(f"Erro ao salvar propostas no banco: {e}")
-        # Fallback para JSON
-        os.makedirs(os.path.dirname(PROPOSTAS_FILE), exist_ok=True)
-        with open(PROPOSTAS_FILE, 'w', encoding='utf-8') as f:
-            json.dump(propostas, f, ensure_ascii=False, indent=4)
+        logger.error(f"Erro ao salvar propostas no banco: {e}")
+        return False
 
 # Arquivo para armazenar blocos
 BLOCOS_FILE = os.path.join('data', 'blocos.json')
 
-# Função para carregar blocos
+# Função para carregar blocos - Modificada para banco de dados
 def carregar_blocos():
+    """
+    Carrega blocos diretamente do banco de dados.
+    """
     try:
-        # Tentar carregar do banco de dados primeiro
-        blocos = {}
-        db_blocos = BlocoProposta.query.all()
-        
-        logging.info(f"Tentando carregar blocos do banco de dados. Encontrados: {len(db_blocos)} blocos.")
-        
-        # Adicionar cada bloco do banco de dados ao dicionário
-        for bloco in db_blocos:
-            blocos[bloco.nome] = {
-                'texto': bloco.texto,
-                'imagem': None,
-                'obrigatorio': bloco.obrigatorio,
-                'criado_por': bloco.criado_por,
-                'data_criacao': bloco.data_criacao.strftime('%d/%m/%Y %H:%M:%S') if bloco.data_criacao else '',
-                'cliente_associado': '',
-                'temporario': False,
-                'titulo': bloco.titulo or bloco.nome.replace('_', ' ')  # Adicionando o título do bloco
-            }
-        
-        # Converter data para string formatada
-        logging.info(f"Carregados {len(blocos)} blocos do banco de dados")
-        
-        # Se não houver blocos no banco, tentar o arquivo JSON
-        if not blocos:
-            # Carregar do arquivo JSON
-            blocos_file = os.path.join('data', 'blocos.json')
-            logging.info(f"Nenhum bloco encontrado no banco de dados. Tentando carregar do arquivo: {blocos_file}")
-            
-            if os.path.exists(blocos_file):
-                with open(blocos_file, 'r', encoding='utf-8') as f:
-                    blocos = json.load(f)
-                logging.info(f"Carregados {len(blocos)} blocos do arquivo JSON: {blocos_file}")
-                logging.info(f"Nomes dos blocos carregados do JSON: {list(blocos.keys())}")
-                
-                # Garantir que todos os blocos tenham o campo 'titulo'
-                for nome_bloco, dados_bloco in blocos.items():
-                    if 'titulo' not in dados_bloco:
-                        blocos[nome_bloco]['titulo'] = nome_bloco.replace('_', ' ')
-            else:
-                logging.warning(f"Arquivo de blocos não encontrado: {blocos_file}")
-        
-        return blocos
+        return obter_blocos_db()
     except Exception as e:
-        logging.error(f"Erro ao carregar blocos: {e}")
-        # Em caso de erro, tentar sempre o arquivo JSON como fallback
-        try:
-            blocos_file = os.path.join('data', 'blocos.json')
-            logging.info(f"Erro ao carregar blocos, tentando fallback para JSON: {blocos_file}")
-            
-            if os.path.exists(blocos_file):
-                with open(blocos_file, 'r', encoding='utf-8') as f:
-                    blocos = json.load(f)
-                logging.info(f"Fallback: Carregados {len(blocos)} blocos do arquivo JSON")
-                logging.info(f"Fallback: Nomes dos blocos carregados: {list(blocos.keys())}")
-                
-                # Garantir que todos os blocos tenham o campo 'titulo'
-                for nome_bloco, dados_bloco in blocos.items():
-                    if 'titulo' not in dados_bloco:
-                        blocos[nome_bloco]['titulo'] = nome_bloco.replace('_', ' ')
-                
-                return blocos
-            else:
-                logging.warning(f"Arquivo de blocos {blocos_file} não encontrado")
-                return {}
-        except Exception as e2:
-            logging.error(f"Erro ao carregar blocos do arquivo: {e2}")
-            return {}
+        logger.error(f"Erro ao carregar blocos do banco: {e}")
+        return {}
 
-# Função para salvar os blocos
+# Função para salvar blocos - Modificada para banco de dados
 def salvar_blocos(blocos):
+    """
+    Salva blocos diretamente no banco de dados.
+    """
     try:
-        # Salvar no banco de dados
         for nome_bloco, dados in blocos.items():
-            # Verificar se bloco já existe
-            bloco = BlocoProposta.query.filter_by(nome=nome_bloco).first()
-            
-            # Converter string de data para objeto datetime
-            data_criacao = None
-            if "data_criacao" in dados:
-                try:
-                    data_criacao = datetime.datetime.strptime(dados["data_criacao"], '%d/%m/%Y %H:%M:%S')
-                except:
-                    data_criacao = datetime.datetime.utcnow()
-            
-            if bloco:
-                # Atualizar bloco existente
-                bloco.titulo = dados.get("titulo", nome_bloco.replace('_', ' '))
-                bloco.texto = dados.get("texto", "")
-                bloco.imagem = dados.get("imagem")
-                bloco.obrigatorio = dados.get("obrigatorio", False)
-                bloco.criado_por = dados.get("criado_por")
-                if data_criacao:
-                    bloco.data_criacao = data_criacao
-            else:
-                # Criar novo bloco
-                novo_bloco = BlocoProposta(
-                    nome=nome_bloco,
-                    titulo=dados.get("titulo", nome_bloco.replace('_', ' ')),
-                    texto=dados.get("texto", ""),
-                    imagem=dados.get("imagem"),
-                    obrigatorio=dados.get("obrigatorio", False),
-                    criado_por=dados.get("criado_por"),
-                    data_criacao=data_criacao or datetime.datetime.utcnow()
-                )
-                db.session.add(novo_bloco)
-        
-        db.session.commit()
-    
-        # Backup em JSON
-        os.makedirs(os.path.dirname(BLOCOS_FILE), exist_ok=True)
-        with open(BLOCOS_FILE, "w", encoding="utf-8") as f:
-            json.dump(blocos, f, ensure_ascii=False, indent=4)
-        
+            salvar_bloco_db(nome_bloco, dados)
         return True
     except Exception as e:
-        app.logger.error(f"Erro ao salvar blocos no banco: {e}")
-        # Fallback para JSON
-        try:
-            os.makedirs(os.path.dirname(BLOCOS_FILE), exist_ok=True)
-            with open(BLOCOS_FILE, "w", encoding="utf-8") as f:
-                json.dump(blocos, f, ensure_ascii=False, indent=4)
-            return True
-        except Exception as e:
-            app.logger.error(f"Erro ao salvar blocos.json: {e}")
-            return False
+        logger.error(f"Erro ao salvar blocos no banco: {e}")
+        return False
 
-# Função para carregar rascunhos
+# Função para carregar rascunhos - Modificada para banco de dados
 def carregar_rascunhos():
+    """
+    Carrega rascunhos diretamente do banco de dados.
+    """
     try:
-        # Carregar do banco de dados
-        rascunhos = {}
-        for rascunho in Rascunho.query.all():
-            # Converter data para string
-            data_str = rascunho.data_atualizacao.strftime('%d/%m/%Y %H:%M:%S') if rascunho.data_atualizacao else ""
-            
-            # Montar estrutura do JSON
-            rascunhos[rascunho.id] = {
-                "nome_cliente": rascunho.nome_cliente,
-                "logo_cliente": rascunho.logo_cliente,
-                "modelo_proposta": rascunho.modelo_proposta,
-                "blocos_selecionados": rascunho.blocos_selecionados or [],
-                "blocos_temporarios": rascunho.blocos_temporarios or {},
-                "usuario": rascunho.usuario,
-                "data_atualizacao": data_str
-            }
-        
-        return rascunhos
+        return obter_rascunhos_db()
     except Exception as e:
-        app.logger.error(f"Erro ao carregar rascunhos do banco: {e}")
-        # Fallback para JSON
-        rascunhos_path = os.path.join(app.root_path, 'data', 'rascunhos.json')
-        if not os.path.exists(rascunhos_path):
-            return {}
-        with open(rascunhos_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        logger.error(f"Erro ao carregar rascunhos do banco: {e}")
+        return {}
 
-# Função para salvar rascunhos
+# Função para salvar rascunhos - Modificada para banco de dados
 def salvar_rascunhos(rascunhos):
+    """
+    Salva rascunhos diretamente no banco de dados.
+    """
     try:
-        # Salvar no banco de dados
         for id_rascunho, dados in rascunhos.items():
-            # Verificar se rascunho já existe
-            rascunho = Rascunho.query.get(id_rascunho)
-            
-            # Converter string de data para objeto datetime
-            data_atualizacao = None
-            if "data_atualizacao" in dados:
-                try:
-                    data_atualizacao = datetime.datetime.strptime(dados["data_atualizacao"], '%d/%m/%Y %H:%M:%S')
-                except:
-                    data_atualizacao = datetime.datetime.utcnow()
-            
-            if rascunho:
-                # Atualizar rascunho existente
-                rascunho.nome_cliente = dados.get("nome_cliente", "")
-                rascunho.logo_cliente = dados.get("logo_cliente", "")
-                rascunho.modelo_proposta = dados.get("modelo_proposta", "")
-                rascunho.usuario = dados.get("usuario", "")
-                rascunho.data_atualizacao = data_atualizacao or datetime.datetime.utcnow()
-                rascunho.blocos_selecionados = dados.get("blocos_selecionados", [])
-                rascunho.blocos_temporarios = dados.get("blocos_temporarios", {})
-            else:
-                # Criar novo rascunho
-                novo_rascunho = Rascunho(
-                    id=id_rascunho,
-                    nome_cliente=dados.get("nome_cliente", ""),
-                    logo_cliente=dados.get("logo_cliente", ""),
-                    modelo_proposta=dados.get("modelo_proposta", ""),
-                    usuario=dados.get("usuario", ""),
-                    data_atualizacao=data_atualizacao or datetime.datetime.utcnow(),
-                    blocos_selecionados=dados.get("blocos_selecionados", []),
-                    blocos_temporarios=dados.get("blocos_temporarios", {})
-                )
-                db.session.add(novo_rascunho)
-        
-        db.session.commit()
-    
-        # Backup em JSON
-        with open(os.path.join(app.root_path, 'data', 'rascunhos.json'), 'w', encoding='utf-8') as f:
-            json.dump(rascunhos, f, ensure_ascii=False, indent=4)
-            
+            salvar_rascunho_db(id_rascunho, dados)
+        return True
     except Exception as e:
-        app.logger.error(f"Erro ao salvar rascunhos no banco: {e}")
-        # Fallback para JSON
-        with open(os.path.join(app.root_path, 'data', 'rascunhos.json'), 'w', encoding='utf-8') as f:
-            json.dump(rascunhos, f, ensure_ascii=False, indent=4)
+        logger.error(f"Erro ao salvar rascunhos no banco: {e}")
+        return False
 
 # Decorator para verificar se o usuário está logado
 def login_required(f):
@@ -892,11 +579,26 @@ def logout():
     return redirect(url_for('login'))
 
 # Rota para o dashboard
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET'])
 @login_required
 def dashboard():
     # Carregar propostas existentes
     propostas = carregar_propostas()
+    
+    # Obter parâmetros de filtro
+    filtro_busca = request.args.get('busca', '')
+    filtro_data = request.args.get('data', '')
+    ordem = request.args.get('ordem', 'recentes')  # recentes (padrão) ou antigos
+    
+    # Formatar data para o formato usado nas propostas (dd/mm/aaaa)
+    data_formatada = ""
+    if filtro_data:
+        try:
+            # Converter do formato yyyy-mm-dd (HTML input date) para dd/mm/yyyy (formato da aplicação)
+            data_obj = datetime.datetime.strptime(filtro_data, '%Y-%m-%d')
+            data_formatada = data_obj.strftime('%d/%m/%Y')
+        except:
+            data_formatada = filtro_data
     
     # Carregar rascunhos do usuário
     rascunhos = carregar_rascunhos()
@@ -906,6 +608,40 @@ def dashboard():
     for rascunho_id, rascunho in rascunhos.items():
         if rascunho.get('usuario') == session.get('usuario_logado'):
             rascunhos_usuario[rascunho_id] = rascunho
+    
+    # Processar as propostas (para ordenação e filtros)
+    propostas_filtradas = {}
+    propostas_lista = []
+    
+    for proposta_id, proposta in propostas.items():
+        # Adicionar id à proposta para facilitar ordenação
+        proposta_com_id = proposta.copy()
+        proposta_com_id['id'] = proposta_id
+        
+        # Aplicar filtro de busca (cliente ou gerado_por)
+        if filtro_busca and filtro_busca.lower() not in proposta.get('nome_cliente', '').lower() and filtro_busca.lower() not in proposta.get('gerado_por', '').lower():
+            continue
+            
+        # Aplicar filtro de data
+        if data_formatada and data_formatada not in proposta.get('data_geracao', ''):
+            continue
+            
+        # Adicionar à lista para ordenação
+        propostas_lista.append(proposta_com_id)
+    
+    # Ordenar as propostas por data
+    try:
+        if ordem == 'recentes':
+            propostas_lista.sort(key=lambda x: datetime.datetime.strptime(x.get('data_geracao', '01/01/1970 00:00:00'), '%d/%m/%Y %H:%M:%S'), reverse=True)
+        else:
+            propostas_lista.sort(key=lambda x: datetime.datetime.strptime(x.get('data_geracao', '01/01/1970 00:00:00'), '%d/%m/%Y %H:%M:%S'))
+    except Exception as e:
+        logger.error(f"Erro ao ordenar propostas: {e}")
+    
+    # Converter lista ordenada de volta para dicionário
+    for proposta in propostas_lista:
+        proposta_id = proposta.pop('id')  # Remover id temporário
+        propostas_filtradas[proposta_id] = proposta
     
     # Contar propostas de hoje
     hoje = datetime.datetime.now().strftime("%d/%m/%Y")
@@ -918,10 +654,13 @@ def dashboard():
     tipo_usuario = session.get('tipo_usuario', 'usuario')
     
     return render_template('dashboard.html', 
-                          propostas=propostas, 
+                          propostas=propostas_filtradas, 
                           rascunhos_usuario=rascunhos_usuario, 
                           tipo_usuario=tipo_usuario,
-                          propostas_hoje=propostas_hoje)
+                          propostas_hoje=propostas_hoje,
+                          filtro_busca=filtro_busca,
+                          filtro_data=filtro_data,
+                          ordem=ordem)
 
 # Rota para visualizar uma proposta específica
 @app.route('/visualizar_proposta/<proposta_id>')
@@ -1392,6 +1131,7 @@ def criar_imagem_placeholder(caminho, texto, largura=500, altura=200, cor_fundo=
 def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_selecionados, oferta_selecionada=None, blocos_temporarios=None, blocos_ordem=None):
     try:
         import re
+        import requests
         from docx import Document
         from docxtpl import DocxTemplate, InlineImage
         from docxcompose.composer import Composer
@@ -1680,8 +1420,26 @@ def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_seleciona
             logging.info(f"Caminho completo do logo: {logo_path}")
         
         if logo_path and os.path.exists(logo_path):
-            context['logo_cliente'] = InlineImage(capa_doc, logo_path, width=Inches(2.2))
-            logging.info(f"Logo do cliente adicionado ao contexto: {logo_path}")
+            # Carregar a imagem para verificar dimensões
+            try:
+                from PIL import Image
+                img = Image.open(logo_path)
+                largura, altura = img.size
+                proporcao = largura / altura
+                
+                # Ajustar dimensões com base na proporção da imagem
+                if proporcao > 2:  # Logo muito larga e baixa
+                    context['logo_cliente'] = InlineImage(capa_doc, logo_path, width=Inches(2.2))
+                elif proporcao < 0.8:  # Logo muito alta e estreita
+                    context['logo_cliente'] = InlineImage(capa_doc, logo_path, width=Inches(1.8), height=Inches(1.8))
+                else:  # Logo com proporção normal
+                    context['logo_cliente'] = InlineImage(capa_doc, logo_path, width=Inches(2.2))
+                
+                logging.info(f"Logo do cliente adicionado ao contexto: {logo_path} (proporção: {proporcao:.2f})")
+            except Exception as e:
+                # Fallback em caso de erro na análise da imagem
+                context['logo_cliente'] = InlineImage(capa_doc, logo_path, width=Inches(2.0), height=Inches(1.5))
+                logging.warning(f"Erro ao analisar dimensões da logo, usando tamanho padrão: {str(e)}")
         else:
             logging.warning("Nenhum logo do cliente fornecido")
             logo_padrao = os.path.join(app.root_path, 'static', 'img', 'placeholder-logo.png')
@@ -1720,9 +1478,23 @@ def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_seleciona
         logger.info(f"Blocos que serão adicionados: {blocos_a_adicionar}")
         logger.info(f"Total de blocos disponíveis: {len(blocos)}")
         
+        # Adicionar espaço extra antes do primeiro bloco
+        espaco_inicial = documento_final.add_paragraph()
+        espaco_inicial.add_run("\n\n")  # espaço adicional antes do primeiro bloco
+        logger.info("Adicionado espaço extra antes do primeiro bloco")
+        
         for indice, bloco_nome in enumerate(blocos_a_adicionar, 1):
             try:
                 logger.info(f"Processando bloco {indice}: {bloco_nome}")
+                
+                # Adicionar quebra de página para novo bloco quando não for o primeiro
+                if indice > 1:
+                    documento_final.add_page_break()
+                    logger.info(f"Adicionada quebra de página antes do bloco {indice}")
+                    
+                    # Adicionar espaço no topo da nova página
+                    espaco_topo = documento_final.add_paragraph()
+                    espaco_topo.add_run("\n\n")  # espaço adicional no topo da página
                 
                 # Formatar título do bloco
                 nome_bloco_formatado = bloco_nome.replace('_', ' ').title()
@@ -1730,12 +1502,12 @@ def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_seleciona
                 
                 # Adicionar título como parágrafo estilizado
                 p = documento_final.add_paragraph()
-                p.style = 'Heading 2'
+                # p.style = 'Heading 2'  # Removido para evitar numeração automática
                 p.alignment = WD_ALIGN_PARAGRAPH.LEFT
                 p.space_before = Pt(18)
                 p.space_after = Pt(12)
                 
-                run = p.add_run(nome_bloco_formatado)
+                run = p.add_run(f"{indice}. {nome_bloco_formatado}")
                 run.bold = True
                 run.font.name = get_font_name('Poppins')
                 run.font.size = Pt(14)
@@ -1803,22 +1575,78 @@ def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_seleciona
                                                 run.font.size = Pt(11)
                                                 run.font.color.rgb = SERVICE_IT_GRAY
                                             
+                                            # Imagens
+                                            elif child.name == 'img':
+                                                try:
+                                                    img_src = child.get('src', '')
+                                                    if img_src:
+                                                        # Processamento de caminhos de imagem
+                                                        img_path = None
+                                                        
+                                                        # Tratar imagens em formato base64
+                                                        if img_src.startswith("data:image"):
+                                                            # É um base64 embutido
+                                                            import base64
+                                                            import uuid
+                                                            header, base64_data = img_src.split(',', 1)
+                                                            image_data = base64.b64decode(base64_data)
+                                                            img_temp_path = os.path.join(app.config['UPLOAD_FOLDER'], f"img_{uuid.uuid4()}.png")
+                                                            with open(img_temp_path, "wb") as f:
+                                                                f.write(image_data)
+                                                            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                                                            run = p.add_run()
+                                                            run.add_picture(img_temp_path, width=Inches(5))
+                                                            logger.info(f"Imagem base64 adicionada ao documento: {img_temp_path}")
+                                                            # Adicionar à lista de arquivos temporários para limpar depois
+                                                            arquivos_temporarios.append(img_temp_path)
+                                                            continue
+                                                        
+                                                        # Converter URLs relativas para caminhos absolutos
+                                                        if img_src.startswith('/static/'):
+                                                            # URL relativa ao root
+                                                            img_path = os.path.join(app.root_path, img_src.lstrip('/'))
+                                                        elif img_src.startswith('static/'):
+                                                            # URL relativa
+                                                            img_path = os.path.join(app.root_path, img_src)
+                                                        elif 'uploads/' in img_src:
+                                                            # Imagem em uploads
+                                                            filename = os.path.basename(img_src)
+                                                            img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                                                        else:
+                                                            # Tentar outros caminhos possíveis
+                                                            potential_paths = [
+                                                                img_src,
+                                                                os.path.join(app.root_path, img_src),
+                                                                os.path.join(app.root_path, 'static', 'uploads', os.path.basename(img_src)),
+                                                                os.path.join(app.config['UPLOAD_FOLDER'], os.path.basename(img_src))
+                                                            ]
+                                                            
+                                                            for path in potential_paths:
+                                                                if os.path.exists(path):
+                                                                    img_path = path
+                                                                    break
+                                                        
+                                                        # Se encontrou um caminho válido, adicionar a imagem
+                                                        if img_path and os.path.exists(img_path):
+                                                            # Centralizar o parágrafo
+                                                            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                                                            
+                                                            # Adicionar a imagem com tamanho adequado
+                                                            run = p.add_run()
+                                                            # Usar um tamanho razoável para a imagem (ajuste conforme necessário)
+                                                            run.add_picture(img_path, width=Inches(5))
+                                                            logger.info(f"Imagem adicionada ao documento: {img_path}")
+                                                        else:
+                                                            logger.error(f"Imagem não encontrada: {img_src}")
+                                                except Exception as e:
+                                                    logger.error(f"Erro ao processar imagem: {str(e)}")
+                                            
                                             # Outros elementos
                                             else:
                                                 run = p.add_run(child.get_text())
                                                 run.font.name = get_font_name('Poppins')
                                                 run.font.size = Pt(11)
                                                 run.font.color.rgb = SERVICE_IT_GRAY
-                                    
-                                    # Processar listas não ordenadas
-                                    elif element.name == 'ul':
-                                        for li in element.find_all('li', recursive=False):
-                                            p = documento_final.add_paragraph(style='List Bullet')
-                                            p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-                                            run = p.add_run(li.get_text())
-                                            run.font.name = get_font_name('Poppins')
-                                            run.font.size = Pt(11)
-                                            run.font.color.rgb = SERVICE_IT_GRAY
                                     
                                 except Exception as e:
                                     logging.error(f"Erro ao processar elemento HTML: {str(e)}")
@@ -3647,63 +3475,37 @@ def exibir_gerenciar_ofertas():
                           ofertas=ofertas, 
                           blocos=blocos)
 
-# Função para salvar proposta no banco de dados
+# Função para salvar proposta no banco de dados - Modificada
 def salvar_proposta(nome_cliente, arquivo, gerado_por, blocos_selecionados, oferta_selecionada=None):
     """
-    Salva uma proposta no banco de dados e retorna seu ID
+    Salva uma proposta diretamente no banco de dados e retorna seu ID.
     """
     try:
-        # Gerar um ID único para a proposta
-        proposta_id = str(uuid.uuid4())
-        
-        # Obter data atual
-        data_geracao = datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-        
-        # Carregar propostas existentes
-        propostas = carregar_propostas()
-        
-        # Adicionar nova proposta
-        propostas[proposta_id] = {
-            'nome_cliente': nome_cliente,
-            'data_geracao': data_geracao,
-            'gerado_por': gerado_por,
-            'arquivo': arquivo,
-            'blocos_utilizados': blocos_selecionados,
-            'oferta_selecionada': oferta_selecionada
-        }
-        
-        # Salvar propostas
-        salvar_propostas(propostas)
-        
-        return proposta_id
+        return criar_proposta_db(nome_cliente, arquivo, gerado_por, blocos_selecionados, oferta_selecionada)
     except Exception as e:
-        logger.error(f"Erro ao salvar proposta: {e}")
+        logger.error(f"Erro ao salvar proposta no banco: {e}")
         raise
 
-# Função para remover um rascunho pelo ID
+# Função para remover rascunho - Modificada para banco de dados
 def remover_rascunho(rascunho_id):
     """
-    Remove um rascunho pelo seu ID
+    Remove um rascunho diretamente do banco de dados.
     """
     try:
-        # Carregar rascunhos existentes
-        rascunhos = carregar_rascunhos()
-        
-        # Verificar se o rascunho existe
-        if rascunho_id in rascunhos:
-            # Remover rascunho
-            del rascunhos[rascunho_id]
-            
-            # Salvar alterações
-            salvar_rascunhos(rascunhos)
-            
+        from models import Rascunho, db
+        rascunho = Rascunho.query.get(rascunho_id)
+        if rascunho:
+            db.session.delete(rascunho)
+            db.session.commit()
+            logger.info(f"Rascunho removido: {rascunho_id}")
             return True
         else:
-            logger.warning(f"Rascunho {rascunho_id} não encontrado para remoção")
+            logger.warning(f"Rascunho não encontrado: {rascunho_id}")
             return False
     except Exception as e:
         logger.error(f"Erro ao remover rascunho: {e}")
-        raise
+        db.session.rollback()
+        return False
 
 # Rota para API de ofertas
 @app.route('/api/ofertas', methods=['GET'])
@@ -3852,38 +3654,29 @@ def api_status():
             "timestamp": datetime.datetime.now().isoformat()
         }), 500
 
-# Adicionar antes da definição da primeira rota (por volta da linha ~150)
-# Função para sincronizar dados do JSON para o banco de dados
-def sincronizar_json_para_banco():
-    """Função para sincronizar dados dos arquivos JSON para o banco de dados PostgreSQL"""
+# Função para verificar status da API periodicamente
+def verificar_api_periodicamente():
+    """Função para verificar o status da API periodicamente"""
     with app.app_context():
         try:
-            app.logger.info("Iniciando sincronização periódica de dados...")
-            # Sincronização do banco para o JSON primeiro para remover itens excluídos
-            from migrate_data import sincronizar_banco_para_json
-            sincronizar_banco_para_json()
-            
-            # Depois sincronizamos do JSON para o banco
-            from migrate_data import migrar_blocos, migrar_ofertas, migrar_propostas, migrar_rascunhos
-            migrar_blocos()
-            migrar_ofertas()
-            migrar_propostas()
-            migrar_rascunhos()
-            
-            from migrate_users import migrar_usuarios_do_json
-            migrar_usuarios_do_json()
-            
-            app.logger.info("Sincronização periódica de dados concluída.")
+            app.logger.info("Verificando status da API...")
+            # Chamar a rota de status da API
+            with app.test_client() as client:
+                response = client.get('/api/status')
+                if response.status_code == 200:
+                    app.logger.info("API respondendo normalmente.")
+                else:
+                    app.logger.warning(f"API respondeu com código: {response.status_code}")
         except Exception as e:
-            app.logger.error(f"Erro na sincronização periódica: {str(e)}")
+            app.logger.error(f"Erro ao verificar status da API: {str(e)}")
 
-# Configurar agendador para sincronização periódica
+# Configurar agendador apenas para verificação de API (sem sincronização de JSON)
 scheduler = BackgroundScheduler()
 scheduler.add_job(
-    func=sincronizar_json_para_banco,
-    trigger=IntervalTrigger(minutes=2),  # Executar a cada 2 minutos
-    id='sincronizacao_json_banco',
-    name='Sincronizar dados JSON para o banco de dados',
+    func=verificar_api_periodicamente,
+    trigger=IntervalTrigger(minutes=5),  # Executar a cada 5 minutos
+    id='verificar_api_status',
+    name='Verificar status da API',
     replace_existing=True
 )
 
@@ -3892,6 +3685,47 @@ scheduler.start()
 
 # Registrar função para parar o agendador quando a aplicação for encerrada
 atexit.register(lambda: scheduler.shutdown())
+
+# Função para realizar a migração inicial dos dados do JSON para o banco na inicialização
+def realizar_migracao_inicial():
+    """
+    Realiza uma migração única dos dados dos arquivos JSON para o banco de dados
+    na inicialização da aplicação, garantindo que o banco tenha todos os dados.
+    """
+    with app.app_context():
+        try:
+            app.logger.info("Realizando migração inicial de dados JSON para o banco...")
+            # Verificar se já foi realizada
+            from models import db, Oferta, BlocoProposta, Proposta, Rascunho
+            
+            # Verificar se já existem dados no banco
+            ofertas_count = Oferta.query.count()
+            blocos_count = BlocoProposta.query.count()
+            propostas_count = Proposta.query.count()
+            rascunhos_count = Rascunho.query.count()
+            
+            if ofertas_count == 0 or blocos_count == 0:
+                app.logger.info("Banco de dados vazio ou incompleto. Realizando migração inicial...")
+                
+                # Importar funções de migração
+                from migrate_data import migrar_perfis, migrar_usuarios, migrar_ofertas, migrar_blocos, migrar_propostas, migrar_rascunhos
+                
+                # Migrar dados em ordem apropriada
+                migrar_perfis()
+                migrar_usuarios()
+                migrar_ofertas()
+                migrar_blocos()
+                migrar_propostas()
+                migrar_rascunhos()
+                
+                app.logger.info("Migração inicial concluída com sucesso!")
+            else:
+                app.logger.info(f"Banco de dados já contém dados: {ofertas_count} ofertas, {blocos_count} blocos, {propostas_count} propostas, {rascunhos_count} rascunhos")
+        except Exception as e:
+            app.logger.error(f"Erro na migração inicial: {str(e)}")
+
+# Realizar migração inicial quando a aplicação iniciar
+realizar_migracao_inicial()
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
