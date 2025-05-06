@@ -1487,14 +1487,14 @@ def gerar_proposta(nome_cliente, logo_cliente, modelo_proposta, blocos_seleciona
             try:
                 logger.info(f"Processando bloco {indice}: {bloco_nome}")
                 
-                # Adicionar quebra de página para novo bloco quando não for o primeiro
+                # MODIFICADO: Não adicionar quebra de página automática entre blocos
+                # Apenas adicionar espaço entre os blocos com um parágrafo
                 if indice > 1:
-                    documento_final.add_page_break()
-                    logger.info(f"Adicionada quebra de página antes do bloco {indice}")
-                    
-                    # Adicionar espaço no topo da nova página
-                    espaco_topo = documento_final.add_paragraph()
-                    espaco_topo.add_run("\n\n")  # espaço adicional no topo da página
+                    # Adicionar espaço entre blocos
+                    espaco_entre = documento_final.add_paragraph()
+                    espaco_entre.add_run("\n\n")  # espaço adicional entre blocos
+                    espaco_entre.space_after = Pt(24)  # adicionar espaço após o parágrafo
+                    logger.info(f"Adicionado espaço entre os blocos {indice-1} e {indice}")
                 
                 # Formatar título do bloco
                 nome_bloco_formatado = bloco_nome.replace('_', ' ').title()
